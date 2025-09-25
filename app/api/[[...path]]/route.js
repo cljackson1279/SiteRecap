@@ -271,7 +271,7 @@ async function geminiHealth() {
     
     return NextResponse.json({
       status: 'healthy',
-      model: 'gemini-1.5-pro-002',
+      model: process.env.GEMINI_MODEL || 'gemini-1.5-pro',
       test_response: response.substring(0, 100),
       timestamp: new Date().toISOString()
     })
