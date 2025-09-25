@@ -265,7 +265,7 @@ async function geminiHealth() {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
     
     // Simple test
-    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro-002' })
+    const model = genAI.getGenerativeModel({ model: process.env.GEMINI_MODEL || 'gemini-1.5-pro' })
     const result = await model.generateContent('Hello')
     const response = result.response.text()
     
