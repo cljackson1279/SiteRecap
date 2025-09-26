@@ -157,6 +157,65 @@ export default function ProjectSetup() {
                 </div>
               </div>
 
+              <Separator />
+
+              {/* Owner/GC Contact Section */}
+              <div className="space-y-4">
+                <div>
+                  <h3 className="text-lg font-medium mb-3">Owner Contact</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="owner-name">Owner Name</Label>
+                      <Input
+                        id="owner-name"
+                        value={projectData.owner_name || ''}
+                        onChange={(e) => setProjectData({...projectData, owner_name: e.target.value})}
+                        placeholder="John Smith"
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="owner-email">Owner Email</Label>
+                      <Input
+                        id="owner-email"
+                        type="email"
+                        value={projectData.owner_email || ''}
+                        onChange={(e) => setProjectData({...projectData, owner_email: e.target.value})}
+                        placeholder="john@example.com"
+                        className="mt-1"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-lg font-medium mb-3">General Contractor Contact</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <Label htmlFor="gc-name">GC/PM Name</Label>
+                      <Input
+                        id="gc-name"
+                        value={projectData.gc_name || ''}
+                        onChange={(e) => setProjectData({...projectData, gc_name: e.target.value})}
+                        placeholder="Mike Johnson"
+                        className="mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="gc-email">GC/PM Email</Label>
+                      <Input
+                        id="gc-email"
+                        type="email"
+                        value={projectData.gc_email || ''}
+                        onChange={(e) => setProjectData({...projectData, gc_email: e.target.value})}
+                        placeholder="mike@contractorco.com"
+                        className="mt-1"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div className="flex justify-end">
                 <Button type="submit">
                   Next: Add Team Members
