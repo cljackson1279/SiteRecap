@@ -332,11 +332,19 @@ export default function ProjectDetail() {
                       </div>
                     </div>
                     <div className="flex gap-2 mt-4">
-                      <Button size="sm" variant="outline">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleExportPDF('owner')}
+                      >
                         <Download className="mr-2 h-4 w-4" />
                         Export PDF
                       </Button>
-                      <Button size="sm" variant="outline">
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleEmailReport('owner')}
+                      >
                         <Mail className="mr-2 h-4 w-4" />
                         Email Owner
                       </Button>
