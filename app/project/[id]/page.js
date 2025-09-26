@@ -54,7 +54,11 @@ export default function ProjectDetail() {
         state: 'TX',
         postal_code: '78701',
         lat: 30.2672,
-        lon: -97.7431
+        lon: -97.7431,
+        owner_name: 'John Smith',
+        owner_email: 'john.smith@example.com',
+        gc_name: 'Mike Johnson', 
+        gc_email: 'mike@contractorco.com'
       },
       '2': {
         id: '2', 
@@ -63,7 +67,11 @@ export default function ProjectDetail() {
         state: 'TX',
         postal_code: '75201',
         lat: 32.7767,
-        lon: -96.7970
+        lon: -96.7970,
+        owner_name: 'Sarah Johnson',
+        owner_email: 'sarah.johnson@example.com',
+        gc_name: 'Carlos Martinez',
+        gc_email: 'carlos@renovationpro.com'
       }
     }
     setProject(projects[params.id] || projects['1'])
