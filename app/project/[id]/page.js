@@ -385,7 +385,6 @@ export default function ProjectDetail() {
                 </div>
               </div>
             )}
-            </div>
           ) : (
             <Card className="border-dashed border-2">
               <CardContent className="p-8 text-center">
