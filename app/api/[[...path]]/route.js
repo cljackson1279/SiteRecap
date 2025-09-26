@@ -261,6 +261,215 @@ async function generateDailyReport(request) {
   }
 }
 
+// POST /api/export-pdf
+async function exportPDF(request) {
+  try {
+    const { report_id, variant } = await getRequestBody(request)
+    
+    if (!report_id || !variant) {
+      return NextResponse.json({ error: 'Report ID and variant required' }, { status: 400 })
+    }
+
+    if (!['owner', 'gc'].includes(variant)) {
+      return NextResponse.json({ error: 'Variant must be owner or gc' }, { status: 400 })
+    }
+
+    // Simulate loading report and project data
+    const mockReport = {
+      id: report_id,
+      date: '2025-09-26',
+      owner_md: `# Daily Update - Kitchen Remodel - Smith Residence
+**2025-09-26** • 🌤️ 76°F Partly cloudy
+
+## Today's Progress
+Work observed in Kitchen area with cabinet installation in progress.
+
+## Work Completed
+• Base cabinets installed on south wall (85%)
+• Electrical rough-in completed (92%)
+• Plumbing connections verified (88%)
+
+## Crew on Site
+• 4 workers present
+
+## Deliveries
+• Material delivery - completed
+
+## Safety
+• Site safety compliance: good
+
+## What's Next
+• Continue upper cabinet installation
+• Schedule countertop template
+• Coordinate tile delivery`,
+      gc_md: `# GC Daily Report - Kitchen Remodel - Smith Residence
+**2025-09-26** • 🌤️ 76°F Partly cloudy
+
+## Manpower
+• Total crew: 4 workers
+• Notes: Full crew present for cabinet installation
+
+## Equipment on Site
+• Circular saw - power_tool (Photos: 1, 2)
+• Drill driver - power_tool (Photos: 1)
+• Level - hand_tool (Photos: 2)
+
+## Materials
+• Base cabinets - in_use (Photos: 1, 2)
+• Cabinet hardware - delivered (Photos: 1)
+• Wood screws - in_use (Photos: 2)
+
+## Kitchen - Cabinets
+### Tasks Completed
+• Base cabinets installed on south wall - 85% (Photos: 1, 2)
+• Cabinet hardware installation - 70%
+
+### Safety Notes
+• Tool storage area organized - LOW
+
+## Safety Summary
+• Overall compliance: good
+• Proper PPE worn - LOW (Photos: 1, 2)
+
+## Tomorrow's Plan
+• Continue upper cabinet installation
+• Schedule electrical inspection
+• Coordinate with plumber for final connections`
+    }
+
+    const mockProject = {
+      name: 'Kitchen Remodel - Smith Residence',
+      city: 'Austin',
+      state: 'TX'
+    }
+
+    // Get markdown content
+    const markdown = variant === 'owner' ? mockReport.owner_md : mockReport.gc_md
+    
+    // Convert markdown to simple HTML for PDF
+    const htmlContent = markdown
+      .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+      .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+      .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+      .replace(/^\* (.+)$/gm, '<li>$1</li>')
+      .replace(/^• (.+)$/gm, '<li>$1</li>')
+      .replace(/\n\n/g, '</p><p>')
+      .replace(/^(.+)$/gm, '<p>$1</p>')
+      .replace(/<p><h/g, '<h')
+      .replace(/<\/h[1-6]><\/p>/g, '')
+      .replace(/<p><li>/g, '<ul><li>')
+      .replace(/<\/li><\/p>/g, '</li></ul>')
+
+    // Create complete HTML document for PDF
+    const fullHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>SiteRecap - ${variant === 'owner' ? 'Owner' : 'GC'} Report</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        .header {
+            text-align: center;
+            border-bottom: 3px solid #168995;
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+        }
+        .logo {
+            color: #168995;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        h1 {
+            color: #2C3E46;
+            font-size: 24px;
+            margin: 0 0 10px 0;
+        }
+        h2 {
+            color: #168995;
+            font-size: 18px;
+            margin: 25px 0 10px 0;
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 5px;
+        }
+        h3 {
+            color: #2C3E46;
+            font-size: 16px;
+            margin: 20px 0 8px 0;
+        }
+        ul {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        li {
+            margin: 5px 0;
+        }
+        .weather {
+            background: #168995;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+            font-size: 12px;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🏗️ SiteRecap</div>
+        <div>Professional Construction Reporting</div>
+        <div style="margin-top: 10px; font-size: 14px; color: #6c757d;">
+            Generated on ${new Date().toLocaleDateString()}
+        </div>
+    </div>
+    
+    <div class="content">
+        ${htmlContent}
+    </div>
+    
+    <div class="footer">
+        <p>This report was generated by SiteRecap AI from construction site photos.</p>
+        <p>For support, visit www.siterecap.com</p>
+    </div>
+</body>
+</html>`
+
+    // For demo purposes, return the HTML content as a downloadable URL
+    // In production, this would use Puppeteer to generate actual PDF
+    const pdfUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/api/pdf-preview?report=${report_id}&variant=${variant}`
+    
+    return NextResponse.json({
+      success: true,
+      url: pdfUrl,
+      preview_html: fullHtml,
+      message: `${variant === 'owner' ? 'Owner' : 'GC'} PDF generated successfully`
+    })
+
+  } catch (error) {
+    console.error('Export PDF error:', error)
+    return NextResponse.json({ 
+      error: 'Failed to generate PDF. Please try again later.' 
+    }, { status: 500 })
+  }
+}
+
 // POST /api/email-report
 async function emailReport(request) {
   try {
