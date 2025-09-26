@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { supabaseAdmin } from '@/lib/supabase'
 import { analyzePhoto, generateReport, generateOwnerMarkdown, generateGCMarkdown } from '@/lib/ai-pipeline'
 import { getCurrentWeather, geocodeLocation } from '@/lib/weather'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 // Helper to get request body
 async function getRequestBody(request) {
