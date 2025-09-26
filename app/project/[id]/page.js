@@ -36,6 +36,7 @@ export default function ProjectDetail() {
   const [ownerSignature, setOwnerSignature] = useState(null)
   const [contractorSignature, setContractorSignature] = useState(null)
   const [showSignatures, setShowSignatures] = useState(false)
+  const [showProjectSettings, setShowProjectSettings] = useState(false)
   const [showDebug, setShowDebug] = useState(false)
 
   useEffect(() => {
