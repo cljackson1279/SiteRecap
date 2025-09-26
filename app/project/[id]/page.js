@@ -268,6 +268,7 @@ export default function ProjectDetail() {
         {/* Report Section */}
         <div>
           {report ? (
+            <div>
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
