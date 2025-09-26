@@ -441,6 +441,8 @@ export async function POST(request) {
       return geocodeProject(request)
     case '/generate-report':
       return generateDailyReport(request)
+    case '/email-report':
+      return emailReport(request)
     default:
       return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
