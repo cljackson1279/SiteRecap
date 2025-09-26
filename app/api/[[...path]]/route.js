@@ -261,6 +261,134 @@ async function generateDailyReport(request) {
   }
 }
 
+// POST /api/email-report
+async function emailReport(request) {
+  try {
+    const { report_id, variant, to } = await getRequestBody(request)
+    
+    if (!report_id || !variant) {
+      return NextResponse.json({ error: 'Report ID and variant required' }, { status: 400 })
+    }
+
+    if (!['owner', 'gc'].includes(variant)) {
+      return NextResponse.json({ error: 'Variant must be owner or gc' }, { status: 400 })
+    }
+
+    // Simulate loading report and project data
+    const mockReport = {
+      id: report_id,
+      date: '2025-09-26',
+      owner_md: `# Daily Update - Kitchen Remodel\n**2025-09-26** • 🌤️ 76°F Partly cloudy\n\n## Today's Progress\nCabinet installation in progress with electrical work completed.\n\n## Work Completed\n• Base cabinets installed (85%)\n• Electrical rough-in completed (92%)\n• Plumbing connections verified (88%)`,
+      gc_md: `# GC Daily Report - Kitchen Remodel\n**2025-09-26** • 🌤️ 76°F Partly cloudy\n\n## Manpower\n• Total crew: 4 workers\n\n## Equipment on Site\n• Circular saw, drill driver, level\n\n## Materials\n• Base cabinets - in use\n• Hardware - delivered`
+    }
+
+    const mockProject = {
+      name: 'Kitchen Remodel - Smith Residence',
+      owner_name: 'John Smith',
+      owner_email: 'john.smith@example.com',
+      gc_name: 'Mike Johnson',
+      gc_email: 'mike@contractorco.com'
+    }
+
+    // Determine recipient
+    let recipient = to
+    if (!recipient) {
+      recipient = variant === 'owner' ? mockProject.owner_email : mockProject.gc_email
+    }
+
+    if (!recipient) {
+      return NextResponse.json({ 
+        error: `No ${variant} email found. Please add ${variant} contact in project settings.` 
+      }, { status: 400 })
+    }
+
+    // Get markdown content
+    const markdown = variant === 'owner' ? mockReport.owner_md : mockReport.gc_md
+    
+    // Extract first 3 bullets for teaser
+    const lines = markdown.split('\n')
+    const bullets = lines.filter(line => line.trim().startsWith('•')).slice(0, 3)
+    const teaserBullets = bullets.map(bullet => `<li>${bullet.replace('•', '').trim()}</li>`).join('')
+
+    // Create email subject
+    const subject = `SiteRecap — ${mockProject.name} — Daily Report ${mockReport.date}`
+
+    // Create HTML email template
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SiteRecap Daily Report</title>
+</head>
+<body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+    <div style="background: linear-gradient(135deg, #168995 0%, #2C3E46 100%); color: white; padding: 30px 20px; text-align: center; border-radius: 8px 8px 0 0;">
+        <h1 style="margin: 0 0 10px 0; font-size: 28px;">🏗️ SiteRecap</h1>
+        <p style="margin: 0; opacity: 0.9; font-size: 16px;">Daily Progress Report</p>
+    </div>
+    
+    <div style="background: #f8f9fa; padding: 30px 20px; border: 1px solid #e9ecef;">
+        <h2 style="color: #168995; margin-top: 0;">${mockProject.name}</h2>
+        <div style="background: #168995; color: white; padding: 8px 12px; border-radius: 20px; display: inline-block; font-size: 14px; margin-bottom: 20px;">
+            🌤️ 76°F Partly cloudy
+        </div>
+        
+        <h3 style="color: #2C3E46; margin-bottom: 15px;">Today's Progress Highlights:</h3>
+        <ul style="background: white; padding: 20px; border-radius: 6px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+            ${teaserBullets}
+        </ul>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="${process.env.NEXT_PUBLIC_BASE_URL}/project/1/report/${report_id}" 
+               style="background: #168995; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                📄 View Complete Report
+            </a>
+        </div>
+        
+        <div style="border-top: 1px solid #e9ecef; padding-top: 20px; margin-top: 30px; font-size: 14px; color: #6c757d; text-align: center;">
+            <p>This report was generated automatically by SiteRecap AI from job site photos.</p>
+            <p>Need help? Contact support at <a href="mailto:support@siterecap.com" style="color: #168995;">support@siterecap.com</a></p>
+        </div>
+    </div>
+</body>
+</html>`
+
+    // Send email via Resend
+    if (process.env.RESEND_API_KEY && process.env.EMAIL_FROM) {
+      const { data, error } = await resend.emails.send({
+        from: process.env.EMAIL_FROM,
+        to: [recipient],
+        subject: subject,
+        html: htmlContent,
+      })
+
+      if (error) {
+        throw error
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: `Report emailed to ${recipient}`,
+        email_id: data.id
+      })
+    } else {
+      // Fallback when email service not configured
+      return NextResponse.json({
+        success: true,
+        message: `Email would be sent to ${recipient}`,
+        preview_html: htmlContent
+      })
+    }
+
+  } catch (error) {
+    console.error('Email report error:', error)
+    return NextResponse.json({ 
+      error: 'Failed to send email. Please try again later.' 
+    }, { status: 500 })
+  }
+}
+
 // GET /api/gemini-health
 async function geminiHealth() {
   try {
@@ -268,13 +396,13 @@ async function geminiHealth() {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
     
     // Simple test
-    const model = genAI.getGenerativeModel({ model: process.env.GEMINI_MODEL || 'gemini-1.5-pro' })
+    const model = genAI.getGenerativeModel({ model: process.env.GEMINI_MODEL || 'gemini-2.0-flash-exp' })
     const result = await model.generateContent('Hello')
     const response = result.response.text()
     
     return NextResponse.json({
       status: 'healthy',
-      model: process.env.GEMINI_MODEL || 'gemini-1.5-pro',
+      model: process.env.GEMINI_MODEL || 'gemini-2.0-flash-exp',
       test_response: response.substring(0, 100),
       timestamp: new Date().toISOString()
     })
