@@ -323,6 +323,14 @@ export default function ProjectDetail() {
                         <Mail className="mr-2 h-4 w-4" />
                         Email GC
                       </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => setShowSignatures(true)}
+                      >
+                        <PenTool className="mr-2 h-4 w-4" />
+                        Sign Report
+                      </Button>
                     </div>
                   </TabsContent>
                 </Tabs>
