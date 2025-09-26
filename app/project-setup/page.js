@@ -24,7 +24,11 @@ export default function ProjectSetup() {
     name: '',
     city: '',
     state: '',
-    postal_code: ''
+    postal_code: '',
+    owner_name: '',
+    owner_email: '',
+    gc_name: '',
+    gc_email: ''
   })
   const [teamMembers, setTeamMembers] = useState([])
 
