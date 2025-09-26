@@ -673,6 +673,8 @@ export async function POST(request) {
       return generateDailyReport(request)
     case '/email-report':
       return emailReport(request)
+    case '/export-pdf':
+      return exportPDF(request)
     default:
       return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
