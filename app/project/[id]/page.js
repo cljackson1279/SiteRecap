@@ -185,6 +185,14 @@ export default function ProjectDetail() {
         </CardContent>
       </Card>
 
+      {/* Personnel Section */}
+      <PersonnelManager
+        projectId={params.id}
+        selectedPersonnel={selectedPersonnel}
+        onSelectionChange={setSelectedPersonnel}
+        mode="select"
+      />
+
       <div className="grid lg:grid-cols-2 gap-6">
         {/* Photos Section */}
         <div className="space-y-4">
