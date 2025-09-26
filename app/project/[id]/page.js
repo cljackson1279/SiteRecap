@@ -146,6 +146,66 @@ export default function ProjectDetail() {
     setPhotos(photos.filter(p => p.id !== photoId))
   }
 
+  const handleEmailReport = async (variant) => {
+    if (!report) {
+      alert('Please generate a report first')
+      return
+    }
+
+    try {
+      const response = await fetch('/api/email-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          report_id: '1',
+          variant: variant
+        })
+      })
+
+      const data = await response.json()
+      
+      if (data.success) {
+        alert(`✅ ${data.message}`)
+      } else {
+        alert(`❌ ${data.error}`)
+      }
+    } catch (error) {
+      console.error('Email error:', error)
+      alert('Failed to send email. Please try again.')
+    }
+  }
+
+  const handleExportPDF = async (variant) => {
+    if (!report) {
+      alert('Please generate a report first')
+      return
+    }
+
+    try {
+      const response = await fetch('/api/export-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          report_id: '1',
+          variant: variant
+        })
+      })
+
+      const data = await response.json()
+      
+      if (data.success) {
+        alert(`✅ ${data.message}`)
+        // In a real app, this would open/download the PDF
+        console.log('PDF URL:', data.url)
+      } else {
+        alert(`❌ ${data.error}`)
+      }
+    } catch (error) {
+      console.error('PDF export error:', error)
+      alert('Failed to export PDF. Please try again.')
+    }
+  }
+
   if (!project) {
     return (
       <div className="container mx-auto p-6">
