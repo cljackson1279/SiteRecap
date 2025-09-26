@@ -166,14 +166,41 @@ export default function ProjectDetail() {
               {project.city}, {project.state} {project.postal_code}
             </div>
           </div>
+          
+          {/* Owner/GC Contact Info */}
+          <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+            <div className="flex items-center gap-2">
+              <span className="font-medium">Owner:</span>
+              <span>{project.owner_name || 'Not set'}</span>
+              {project.owner_email && (
+                <span className="text-muted-foreground">({project.owner_email})</span>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="font-medium">GC:</span>
+              <span>{project.gc_name || 'Not set'}</span>
+              {project.gc_email && (
+                <span className="text-muted-foreground">({project.gc_email})</span>
+              )}
+            </div>
+          </div>
         </div>
-        <Button 
-          variant="outline"
-          onClick={() => window.location.href = `/project/${params.id}/reports`}
-        >
-          <FileText className="mr-2 h-4 w-4" />
-          View All Reports
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            variant="outline"
+            onClick={() => window.location.href = `/project/${params.id}/reports`}
+          >
+            <FileText className="mr-2 h-4 w-4" />
+            View All Reports
+          </Button>
+          <Button 
+            variant="outline"
+            size="icon"
+            onClick={() => setShowProjectSettings(!showProjectSettings)}
+          >
+            <Settings className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
       {/* Date Picker */}
