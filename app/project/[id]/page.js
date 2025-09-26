@@ -17,8 +17,12 @@ import {
   Trash2, 
   ChevronLeft,
   Camera,
-  Zap
+  Zap,
+  PenTool,
+  Settings
 } from 'lucide-react'
+import PersonnelManager from '@/components/personnel-manager'
+import SignaturePad from '@/components/signature-pad'
 
 export default function ProjectDetail() {
   const params = useParams()
