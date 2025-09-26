@@ -32,6 +32,10 @@ export default function ProjectDetail() {
   const [uploading, setUploading] = useState(false)
   const [generating, setGenerating] = useState(false)
   const [report, setReport] = useState(null)
+  const [selectedPersonnel, setSelectedPersonnel] = useState([])
+  const [ownerSignature, setOwnerSignature] = useState(null)
+  const [contractorSignature, setContractorSignature] = useState(null)
+  const [showSignatures, setShowSignatures] = useState(false)
   const [showDebug, setShowDebug] = useState(false)
 
   useEffect(() => {
