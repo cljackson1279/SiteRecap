@@ -89,13 +89,22 @@ export default function Dashboard() {
           <h1 className="text-4xl font-bold text-foreground">SiteRecap</h1>
           <p className="text-muted-foreground mt-1">Transform job site photos into professional reports</p>
         </div>
-        <Button 
-          onClick={() => setShowNewProject(true)}
-          className="bg-primary hover:bg-primary/90"
-        >
-          <Plus className="mr-2 h-4 w-4" />
-          New Project
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={() => setShowNewProject(true)}
+            variant="outline"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            Quick Create
+          </Button>
+          <Button 
+            onClick={() => window.location.href = '/project-setup'}
+            className="bg-primary hover:bg-primary/90"
+          >
+            <Plus className="mr-2 h-4 w-4" />
+            New Project
+          </Button>
+        </div>
       </div>
 
       {/* New Project Form */}
