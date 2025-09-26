@@ -6,7 +6,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Plus, MapPin, Calendar, FileText } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
 
 export default function Dashboard() {
   const [projects, setProjects] = useState([])
@@ -21,17 +20,30 @@ export default function Dashboard() {
 
   const loadProjects = async () => {
     try {
-      const { data, error } = await supabase
-        .from('projects')
-        .select('*')
-        .eq('active', true)
-        .order('created_at', { ascending: false })
-      
-      if (error) throw error
-      setProjects(data || [])
+      // For now, simulate some demo projects since we need auth setup
+      setTimeout(() => {
+        setProjects([
+          {
+            id: '1',
+            name: 'Kitchen Remodel - Smith Residence',
+            city: 'Austin',
+            state: 'TX',
+            postal_code: '78701',
+            created_at: new Date().toISOString()
+          },
+          {
+            id: '2', 
+            name: 'Bathroom Renovation - Johnson Home',
+            city: 'Dallas',
+            state: 'TX',
+            postal_code: '75201',
+            created_at: new Date().toISOString()
+          }
+        ])
+        setLoading(false)
+      }, 1000)
     } catch (error) {
       console.error('Error loading projects:', error)
-    } finally {
       setLoading(false)
     }
   }
@@ -40,17 +52,15 @@ export default function Dashboard() {
     if (!newProjectName.trim()) return
     
     try {
-      const { data, error } = await supabase
-        .from('projects')
-        .insert([{
-          name: newProjectName.trim(),
-          active: true
-        }])
-        .select()
+      // Simulate creating project
+      const newProject = {
+        id: Date.now().toString(),
+        name: newProjectName.trim(),
+        active: true,
+        created_at: new Date().toISOString()
+      }
       
-      if (error) throw error
-      
-      setProjects([data[0], ...projects])
+      setProjects([newProject, ...projects])
       setNewProjectName('')
       setShowNewProject(false)
     } catch (error) {
