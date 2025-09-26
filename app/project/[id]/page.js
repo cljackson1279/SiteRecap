@@ -167,6 +167,13 @@ export default function ProjectDetail() {
             </div>
           </div>
         </div>
+        <Button 
+          variant="outline"
+          onClick={() => window.location.href = `/project/${params.id}/reports`}
+        >
+          <FileText className="mr-2 h-4 w-4" />
+          View All Reports
+        </Button>
       </div>
 
       {/* Date Picker */}
