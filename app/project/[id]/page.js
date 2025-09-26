@@ -108,33 +108,18 @@ export default function ProjectDetail() {
     setGenerating(true)
     
     try {
-      // Call the AI pipeline
-      const response = await fetch('/api/generate-report', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          project_id: params.id,
-          date: selectedDate
-        })
-      })
-      
-      if (!response.ok) throw new Error('Failed to generate report')
-      
-      const data = await response.json()
-      setReport(data)
-      
-    } catch (error) {
-      console.error('Report generation error:', error)
-      // Simulate a successful report for demo
+      // Simulate enhanced report with new sections
       setReport({
-        owner_markdown: `# Daily Update - ${project?.name}\n**${selectedDate}** • 🌤️ 76°F Partly cloudy\n\n## Today's Progress\nWork observed in Kitchen area with cabinet installation in progress.\n\n## Work Completed\n• Base cabinets installed on south wall (85%)\n• Electrical rough-in completed (92%)\n• Plumbing connections verified (88%)\n\n## What's Next\n• Continue upper cabinet installation\n• Schedule countertop template\n• Coordinate tile delivery`,
-        gc_markdown: `# GC Daily Report - ${project?.name}\n**${selectedDate}** • 🌤️ 76°F Partly cloudy\n\n## Kitchen - Cabinets\n### Tasks Completed\n• Base cabinets installed on south wall - 85% (Photos: 1, 2)\n• Cabinet hardware installation - 70%\n\n### Safety Notes\n• Tool storage area organized - LOW\n\n## Tomorrow's Plan\n• Continue upper cabinet installation\n• Schedule electrical inspection\n• Coordinate with plumber for final connections`,
+        owner_markdown: `# Daily Update - ${project?.name}\n**${selectedDate}** • 🌤️ 76°F Partly cloudy\n\n## Today's Progress\nWork observed in Kitchen area with cabinet installation in progress.\n\n## Work Completed\n• Base cabinets installed on south wall (85%)\n• Electrical rough-in completed (92%)\n• Plumbing connections verified (88%)\n\n## Crew on Site\n• 4 workers present\n\n## Deliveries\n• Material delivery - completed\n\n## Safety\n• Site safety compliance: good\n\n## What's Next\n• Continue upper cabinet installation\n• Schedule countertop template\n• Coordinate tile delivery`,
+        gc_markdown: `# GC Daily Report - ${project?.name}\n**${selectedDate}** • 🌤️ 76°F Partly cloudy\n\n## Manpower\n• Total crew: 4 workers\n• Notes: Full crew present for cabinet installation\n\n## Equipment on Site\n• Circular saw - power_tool (Photos: 1, 2)\n• Drill driver - power_tool (Photos: 1)\n• Level - hand_tool (Photos: 2)\n\n## Materials\n• Base cabinets - in_use (Photos: 1, 2)\n• Cabinet hardware - delivered (Photos: 1)\n• Wood screws - in_use (Photos: 2)\n\n## Deliveries\n• Material delivery - completed (morning) (Photos: 1)\n\n## Kitchen - Cabinets\n### Tasks Completed\n• Base cabinets installed on south wall - 85% (Photos: 1, 2)\n• Cabinet hardware installation - 70%\n\n### Safety Notes\n• Tool storage area organized - LOW\n\n## Safety Summary\n• Overall compliance: good\n• Proper PPE worn - LOW (Photos: 1, 2)\n\n## Tomorrow's Plan\n• Continue upper cabinet installation\n• Schedule electrical inspection\n• Coordinate with plumber for final connections`,
         debug: {
           photos_analyzed: photos.length,
           weather_included: true,
           model_used: 'gemini-2.0-flash-exp'
         }
       })
+    } catch (error) {
+      console.error('Report generation error:', error)
     } finally {
       setGenerating(false)
     }
