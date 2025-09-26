@@ -354,6 +354,37 @@ export default function ProjectDetail() {
                 </div>
               </CardContent>
             </Card>
+          ) : null}
+          
+          {/* Signature Section */}
+          {showSignatures && report && (
+            <div className="mt-6 space-y-4">
+              <div className="grid md:grid-cols-2 gap-4">
+                <SignaturePad
+                  title="Owner Signature"
+                  onSignature={setOwnerSignature}
+                />
+                <SignaturePad
+                  title="Contractor Signature"
+                  onSignature={setContractorSignature}
+                />
+              </div>
+              
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => setShowSignatures(false)}
+                >
+                  Hide Signatures
+                </Button>
+                {ownerSignature && contractorSignature && (
+                  <Button>
+                    <Download className="mr-2 h-4 w-4" />
+                    Export Signed Report
+                  </Button>
+                )}
+              </div>
+            </div>
           ) : (
             <Card className="border-dashed border-2">
               <CardContent className="p-8 text-center">
