@@ -356,22 +356,43 @@ async function emailReport(request) {
 
     // Send email via Resend
     if (process.env.RESEND_API_KEY && process.env.EMAIL_FROM) {
-      const { data, error } = await resend.emails.send({
-        from: process.env.EMAIL_FROM,
-        to: [recipient],
-        subject: subject,
-        html: htmlContent,
-      })
+      try {
+        const { data, error } = await resend.emails.send({
+          from: process.env.EMAIL_FROM,
+          to: [recipient],
+          subject: subject,
+          html: htmlContent,
+        })
 
-      if (error) {
-        throw error
+        if (error) {
+          // Check if it's a domain verification error
+          if (error.message && error.message.includes('domain is not verified')) {
+            console.log('Domain not verified, falling back to preview mode')
+            return NextResponse.json({
+              success: true,
+              message: `Email preview generated (domain not verified)`,
+              preview_html: htmlContent,
+              note: 'Email service requires domain verification. Contact admin to set up verified domain.'
+            })
+          }
+          throw error
+        }
+
+        return NextResponse.json({
+          success: true,
+          message: `Report emailed to ${recipient}`,
+          email_id: data.id
+        })
+      } catch (emailError) {
+        // If email fails, fall back to preview mode
+        console.log('Email sending failed, falling back to preview:', emailError.message)
+        return NextResponse.json({
+          success: true,
+          message: `Email preview generated (sending failed)`,
+          preview_html: htmlContent,
+          note: 'Email sending failed. Preview generated instead.'
+        })
       }
-
-      return NextResponse.json({
-        success: true,
-        message: `Report emailed to ${recipient}`,
-        email_id: data.id
-      })
     } else {
       // Fallback when email service not configured
       return NextResponse.json({
