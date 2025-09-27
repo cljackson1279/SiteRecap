@@ -122,34 +122,13 @@ export default function Pricing() {
           </div>
         </div>
 
-        {/* Billing Toggle */}
+        {/* Pricing Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-4 p-1 bg-white rounded-lg border">
-            <button
-              onClick={() => setIsAnnual(false)}
-              className={`px-6 py-2 rounded-md font-medium transition-colors ${
-                !isAnnual 
-                  ? 'bg-primary text-primary-foreground' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Monthly
-            </button>
-            <button
-              onClick={() => setIsAnnual(true)}
-              className={`px-6 py-2 rounded-md font-medium transition-colors relative ${
-                isAnnual 
-                  ? 'bg-primary text-primary-foreground' 
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              Annual
-              <Badge className="absolute -top-2 -right-2 text-xs bg-green-500">
-                Save 17%
-              </Badge>
-            </button>
-          </div>
-          <p className="text-sm text-muted-foreground mt-2">
+          <h2 className="text-3xl font-bold text-brand-text mb-4">Simple Monthly Pricing</h2>
+          <p className="text-lg text-muted-foreground mb-4">
+            Choose the plan that fits your business size
+          </p>
+          <p className="text-sm text-muted-foreground">
             No setup fees • Cancel anytime
           </p>
         </div>
