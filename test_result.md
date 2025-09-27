@@ -169,12 +169,12 @@ backend:
           comment: "✅ SUBSCRIPTION ENFORCEMENT IMPLEMENTED: /api/project-count endpoint working correctly with status filtering (active: 2, completed: 1, archived: 1). /api/create-project and /api/reopen-project both include subscription limit checks that count only active projects. Plan limits properly enforced (starter: 2, pro: 10, enterprise: 25). Error handling returns 403 status when limits exceeded."
 
   - task: "Implement 14-day auto-close logic"
-    implemented: false
-    working: false
+    implemented: true
+    working: true
     file: "/app/app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
@@ -182,6 +182,9 @@ backend:
         - working: false
           agent: "testing"
           comment: "❌ No auto-close logic found in API routes"
+        - working: true
+          agent: "testing"
+          comment: "✅ AUTO-CLOSE LOGIC IMPLEMENTED: /api/auto-close-projects endpoint working correctly. Logic finds projects inactive for 14+ days and sets status to 'completed'. /api/update-project-activity endpoint updates last_activity_date field. Email notifications included for project owners. Demo mode returns appropriate mock responses. All error handling in place."
 
 frontend:
   - task: "Remove AI model mentions from pricing page"
