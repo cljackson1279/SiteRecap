@@ -430,14 +430,16 @@ export default function ProjectDetail() {
                         alt="Job site"
                         className="w-full h-32 object-cover rounded-lg"
                       />
-                      <Button
-                        size="sm"
-                        variant="destructive"
-                        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => deletePhoto(photo.id)}
-                      >
-                        <Trash2 className="h-3 w-3" />
-                      </Button>
+                      {project.status === 'active' && (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={() => deletePhoto(photo.id)}
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </Button>
+                      )}
                     </div>
                   ))}
                 </div>
