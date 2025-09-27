@@ -48,19 +48,16 @@ export default function HomePage() {
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               Transform job site photos into professional daily reports using AI. 
-              Better than Raken and Fieldwire - built specifically for residential contractors.
+              Built specifically for contractors who want to save time on documentation while keeping projects transparent.
             </p>
             <div className="flex gap-4 justify-center">
               <Button size="lg" onClick={handleGetStarted}>
-                Start Free Trial
+                Get Started
               </Button>
               <Button size="lg" variant="outline" onClick={() => router.push('/pricing')}>
                 View Pricing
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground mt-4">
-              14-day free trial • No credit card required
-            </p>
           </div>
         </div>
 
