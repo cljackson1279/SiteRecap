@@ -94,7 +94,7 @@ export default function Pricing() {
   ]
 
   const handlePlanSelect = (plan) => {
-    const stripeLink = isAnnual ? plan.stripeLinkAnnual : plan.stripeLinkMonthly
+    const stripeLink = plan.stripeLinkMonthly
     
     if (stripeLink && stripeLink !== '#') {
       window.open(stripeLink, '_blank')
