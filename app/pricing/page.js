@@ -226,8 +226,8 @@ export default function Pricing() {
             <div>
               <h3 className="font-semibold mb-2">What AI models do you use?</h3>
               <p className="text-sm text-muted-foreground">
-                We use Google's latest Gemini 2.0 Flash for photo analysis with OpenAI GPT-4o-mini as fallback, 
-                ensuring reliable report generation.
+                We use advanced AI models for photo analysis and report generation, 
+                ensuring reliable and professional results every time.
               </p>
             </div>
           </div>
