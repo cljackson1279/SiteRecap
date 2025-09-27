@@ -260,36 +260,93 @@ export default function Dashboard() {
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {projects.map((project) => (
-              <Card key={project.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-                <CardContent className="p-6">
-                  <div className="flex items-start justify-between mb-4">
-                    <h3 className="font-semibold text-lg line-clamp-2">{project.name}</h3>
-                    <Badge variant="secondary" className="ml-2">Active</Badge>
-                  </div>
-                  
-                  {(project.city || project.state || project.postal_code) && (
-                    <div className="flex items-center text-sm text-muted-foreground mb-2">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      {[project.city, project.state, project.postal_code].filter(Boolean).join(', ')}
-                    </div>
-                  )}
-                  
-                  <div className="flex items-center text-sm text-muted-foreground mb-4">
-                    <Calendar className="h-4 w-4 mr-1" />
-                    Created {new Date(project.created_at).toLocaleDateString()}
-                  </div>
-                  
-                  <Button 
-                    className="w-full" 
-                    onClick={() => router.push(`/project/${project.id}`)}
-                  >
-                    Open Project
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="space-y-8">
+            {/* Active Projects */}
+            <div>
+              <h2 className="text-xl font-semibold mb-4">Active Projects</h2>
+              {projects.filter(p => p.status === 'active').length === 0 ? (
+                <Card className="border-dashed border-2">
+                  <CardContent className="p-6 text-center">
+                    <p className="text-muted-foreground">No active projects. Create a new project to get started.</p>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {projects
+                    .filter(project => project.status === 'active')
+                    .map((project) => (
+                      <Card key={project.id} className="hover:shadow-lg transition-shadow cursor-pointer">
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between mb-4">
+                            <h3 className="font-semibold text-lg line-clamp-2">{project.name}</h3>
+                            <Badge variant="default" className="ml-2">Active</Badge>
+                          </div>
+                          
+                          {(project.city || project.state || project.postal_code) && (
+                            <div className="flex items-center text-sm text-muted-foreground mb-2">
+                              <MapPin className="h-4 w-4 mr-1" />
+                              {[project.city, project.state, project.postal_code].filter(Boolean).join(', ')}
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center text-sm text-muted-foreground mb-4">
+                            <Calendar className="h-4 w-4 mr-1" />
+                            Created {new Date(project.created_at).toLocaleDateString()}
+                          </div>
+                          
+                          <Button 
+                            className="w-full" 
+                            onClick={() => router.push(`/project/${project.id}`)}
+                          >
+                            Open Project
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                </div>
+              )}
+            </div>
+
+            {/* Closed Projects */}
+            {projects.filter(p => p.status !== 'active').length > 0 && (
+              <div>
+                <h2 className="text-xl font-semibold mb-4 text-muted-foreground">Closed Projects</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {projects
+                    .filter(project => project.status !== 'active')
+                    .map((project) => (
+                      <Card key={project.id} className="hover:shadow-lg transition-shadow cursor-pointer opacity-75">
+                        <CardContent className="p-6">
+                          <div className="flex items-start justify-between mb-4">
+                            <h3 className="font-semibold text-lg line-clamp-2">{project.name}</h3>
+                            <Badge variant="secondary" className="ml-2 bg-gray-100 text-gray-600">Closed</Badge>
+                          </div>
+                          
+                          {(project.city || project.state || project.postal_code) && (
+                            <div className="flex items-center text-sm text-muted-foreground mb-2">
+                              <MapPin className="h-4 w-4 mr-1" />
+                              {[project.city, project.state, project.postal_code].filter(Boolean).join(', ')}
+                            </div>
+                          )}
+                          
+                          <div className="flex items-center text-sm text-muted-foreground mb-4">
+                            <Calendar className="h-4 w-4 mr-1" />
+                            Created {new Date(project.created_at).toLocaleDateString()}
+                          </div>
+                          
+                          <Button 
+                            variant="outline"
+                            className="w-full" 
+                            onClick={() => router.push(`/project/${project.id}`)}
+                          >
+                            View Project
+                          </Button>
+                        </CardContent>
+                      </Card>
+                    ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
