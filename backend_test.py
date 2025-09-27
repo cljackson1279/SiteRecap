@@ -235,20 +235,61 @@ def test_database_schema():
     """Test database schema changes (indirect through API)"""
     print("\n=== TESTING DATABASE SCHEMA SUPPORT ===")
     
-    # Since we can't directly test database, we test if APIs would support the schema
-    print("Testing if APIs would support project status field...")
+    # Test endpoints that use project status field
+    print("Testing project listing endpoints with status filtering...")
     
-    # Test endpoints that would use status field
-    test_endpoints = [
-        '/projects',  # Should filter by status
-        '/projects/active',  # Should return only active projects
-        '/projects/completed',  # Should return only completed projects
-    ]
+    # Test all projects endpoint
+    print("Testing /api/projects?org_id=demo-org endpoint...")
+    response = test_api_endpoint('/projects?org_id=demo-org', 'GET', None, 200)
     
-    for endpoint in test_endpoints:
-        response = test_api_endpoint(endpoint, 'GET', None, 404)  # Expected to be missing
-        if response and response.status_code == 404:
-            print(f"  ❌ {endpoint} endpoint not implemented")
+    if response and response.status_code == 200:
+        try:
+            data = response.json()
+            if data.get('success') and 'data' in data:
+                print("  ✅ /api/projects endpoint working correctly")
+                print(f"     Total projects: {len(data['data'])}")
+                for project in data['data'][:2]:  # Show first 2 projects
+                    print(f"     - {project.get('name', 'Unknown')} (Status: {project.get('status', 'Unknown')})")
+            else:
+                print("  ⚠️  Endpoint responded but success=false or no data")
+        except:
+            print("  ⚠️  Invalid JSON response")
+    else:
+        print("  ❌ /api/projects endpoint failed")
+    
+    # Test active projects endpoint
+    print("Testing /api/projects/active?org_id=demo-org endpoint...")
+    response = test_api_endpoint('/projects/active?org_id=demo-org', 'GET', None, 200)
+    
+    if response and response.status_code == 200:
+        try:
+            data = response.json()
+            if data.get('success') and 'data' in data:
+                print("  ✅ /api/projects/active endpoint working correctly")
+                print(f"     Active projects: {len(data['data'])}")
+            else:
+                print("  ⚠️  Endpoint responded but success=false or no data")
+        except:
+            print("  ⚠️  Invalid JSON response")
+    else:
+        print("  ❌ /api/projects/active endpoint failed")
+    
+    # Test completed projects endpoint
+    print("Testing /api/projects/completed?org_id=demo-org endpoint...")
+    response = test_api_endpoint('/projects/completed?org_id=demo-org', 'GET', None, 200)
+    
+    if response and response.status_code == 200:
+        try:
+            data = response.json()
+            if data.get('success') and 'data' in data:
+                print("  ✅ /api/projects/completed endpoint working correctly")
+                print(f"     Completed projects: {len(data['data'])}")
+            else:
+                print("  ⚠️  Endpoint responded but success=false or no data")
+        except:
+            print("  ⚠️  Invalid JSON response")
+    else:
+        print("  ❌ /api/projects/completed endpoint failed")
 
 def run_comprehensive_tests():
     """Run all backend tests"""
