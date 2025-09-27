@@ -222,9 +222,9 @@ export default function Login() {
         <div className="text-center mt-8 text-sm text-muted-foreground">
           <p>
             By signing up, you agree to our{' '}
-            <a href="#" className="text-primary hover:underline">Terms of Service</a>
+            <a href="/terms" className="text-primary hover:underline">Terms of Service</a>
             {' '}and{' '}
-            <a href="#" className="text-primary hover:underline">Privacy Policy</a>
+            <a href="/privacy" className="text-primary hover:underline">Privacy Policy</a>
           </p>
         </div>
       </div>
