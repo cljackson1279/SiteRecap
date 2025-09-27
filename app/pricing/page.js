@@ -57,8 +57,7 @@ export default function Pricing() {
         'Mobile-friendly interface',
         'Priority support'
       ],
-      stripeLinkMonthly: 'https://buy.stripe.com/test_pro_monthly',
-      stripeLinkAnnual: 'https://buy.stripe.com/test_pro_annual',
+      stripeLinkMonthly: 'https://buy.stripe.com/3cI6oH60LdQYgaP7WfeZ206',
       popular: true
     },
     {
