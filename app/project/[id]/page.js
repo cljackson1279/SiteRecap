@@ -237,20 +237,28 @@ export default function ProjectDetail() {
           </div>
           
           {/* Owner/GC Contact Info */}
-          <div className="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <span className="font-medium">Owner:</span>
-              <span>{project.owner_name || 'Not set'}</span>
-              {project.owner_email && (
-                <span className="text-muted-foreground">({project.owner_email})</span>
-              )}
+          <div className="mt-4 space-y-2 text-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+              <span className="font-medium text-primary min-w-[60px]">Owner:</span>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                <span className="font-medium">{project.owner_name || 'Not set'}</span>
+                {project.owner_email && (
+                  <span className="text-muted-foreground text-xs sm:text-sm">
+                    {project.owner_email}
+                  </span>
+                )}
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <span className="font-medium">GC:</span>
-              <span>{project.gc_name || 'Not set'}</span>
-              {project.gc_email && (
-                <span className="text-muted-foreground">({project.gc_email})</span>
-              )}
+            <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+              <span className="font-medium text-primary min-w-[60px]">GC:</span>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2">
+                <span className="font-medium">{project.gc_name || 'Not set'}</span>
+                {project.gc_email && (
+                  <span className="text-muted-foreground text-xs sm:text-sm">
+                    {project.gc_email}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
         </div>
