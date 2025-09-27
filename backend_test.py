@@ -124,23 +124,51 @@ def test_subscription_enforcement():
     """Test subscription enforcement logic"""
     print("\n=== TESTING SUBSCRIPTION ENFORCEMENT ===")
     
-    # Test project count endpoint
-    print("Testing /api/project-count endpoint...")
-    response = test_api_endpoint('/project-count', 'GET', None, 404)  # Expected to be missing
+    # Test project count endpoint with query parameters
+    print("Testing /api/project-count?org_id=demo-org&status=active endpoint...")
+    response = test_api_endpoint('/project-count?org_id=demo-org&status=active', 'GET', None, 200)
     
-    if response and response.status_code == 404:
-        print("  ❌ /api/project-count endpoint not implemented")
+    if response and response.status_code == 200:
+        try:
+            data = response.json()
+            if data.get('success'):
+                print("  ✅ /api/project-count endpoint working correctly")
+                print(f"     Active projects count: {data.get('count')}")
+            else:
+                print("  ⚠️  Endpoint responded but success=false")
+        except:
+            print("  ⚠️  Invalid JSON response")
+    else:
+        print("  ❌ /api/project-count endpoint failed")
     
-    # Test create project with limit check
+    # Test create project with subscription limits
     print("Testing /api/create-project with subscription limits...")
     response = test_api_endpoint('/create-project', 'POST', {
-        'name': 'Test Project',
-        'org_id': 'test-org',
-        'user_id': 'test-user'
-    }, 404)  # Expected to be missing
+        'name': 'Test Kitchen Renovation Project',
+        'org_id': 'demo-org',
+        'city': 'Austin',
+        'state': 'TX',
+        'postal_code': '78701',
+        'owner_name': 'John Smith',
+        'owner_email': 'john.smith@example.com',
+        'gc_name': 'Mike Johnson',
+        'gc_email': 'mike@contractorco.com'
+    }, 200)  # Should work in demo mode
     
-    if response and response.status_code == 404:
-        print("  ❌ /api/create-project endpoint not implemented")
+    if response and response.status_code == 200:
+        try:
+            data = response.json()
+            if data.get('success'):
+                print("  ✅ /api/create-project endpoint working correctly")
+                print(f"     Response: {data.get('message', 'No message')}")
+                if 'data' in data:
+                    print(f"     Project ID: {data['data'].get('id')}")
+            else:
+                print("  ⚠️  Endpoint responded but success=false")
+        except:
+            print("  ⚠️  Invalid JSON response")
+    else:
+        print("  ❌ /api/create-project endpoint failed")
 
 def test_auto_close_logic():
     """Test 14-day auto-close logic"""
