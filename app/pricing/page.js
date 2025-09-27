@@ -160,17 +160,12 @@ export default function Pricing() {
                 <div className="mt-6">
                   <div className="flex items-baseline justify-center gap-1">
                     <span className="text-4xl font-bold">
-                      ${isAnnual ? plan.annualPrice : plan.monthlyPrice}
+                      ${plan.monthlyPrice}
                     </span>
                     <span className="text-muted-foreground">
-                      /{isAnnual ? 'year' : 'month'}
+                      /month
                     </span>
                   </div>
-                  {isAnnual && (
-                    <p className="text-sm text-green-600 mt-1">
-                      Save ${(plan.monthlyPrice * 12) - plan.annualPrice}/year
-                    </p>
-                  )}
                 </div>
 
                 <div className="mt-4 p-3 bg-muted/50 rounded-lg">
