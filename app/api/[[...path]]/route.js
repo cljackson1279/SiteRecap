@@ -675,6 +675,16 @@ export async function POST(request) {
       return emailReport(request)
     case '/export-pdf':
       return exportPDF(request)
+    case '/close-project':
+      return closeProject(request)
+    case '/reopen-project':
+      return reopenProject(request)
+    case '/create-project':
+      return createProject(request)
+    case '/update-project-activity':
+      return updateProjectActivity(request)
+    case '/auto-close-projects':
+      return autoCloseProjects(request)
     default:
       return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
