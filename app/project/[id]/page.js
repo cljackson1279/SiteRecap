@@ -19,7 +19,10 @@ import {
   Camera,
   Zap,
   PenTool,
-  Settings
+  Settings,
+  Lock,
+  Unlock,
+  AlertCircle
 } from 'lucide-react'
 import PersonnelManager from '@/components/personnel-manager'
 import SignaturePad from '@/components/signature-pad'
