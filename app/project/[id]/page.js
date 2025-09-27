@@ -346,6 +346,21 @@ export default function ProjectDetail() {
         </div>
       </div>
 
+      {/* Project Closed Banner */}
+      {project.status !== 'active' && (
+        <div className="mb-6 p-4 bg-muted border-l-4 border-l-orange-500 rounded-lg">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="h-5 w-5 text-orange-500" />
+            <div>
+              <h3 className="font-semibold text-orange-700">Project Closed</h3>
+              <p className="text-sm text-muted-foreground">
+                This project is closed. Reports are read-only. No new photos can be uploaded or reports generated.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Date Picker */}
       <Card className="mb-6">
         <CardContent className="p-4">
