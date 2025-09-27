@@ -105,7 +105,7 @@ export default function HomePage() {
                 Join contractors already using SiteRecap to save hours on documentation.
               </p>
               <Button size="lg" onClick={handleGetStarted}>
-                Get Started - Free Trial
+                Get Started
               </Button>
             </CardContent>
           </Card>
