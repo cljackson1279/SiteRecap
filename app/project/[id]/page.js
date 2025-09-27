@@ -213,6 +213,44 @@ export default function ProjectDetail() {
     }
   }
 
+  const handleCloseProject = async () => {
+    if (!confirm('Are you sure you want to close this project? You can reopen it later, but no new photos or reports can be generated while closed.')) {
+      return
+    }
+
+    setClosingProject(true)
+    try {
+      // In real app, this would update the database
+      // For demo, just update local state
+      setProject(prev => ({ ...prev, status: 'completed' }))
+      alert('✅ Project closed successfully')
+    } catch (error) {
+      console.error('Error closing project:', error)
+      alert('❌ Failed to close project. Please try again.')
+    } finally {
+      setClosingProject(false)
+    }
+  }
+
+  const handleReopenProject = async () => {
+    if (!confirm('Are you sure you want to reopen this project? This will allow new photos and reports to be generated.')) {
+      return
+    }
+
+    setReopeningProject(true)
+    try {
+      // In real app, this would check subscription limits and update database
+      // For demo, just update local state
+      setProject(prev => ({ ...prev, status: 'active' }))
+      alert('✅ Project reopened successfully')
+    } catch (error) {
+      console.error('Error reopening project:', error)
+      alert('❌ Failed to reopen project. Please try again.')
+    } finally {
+      setReopeningProject(false)
+    }
+  }
+
   if (!project) {
     return (
       <div className="container mx-auto p-6">
