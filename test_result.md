@@ -261,10 +261,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Add Stripe webhook secret to .env"
-    - "Add project status column to database"
-    - "Remove AI model mentions from pricing page"
-    - "Add Close Project button to project detail page"
+    - "Implement project close/reopen API endpoints"
+    - "Update subscription enforcement to count only active projects"
+    - "Implement 14-day auto-close logic"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
@@ -283,3 +282,18 @@ agent_communication:
         9. ✅ Tested functionality in demo mode - all working correctly
         
         READY FOR BACKEND TESTING before implementing 14-day auto-close logic."
+    - agent: "testing"
+      message: "BACKEND TESTING RESULTS: Frontend implementation is complete and working in demo mode. However, critical backend API endpoints are missing:
+        
+        ❌ MISSING BACKEND FUNCTIONALITY:
+        1. /api/close-project endpoint - needed for actual project closure
+        2. /api/reopen-project endpoint - needed for project reopening
+        3. Backend subscription enforcement logic - frontend has it but backend doesn't
+        4. 14-day auto-close logic - completely missing
+        
+        ✅ COMPLETED ITEMS:
+        1. Stripe webhook secret in .env
+        2. Database schema updates in database-updates.sql
+        3. All frontend UI components working in demo mode
+        
+        NEXT STEPS: Main agent needs to implement the missing backend API endpoints before full functionality can be tested."
