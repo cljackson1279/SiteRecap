@@ -41,6 +41,8 @@ export default function ProjectDetail() {
   const [showSignatures, setShowSignatures] = useState(false)
   const [showProjectSettings, setShowProjectSettings] = useState(false)
   const [showDebug, setShowDebug] = useState(false)
+  const [closingProject, setClosingProject] = useState(false)
+  const [reopeningProject, setReopeningProject] = useState(false)
 
   useEffect(() => {
     loadProject()
