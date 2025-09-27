@@ -220,10 +220,24 @@ export default function ProjectDetail() {
 
     setClosingProject(true)
     try {
-      // In real app, this would update the database
-      // For demo, just update local state
-      setProject(prev => ({ ...prev, status: 'completed' }))
-      alert('✅ Project closed successfully')
+      const response = await fetch('/api/close-project', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          project_id: params.id
+        })
+      })
+
+      const data = await response.json()
+      
+      if (data.success) {
+        setProject(prev => ({ ...prev, status: 'completed' }))
+        alert('✅ Project closed successfully')
+      } else {
+        alert(`❌ ${data.error || 'Failed to close project'}`)
+      }
     } catch (error) {
       console.error('Error closing project:', error)
       alert('❌ Failed to close project. Please try again.')
