@@ -253,10 +253,25 @@ export default function ProjectDetail() {
 
     setReopeningProject(true)
     try {
-      // In real app, this would check subscription limits and update database
-      // For demo, just update local state
-      setProject(prev => ({ ...prev, status: 'active' }))
-      alert('✅ Project reopened successfully')
+      const response = await fetch('/api/reopen-project', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          project_id: params.id,
+          org_id: 'demo-org' // In real app, get from auth context
+        })
+      })
+
+      const data = await response.json()
+      
+      if (data.success) {
+        setProject(prev => ({ ...prev, status: 'active' }))
+        alert('✅ Project reopened successfully')
+      } else {
+        alert(`❌ ${data.error || 'Failed to reopen project'}`)
+      }
     } catch (error) {
       console.error('Error reopening project:', error)
       alert('❌ Failed to reopen project. Please try again.')
