@@ -101,3 +101,135 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: "Remove AI model details from site and implement project closure functionality with manual close/reopen and 14-day auto-close logic. Update subscription enforcement to only count active projects."
+
+backend:
+  - task: "Add Stripe webhook secret to .env"
+    implemented: false
+    working: "NA"
+    file: "/app/.env"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "User has Stripe webhook in Vercel, need to add STRIPE_WEBHOOK_SECRET to .env file"
+
+  - task: "Add project status column to database"
+    implemented: false
+    working: "NA"
+    file: "/app/database-updates.sql"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Need to add status column (active, completed, archived) with default active"
+
+  - task: "Update subscription enforcement to count only active projects"
+    implemented: false
+    working: "NA"
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Need to modify project count logic to filter only active status projects"
+
+  - task: "Implement 14-day auto-close logic"
+    implemented: false
+    working: "NA"
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Backend logic to auto-close projects after 14 days of inactivity"
+
+frontend:
+  - task: "Remove AI model mentions from pricing page"
+    implemented: false
+    working: "NA"
+    file: "/app/app/pricing/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Remove specific mention of Gemini 2.0 Flash and GPT-4o-mini from pricing page"
+
+  - task: "Add Close Project button to project detail page"
+    implemented: false
+    working: "NA"
+    file: "/app/app/project/[id]/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Add Close Project button that sets status to completed"
+
+  - task: "Add read-only banner for closed projects"
+    implemented: false
+    working: "NA"
+    file: "/app/app/project/[id]/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Show banner when project is closed, disable photo upload and report generation"
+
+  - task: "Add Reopen Project functionality"
+    implemented: false
+    working: "NA"
+    file: "/app/app/project/[id]/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Allow users to reopen closed projects if under subscription limit"
+
+  - task: "Update dashboard to show closed projects separately"
+    implemented: false
+    working: "NA"
+    file: "/app/app/dashboard/page.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Display closed projects in separate section with clear visual indicators"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Add Stripe webhook secret to .env"
+    - "Add project status column to database"
+    - "Remove AI model mentions from pricing page"
+    - "Add Close Project button to project detail page"
+  stuck_tasks: []
+  test_all: false
+  test_priority: "high_first"
+
+agent_communication:
+    - agent: "main"
+      message: "Starting implementation of project closure functionality. Will first update .env with Stripe webhook, add status column to database, remove AI model mentions, then implement close/reopen UI functionality."
