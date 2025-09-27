@@ -63,7 +63,8 @@ export default function ProjectDetail() {
         owner_name: 'John Smith',
         owner_email: 'john.smith@example.com',
         gc_name: 'Mike Johnson', 
-        gc_email: 'mike@contractorco.com'
+        gc_email: 'mike@contractorco.com',
+        status: 'active'
       },
       '2': {
         id: '2', 
@@ -76,7 +77,8 @@ export default function ProjectDetail() {
         owner_name: 'Sarah Johnson',
         owner_email: 'sarah.johnson@example.com',
         gc_name: 'Carlos Martinez',
-        gc_email: 'carlos@renovationpro.com'
+        gc_email: 'carlos@renovationpro.com',
+        status: 'completed'
       }
     }
     setProject(projects[params.id] || projects['1'])
