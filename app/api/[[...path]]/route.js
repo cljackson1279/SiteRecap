@@ -653,7 +653,20 @@ export async function GET(request) {
   switch (path) {
     case '/gemini-health':
       return geminiHealth()
+    case '/project-count':
+      return getProjectCount(request)
+    case '/projects':
+      return getProjects(request)
+    case '/projects/active':
+      return getActiveProjects(request)
+    case '/projects/completed':
+      return getCompletedProjects(request)
     default:
+      // Check if it's a project status request
+      if (path.startsWith('/project-status/')) {
+        const projectId = path.split('/')[2]
+        return getProjectStatus(request, projectId)
+      }
       return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 }
