@@ -45,7 +45,8 @@ export default function Dashboard() {
             owner_name: 'John Smith',
             owner_email: 'john.smith@example.com',
             gc_name: 'Mike Johnson',
-            gc_email: 'mike@contractorco.com'
+            gc_email: 'mike@contractorco.com',
+            status: 'active'
           },
           {
             id: '2', 
@@ -57,7 +58,21 @@ export default function Dashboard() {
             owner_name: 'Sarah Johnson',
             owner_email: 'sarah.johnson@example.com',
             gc_name: 'Carlos Martinez',
-            gc_email: 'carlos@renovationpro.com'
+            gc_email: 'carlos@renovationpro.com',
+            status: 'completed'
+          },
+          {
+            id: '3',
+            name: 'Deck Construction - Miller House',
+            city: 'Houston',
+            state: 'TX', 
+            postal_code: '77001',
+            created_at: new Date().toISOString(),
+            owner_name: 'Robert Miller',
+            owner_email: 'robert.miller@example.com',
+            gc_name: 'Jennifer Davis',
+            gc_email: 'jennifer@construction.com',
+            status: 'active'
           }
         ])
         setLoadingProjects(false)
