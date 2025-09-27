@@ -71,6 +71,16 @@ export default function Dashboard() {
   const createProject = async () => {
     if (!newProjectName.trim()) return
     
+    // Check project limits
+    const currentPlan = organization?.plan || 'starter'
+    const maxProjects = currentPlan === 'starter' ? 2 : currentPlan === 'pro' ? 10 : 25
+    
+    if (projects.length >= maxProjects) {
+      alert(`You've reached your plan limit of ${maxProjects} active projects. Please upgrade your plan to add more projects.`)
+      router.push('/pricing')
+      return
+    }
+    
     try {
       // Simulate creating project
       const newProject = {
