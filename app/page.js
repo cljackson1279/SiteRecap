@@ -54,6 +54,9 @@ export default function HomePage() {
               <Button size="lg" onClick={handleGetStarted}>
                 Get Started
               </Button>
+              <Button size="lg" variant="outline" onClick={() => router.push('/demo')}>
+                Try Demo
+              </Button>
               <Button size="lg" variant="outline" onClick={() => router.push('/pricing')}>
                 View Pricing
               </Button>
