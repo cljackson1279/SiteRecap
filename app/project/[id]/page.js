@@ -315,6 +315,27 @@ export default function ProjectDetail() {
             <FileText className="mr-2 h-4 w-4" />
             View All Reports
           </Button>
+          
+          {project.status === 'active' ? (
+            <Button 
+              variant="outline"
+              onClick={handleCloseProject}
+              disabled={closingProject}
+            >
+              <Lock className="mr-2 h-4 w-4" />
+              {closingProject ? 'Closing...' : 'Close Project'}
+            </Button>
+          ) : (
+            <Button 
+              variant="outline"
+              onClick={handleReopenProject}
+              disabled={reopeningProject}
+            >
+              <Unlock className="mr-2 h-4 w-4" />
+              {reopeningProject ? 'Reopening...' : 'Reopen Project'}
+            </Button>
+          )}
+          
           <Button 
             variant="outline"
             size="icon"
