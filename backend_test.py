@@ -67,29 +67,58 @@ def test_project_closure_endpoints():
     # Test close project endpoint
     print("Testing /api/close-project endpoint...")
     response = test_api_endpoint('/close-project', 'POST', {
-        'project_id': '1',
-        'user_id': 'test-user'
-    }, 404)  # Expected to be missing
+        'project_id': '1'
+    }, 200)  # Should work in demo mode
     
-    if response and response.status_code == 404:
-        print("  ❌ /api/close-project endpoint not implemented")
+    if response and response.status_code == 200:
+        try:
+            data = response.json()
+            if data.get('success'):
+                print("  ✅ /api/close-project endpoint working correctly")
+                print(f"     Response: {data.get('message', 'No message')}")
+            else:
+                print("  ⚠️  Endpoint responded but success=false")
+        except:
+            print("  ⚠️  Invalid JSON response")
+    else:
+        print("  ❌ /api/close-project endpoint failed")
     
     # Test reopen project endpoint
     print("Testing /api/reopen-project endpoint...")
     response = test_api_endpoint('/reopen-project', 'POST', {
-        'project_id': '1',
-        'user_id': 'test-user'
-    }, 404)  # Expected to be missing
+        'project_id': '2',
+        'org_id': 'demo-org'
+    }, 200)  # Should work in demo mode
     
-    if response and response.status_code == 404:
-        print("  ❌ /api/reopen-project endpoint not implemented")
+    if response and response.status_code == 200:
+        try:
+            data = response.json()
+            if data.get('success'):
+                print("  ✅ /api/reopen-project endpoint working correctly")
+                print(f"     Response: {data.get('message', 'No message')}")
+            else:
+                print("  ⚠️  Endpoint responded but success=false")
+        except:
+            print("  ⚠️  Invalid JSON response")
+    else:
+        print("  ❌ /api/reopen-project endpoint failed")
     
     # Test project status endpoint
-    print("Testing /api/project-status endpoint...")
-    response = test_api_endpoint('/project-status/1', 'GET', None, 404)  # Expected to be missing
+    print("Testing /api/project-status/1 endpoint...")
+    response = test_api_endpoint('/project-status/1', 'GET', None, 200)  # Should work in demo mode
     
-    if response and response.status_code == 404:
-        print("  ❌ /api/project-status endpoint not implemented")
+    if response and response.status_code == 200:
+        try:
+            data = response.json()
+            if data.get('success'):
+                print("  ✅ /api/project-status endpoint working correctly")
+                print(f"     Project ID: {data.get('project_id')}, Status: {data.get('status')}")
+            else:
+                print("  ⚠️  Endpoint responded but success=false")
+        except:
+            print("  ⚠️  Invalid JSON response")
+    else:
+        print("  ❌ /api/project-status endpoint failed")
 
 def test_subscription_enforcement():
     """Test subscription enforcement logic"""
