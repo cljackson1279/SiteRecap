@@ -106,8 +106,8 @@ user_problem_statement: "Remove AI model details from site and implement project
 
 backend:
   - task: "Add Stripe webhook secret to .env"
-    implemented: false
-    working: "NA"
+    implemented: true
+    working: true
     file: "/app/.env"
     stuck_count: 0
     priority: "high"
@@ -116,10 +116,13 @@ backend:
         - working: "NA"
           agent: "main"
           comment: "User has Stripe webhook in Vercel, need to add STRIPE_WEBHOOK_SECRET to .env file"
+        - working: true
+          agent: "testing"
+          comment: "✅ STRIPE_WEBHOOK_SECRET found in .env file at line 20"
 
   - task: "Add project status column to database"
-    implemented: false
-    working: "NA"
+    implemented: true
+    working: true
     file: "/app/database-updates.sql"
     stuck_count: 0
     priority: "high"
@@ -128,30 +131,51 @@ backend:
         - working: "NA"
           agent: "main"
           comment: "Need to add status column (active, completed, archived) with default active"
+        - working: true
+          agent: "testing"
+          comment: "✅ Database schema updated with status column, indexes, and last_activity_date in database-updates.sql"
 
-  - task: "Update subscription enforcement to count only active projects"
+  - task: "Implement project close/reopen API endpoints"
     implemented: false
-    working: "NA"
+    working: false
     file: "/app/app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: false
+    needs_retesting: true
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "❌ Missing /api/close-project and /api/reopen-project endpoints in API routes"
+
+  - task: "Update subscription enforcement to count only active projects"
+    implemented: false
+    working: false
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Need to modify project count logic to filter only active status projects"
+        - working: false
+          agent: "testing"
+          comment: "❌ No backend subscription enforcement logic found in API routes"
 
   - task: "Implement 14-day auto-close logic"
     implemented: false
-    working: "NA"
+    working: false
     file: "/app/app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: false
+    needs_retesting: true
     status_history:
         - working: "NA"
           agent: "main"
           comment: "Backend logic to auto-close projects after 14 days of inactivity"
+        - working: false
+          agent: "testing"
+          comment: "❌ No auto-close logic found in API routes"
 
 frontend:
   - task: "Remove AI model mentions from pricing page"
