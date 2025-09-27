@@ -150,7 +150,7 @@ export default function Pricing() {
             </button>
           </div>
           <p className="text-sm text-muted-foreground mt-2">
-            All plans include 14-day free trial • No setup fees • Cancel anytime
+            No setup fees • Cancel anytime
           </p>
         </div>
 
