@@ -293,10 +293,7 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus:
-    - "Implement project close/reopen API endpoints"
-    - "Update subscription enforcement to count only active projects"
-    - "Implement 14-day auto-close logic"
+  current_focus: []
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
