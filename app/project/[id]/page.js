@@ -448,12 +448,12 @@ export default function ProjectDetail() {
           {/* Generate Report Button */}
           <Button
             onClick={generateReport}
-            disabled={generating || photos.length === 0}
+            disabled={generating || photos.length === 0 || project.status !== 'active'}
             className="w-full h-12"
             size="lg"
           >
             <Zap className="mr-2 h-5 w-5" />
-            {generating ? 'Generating Report...' : 'Generate AI Report'}
+            {project.status !== 'active' ? 'Project Closed' : (generating ? 'Generating Report...' : 'Generate AI Report')}
           </Button>
         </div>
 
