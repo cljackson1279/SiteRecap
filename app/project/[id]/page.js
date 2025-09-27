@@ -413,9 +413,9 @@ export default function ProjectDetail() {
                   />
                   <Button
                     onClick={() => document.getElementById('photo-upload').click()}
-                    disabled={uploading}
+                    disabled={uploading || project.status !== 'active'}
                   >
-                    {uploading ? 'Uploading...' : 'Choose Photos'}
+                    {project.status !== 'active' ? 'Project Closed' : (uploading ? 'Uploading...' : 'Choose Photos')}
                   </Button>
                 </div>
               </div>
