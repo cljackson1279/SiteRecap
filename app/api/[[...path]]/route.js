@@ -645,6 +645,527 @@ async function geminiHealth() {
   }
 }
 
+// Project status management functions
+async function closeProject(request) {
+  try {
+    const { project_id } = await getRequestBody(request)
+    
+    if (!project_id) {
+      return NextResponse.json({ error: 'Project ID is required' }, { status: 400 })
+    }
+
+    // In demo mode, just return success
+    if (process.env.NODE_ENV === 'development') {
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Project closed successfully (demo mode)',
+        project_id 
+      })
+    }
+
+    // Update project status in database
+    const { data, error } = await supabaseAdmin
+      .from('projects')
+      .update({ 
+        status: 'completed',
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', project_id)
+      .select()
+
+    if (error) throw error
+
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Project closed successfully',
+      data: data[0]
+    })
+
+  } catch (error) {
+    console.error('Close project error:', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+async function reopenProject(request) {
+  try {
+    const { project_id, org_id } = await getRequestBody(request)
+    
+    if (!project_id) {
+      return NextResponse.json({ error: 'Project ID is required' }, { status: 400 })
+    }
+
+    // In demo mode, just return success
+    if (process.env.NODE_ENV === 'development') {
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Project reopened successfully (demo mode)',
+        project_id 
+      })
+    }
+
+    // Check subscription limits (count active projects)
+    if (org_id) {
+      const { data: activeProjects } = await supabaseAdmin
+        .from('projects')
+        .select('id')
+        .eq('org_id', org_id)
+        .eq('status', 'active')
+
+      const { data: org } = await supabaseAdmin
+        .from('organizations')
+        .select('plan')
+        .eq('id', org_id)
+        .single()
+
+      const plan = org?.plan || 'starter'
+      const maxProjects = plan === 'starter' ? 2 : plan === 'pro' ? 10 : 25
+
+      if (activeProjects && activeProjects.length >= maxProjects) {
+        return NextResponse.json({ 
+          error: `You've reached your plan limit of ${maxProjects} active projects. Please upgrade your plan or close other projects.` 
+        }, { status: 403 })
+      }
+    }
+
+    // Update project status in database
+    const { data, error } = await supabaseAdmin
+      .from('projects')
+      .update({ 
+        status: 'active',
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', project_id)
+      .select()
+
+    if (error) throw error
+
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Project reopened successfully',
+      data: data[0]
+    })
+
+  } catch (error) {
+    console.error('Reopen project error:', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+async function createProject(request) {
+  try {
+    const body = await getRequestBody(request)
+    const { name, city, state, postal_code, org_id, owner_name, owner_email, gc_name, gc_email } = body
+    
+    if (!name || !org_id) {
+      return NextResponse.json({ error: 'Project name and organization ID are required' }, { status: 400 })
+    }
+
+    // In demo mode, just return mock data
+    if (process.env.NODE_ENV === 'development') {
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Project created successfully (demo mode)',
+        data: {
+          id: Math.random().toString(36).substring(7),
+          name,
+          status: 'active',
+          created_at: new Date().toISOString()
+        }
+      })
+    }
+
+    // Check subscription limits
+    const { data: activeProjects } = await supabaseAdmin
+      .from('projects')
+      .select('id')
+      .eq('org_id', org_id)
+      .eq('status', 'active')
+
+    const { data: org } = await supabaseAdmin
+      .from('organizations')
+      .select('plan')
+      .eq('id', org_id)
+      .single()
+
+    const plan = org?.plan || 'starter'
+    const maxProjects = plan === 'starter' ? 2 : plan === 'pro' ? 10 : 25
+
+    if (activeProjects && activeProjects.length >= maxProjects) {
+      return NextResponse.json({ 
+        error: `You've reached your plan limit of ${maxProjects} active projects. Please upgrade your plan or close some projects.` 
+      }, { status: 403 })
+    }
+
+    // Create project in database
+    const { data, error } = await supabaseAdmin
+      .from('projects')
+      .insert({
+        name,
+        city,
+        state,
+        postal_code,
+        org_id,
+        owner_name,
+        owner_email,
+        gc_name,
+        gc_email,
+        status: 'active',
+        last_activity_date: new Date().toISOString()
+      })
+      .select()
+      .single()
+
+    if (error) throw error
+
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Project created successfully',
+      data
+    })
+
+  } catch (error) {
+    console.error('Create project error:', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+async function getProjectCount(request) {
+  try {
+    const url = new URL(request.url)
+    const org_id = url.searchParams.get('org_id')
+    const status = url.searchParams.get('status') || 'active'
+
+    if (!org_id) {
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
+    }
+
+    // In demo mode, return mock counts
+    if (process.env.NODE_ENV === 'development') {
+      return NextResponse.json({ 
+        success: true,
+        count: status === 'active' ? 2 : 1,
+        status
+      })
+    }
+
+    const { count, error } = await supabaseAdmin
+      .from('projects')
+      .select('*', { count: 'exact', head: true })
+      .eq('org_id', org_id)
+      .eq('status', status)
+
+    if (error) throw error
+
+    return NextResponse.json({ 
+      success: true,
+      count: count || 0,
+      status
+    })
+
+  } catch (error) {
+    console.error('Get project count error:', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+async function getProjects(request) {
+  try {
+    const url = new URL(request.url)
+    const org_id = url.searchParams.get('org_id')
+
+    if (!org_id) {
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
+    }
+
+    // In demo mode, return mock projects
+    if (process.env.NODE_ENV === 'development') {
+      return NextResponse.json({ 
+        success: true,
+        data: [
+          {
+            id: '1',
+            name: 'Kitchen Remodel - Smith Residence',
+            status: 'active',
+            city: 'Austin',
+            state: 'TX',
+            created_at: new Date().toISOString()
+          },
+          {
+            id: '2',
+            name: 'Bathroom Renovation - Johnson Home',
+            status: 'completed',
+            city: 'Dallas',
+            state: 'TX',
+            created_at: new Date().toISOString()
+          }
+        ]
+      })
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('projects')
+      .select('*')
+      .eq('org_id', org_id)
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+
+    return NextResponse.json({ 
+      success: true,
+      data: data || []
+    })
+
+  } catch (error) {
+    console.error('Get projects error:', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+async function getActiveProjects(request) {
+  try {
+    const url = new URL(request.url)
+    const org_id = url.searchParams.get('org_id')
+
+    if (!org_id) {
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
+    }
+
+    // In demo mode, return mock active projects
+    if (process.env.NODE_ENV === 'development') {
+      return NextResponse.json({ 
+        success: true,
+        data: [
+          {
+            id: '1',
+            name: 'Kitchen Remodel - Smith Residence',
+            status: 'active',
+            city: 'Austin',
+            state: 'TX',
+            created_at: new Date().toISOString()
+          }
+        ]
+      })
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('projects')
+      .select('*')
+      .eq('org_id', org_id)
+      .eq('status', 'active')
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+
+    return NextResponse.json({ 
+      success: true,
+      data: data || []
+    })
+
+  } catch (error) {
+    console.error('Get active projects error:', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+async function getCompletedProjects(request) {
+  try {
+    const url = new URL(request.url)
+    const org_id = url.searchParams.get('org_id')
+
+    if (!org_id) {
+      return NextResponse.json({ error: 'Organization ID is required' }, { status: 400 })
+    }
+
+    // In demo mode, return mock completed projects
+    if (process.env.NODE_ENV === 'development') {
+      return NextResponse.json({ 
+        success: true,
+        data: [
+          {
+            id: '2',
+            name: 'Bathroom Renovation - Johnson Home',
+            status: 'completed',
+            city: 'Dallas',
+            state: 'TX',
+            created_at: new Date().toISOString()
+          }
+        ]
+      })
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('projects')
+      .select('*')
+      .eq('org_id', org_id)
+      .in('status', ['completed', 'archived'])
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+
+    return NextResponse.json({ 
+      success: true,
+      data: data || []
+    })
+
+  } catch (error) {
+    console.error('Get completed projects error:', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+async function getProjectStatus(request, projectId) {
+  try {
+    if (!projectId) {
+      return NextResponse.json({ error: 'Project ID is required' }, { status: 400 })
+    }
+
+    // In demo mode, return mock status
+    if (process.env.NODE_ENV === 'development') {
+      return NextResponse.json({ 
+        success: true,
+        project_id: projectId,
+        status: projectId === '1' ? 'active' : 'completed'
+      })
+    }
+
+    const { data, error } = await supabaseAdmin
+      .from('projects')
+      .select('id, status, last_activity_date')
+      .eq('id', projectId)
+      .single()
+
+    if (error) throw error
+
+    return NextResponse.json({ 
+      success: true,
+      data
+    })
+
+  } catch (error) {
+    console.error('Get project status error:', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+async function updateProjectActivity(request) {
+  try {
+    const { project_id } = await getRequestBody(request)
+    
+    if (!project_id) {
+      return NextResponse.json({ error: 'Project ID is required' }, { status: 400 })
+    }
+
+    // In demo mode, just return success
+    if (process.env.NODE_ENV === 'development') {
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Project activity updated (demo mode)',
+        project_id 
+      })
+    }
+
+    // Update last activity date
+    const { data, error } = await supabaseAdmin
+      .from('projects')
+      .update({ 
+        last_activity_date: new Date().toISOString()
+      })
+      .eq('id', project_id)
+      .select()
+
+    if (error) throw error
+
+    return NextResponse.json({ 
+      success: true, 
+      message: 'Project activity updated',
+      data: data[0]
+    })
+
+  } catch (error) {
+    console.error('Update project activity error:', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
+async function autoCloseProjects(request) {
+  try {
+    // In demo mode, just return success
+    if (process.env.NODE_ENV === 'development') {
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Auto-close projects completed (demo mode)',
+        closed_count: 0
+      })
+    }
+
+    // Find projects inactive for 14+ days
+    const fourteenDaysAgo = new Date()
+    fourteenDaysAgo.setDate(fourteenDaysAgo.getDate() - 14)
+
+    const { data: inactiveProjects, error: selectError } = await supabaseAdmin
+      .from('projects')
+      .select('id, name, org_id, owner_email, gc_email')
+      .eq('status', 'active')
+      .lt('last_activity_date', fourteenDaysAgo.toISOString())
+
+    if (selectError) throw selectError
+
+    if (!inactiveProjects || inactiveProjects.length === 0) {
+      return NextResponse.json({ 
+        success: true, 
+        message: 'No projects found for auto-close',
+        closed_count: 0
+      })
+    }
+
+    // Close inactive projects
+    const projectIds = inactiveProjects.map(p => p.id)
+    const { data, error } = await supabaseAdmin
+      .from('projects')
+      .update({ 
+        status: 'completed',
+        updated_at: new Date().toISOString()
+      })
+      .in('id', projectIds)
+      .select()
+
+    if (error) throw error
+
+    // Send notification emails (optional)
+    for (const project of inactiveProjects) {
+      if (project.owner_email && process.env.RESEND_API_KEY) {
+        try {
+          await resend.emails.send({
+            from: process.env.EMAIL_FROM || 'support@siterecap.com',
+            to: [project.owner_email],
+            subject: `Project "${project.name}" marked as completed due to inactivity`,
+            html: `
+              <p>Hello,</p>
+              <p>Your project "${project.name}" has been marked as completed due to inactivity (no new reports generated for 14 days).</p>
+              <p>You can reopen it at any time from your dashboard.</p>
+              <p>Best regards,<br>SiteRecap Team</p>
+            `
+          })
+        } catch (emailError) {
+          console.error('Email notification error:', emailError)
+        }
+      }
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      message: `Auto-closed ${data.length} inactive projects`,
+      closed_count: data.length,
+      closed_projects: data
+    })
+
+  } catch (error) {
+    console.error('Auto-close projects error:', error)
+    return NextResponse.json({ error: error.message }, { status: 500 })
+  }
+}
+
 // Main route handler
 export async function GET(request) {
   const url = new URL(request.url)
