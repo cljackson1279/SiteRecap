@@ -1,4 +1,5 @@
 import './globals.css'
+import { AuthProvider } from '@/lib/auth-context'
 
 export const metadata = {
   title: 'SiteRecap',
@@ -29,7 +30,9 @@ export default function RootLayout({ children }) {
         <meta name="theme-color" content="#168995" />
       </head>
       <body className="antialiased bg-background text-foreground">
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   )
