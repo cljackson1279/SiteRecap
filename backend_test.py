@@ -176,19 +176,40 @@ def test_auto_close_logic():
     
     # Test auto-close endpoint
     print("Testing /api/auto-close-projects endpoint...")
-    response = test_api_endpoint('/auto-close-projects', 'POST', {}, 404)  # Expected to be missing
+    response = test_api_endpoint('/auto-close-projects', 'POST', {}, 200)  # Should work in demo mode
     
-    if response and response.status_code == 404:
-        print("  ❌ /api/auto-close-projects endpoint not implemented")
+    if response and response.status_code == 200:
+        try:
+            data = response.json()
+            if data.get('success'):
+                print("  ✅ /api/auto-close-projects endpoint working correctly")
+                print(f"     Response: {data.get('message', 'No message')}")
+                print(f"     Closed count: {data.get('closed_count', 0)}")
+            else:
+                print("  ⚠️  Endpoint responded but success=false")
+        except:
+            print("  ⚠️  Invalid JSON response")
+    else:
+        print("  ❌ /api/auto-close-projects endpoint failed")
     
     # Test project activity update
     print("Testing /api/update-project-activity endpoint...")
     response = test_api_endpoint('/update-project-activity', 'POST', {
         'project_id': '1'
-    }, 404)  # Expected to be missing
+    }, 200)  # Should work in demo mode
     
-    if response and response.status_code == 404:
-        print("  ❌ /api/update-project-activity endpoint not implemented")
+    if response and response.status_code == 200:
+        try:
+            data = response.json()
+            if data.get('success'):
+                print("  ✅ /api/update-project-activity endpoint working correctly")
+                print(f"     Response: {data.get('message', 'No message')}")
+            else:
+                print("  ⚠️  Endpoint responded but success=false")
+        except:
+            print("  ⚠️  Invalid JSON response")
+    else:
+        print("  ❌ /api/update-project-activity endpoint failed")
 
 def test_environment_configuration():
     """Test environment configuration"""
