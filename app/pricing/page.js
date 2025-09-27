@@ -216,11 +216,11 @@ export default function Pricing() {
                   className={`w-full ${plan.popular ? '' : 'variant-outline'}`}
                   onClick={() => handlePlanSelect(plan)}
                 >
-                  Start Free Trial
+                  Get Started
                 </Button>
 
                 <p className="text-xs text-muted-foreground text-center">
-                  14-day free trial • No credit card required
+                  Cancel anytime • No setup fees
                 </p>
               </CardContent>
             </Card>
