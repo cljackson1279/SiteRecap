@@ -111,7 +111,7 @@ export default function Login() {
             </CardTitle>
             <p className="text-sm text-muted-foreground text-center">
               {isSignUp 
-                ? 'Start your 14-day free trial' 
+                ? 'Create your account to get started' 
                 : 'Access your construction reports'
               }
             </p>
