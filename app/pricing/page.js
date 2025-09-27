@@ -32,8 +32,7 @@ export default function Pricing() {
         'Mobile-friendly interface',
         'Email support'
       ],
-      stripeLinkMonthly: 'https://buy.stripe.com/test_starter_monthly',
-      stripeLinkAnnual: 'https://buy.stripe.com/test_starter_annual',
+      stripeLinkMonthly: 'https://buy.stripe.com/4gMcN54WHeV2e2HfoHeZ205',
       popular: false
     },
     {
