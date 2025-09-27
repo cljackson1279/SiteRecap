@@ -246,10 +246,10 @@ export default function Pricing() {
               </p>
             </div>
             <div>
-              <h3 className="font-semibold mb-2">How does the free trial work?</h3>
+              <h3 className="font-semibold mb-2">How does billing work?</h3>
               <p className="text-sm text-muted-foreground">
-                Get full access to all features for 14 days. No credit card required to start. 
-                Cancel anytime during the trial period.
+                We offer three subscription tiers billed monthly through Stripe. 
+                Upgrade or downgrade at any time.
               </p>
             </div>
             <div>
