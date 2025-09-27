@@ -151,12 +151,12 @@ backend:
           comment: "✅ COMPREHENSIVE TESTING COMPLETED: Both /api/close-project and /api/reopen-project endpoints are fully implemented and working correctly. Demo mode returns proper success responses with appropriate messages. Error handling works correctly for missing project_id parameter (returns 400 status). Subscription enforcement logic is implemented in reopen endpoint."
 
   - task: "Update subscription enforcement to count only active projects"
-    implemented: false
-    working: false
+    implemented: true
+    working: true
     file: "/app/app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: "NA"
           agent: "main"
@@ -164,6 +164,9 @@ backend:
         - working: false
           agent: "testing"
           comment: "❌ No backend subscription enforcement logic found in API routes"
+        - working: true
+          agent: "testing"
+          comment: "✅ SUBSCRIPTION ENFORCEMENT IMPLEMENTED: /api/project-count endpoint working correctly with status filtering (active: 2, completed: 1, archived: 1). /api/create-project and /api/reopen-project both include subscription limit checks that count only active projects. Plan limits properly enforced (starter: 2, pro: 10, enterprise: 25). Error handling returns 403 status when limits exceeded."
 
   - task: "Implement 14-day auto-close logic"
     implemented: false
