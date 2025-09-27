@@ -136,16 +136,19 @@ backend:
           comment: "✅ Database schema updated with status column, indexes, and last_activity_date in database-updates.sql"
 
   - task: "Implement project close/reopen API endpoints"
-    implemented: false
-    working: false
+    implemented: true
+    working: true
     file: "/app/app/api/[[...path]]/route.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
         - working: false
           agent: "testing"
           comment: "❌ Missing /api/close-project and /api/reopen-project endpoints in API routes"
+        - working: true
+          agent: "testing"
+          comment: "✅ COMPREHENSIVE TESTING COMPLETED: Both /api/close-project and /api/reopen-project endpoints are fully implemented and working correctly. Demo mode returns proper success responses with appropriate messages. Error handling works correctly for missing project_id parameter (returns 400 status). Subscription enforcement logic is implemented in reopen endpoint."
 
   - task: "Update subscription enforcement to count only active projects"
     implemented: false
