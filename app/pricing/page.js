@@ -85,8 +85,7 @@ export default function Pricing() {
         'API access',
         'Dedicated account manager'
       ],
-      stripeLinkMonthly: 'https://buy.stripe.com/test_business_monthly',
-      stripeLinkAnnual: 'https://buy.stripe.com/test_business_annual',
+      stripeLinkMonthly: 'https://buy.stripe.com/eVqdR988T8wEaQvb8reZ207',
       popular: false
     }
   ]
