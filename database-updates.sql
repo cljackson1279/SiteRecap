@@ -16,5 +16,16 @@ CREATE INDEX IF NOT EXISTS projects_org_name_idx ON projects(org_id, name);
 CREATE INDEX IF NOT EXISTS projects_owner_email_idx ON projects(owner_email) WHERE owner_email IS NOT NULL;
 CREATE INDEX IF NOT EXISTS projects_gc_email_idx ON projects(gc_email) WHERE gc_email IS NOT NULL;
 
+-- Add project status column for closure functionality
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS status TEXT DEFAULT 'active' 
+  CHECK (status IN ('active', 'completed', 'archived'));
+
+-- Add index for project status filtering
+CREATE INDEX IF NOT EXISTS projects_status_idx ON projects(status);
+CREATE INDEX IF NOT EXISTS projects_org_status_idx ON projects(org_id, status);
+
+-- Add last_activity_date to track inactivity for auto-close
+ALTER TABLE projects ADD COLUMN IF NOT EXISTS last_activity_date TIMESTAMP WITH TIME ZONE DEFAULT NOW();
+
 -- Update RLS policies to handle new fields
 -- (The existing RLS policies should already cover these new columns)
