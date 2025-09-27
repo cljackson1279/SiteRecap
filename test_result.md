@@ -186,6 +186,30 @@ backend:
           agent: "testing"
           comment: "✅ AUTO-CLOSE LOGIC IMPLEMENTED: /api/auto-close-projects endpoint working correctly. Logic finds projects inactive for 14+ days and sets status to 'completed'. /api/update-project-activity endpoint updates last_activity_date field. Email notifications included for project owners. Demo mode returns appropriate mock responses. All error handling in place."
 
+  - task: "Implement project listing and status endpoints"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PROJECT LISTING ENDPOINTS IMPLEMENTED: /api/projects?org_id=demo-org returns all projects (2 total), /api/projects/active?org_id=demo-org returns active projects (1 active), /api/projects/completed?org_id=demo-org returns completed projects (1 completed). /api/project-status/{id} endpoint working for individual project status lookup. All endpoints include proper error handling for missing org_id parameter."
+
+  - task: "Implement project creation with subscription limits"
+    implemented: true
+    working: true
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "testing"
+          comment: "✅ PROJECT CREATION ENDPOINT IMPLEMENTED: /api/create-project endpoint working correctly with full subscription enforcement. Validates required fields (name, org_id), checks active project limits based on plan (starter: 2, pro: 10, enterprise: 25), returns 403 when limits exceeded. Demo mode returns mock project data with generated ID. Includes all project fields: city, state, postal_code, owner/GC contact info."
+
 frontend:
   - task: "Remove AI model mentions from pricing page"
     implemented: false
