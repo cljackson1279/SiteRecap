@@ -1,33 +1,18 @@
 #!/usr/bin/env python3
 """
 Backend Test Suite for SiteRecap Email Confirmation Flow
-Tests email confirmation URLs and authentication flow after Supabase configuration updates
+Tests the complete signup and email confirmation flow after Vercel and Supabase configuration updates
 """
 
 import requests
 import json
-import os
 import sys
+import os
 from urllib.parse import urlparse, parse_qs
 
 # Get base URL from environment
-def get_base_url():
-    try:
-        with open('/app/.env', 'r') as f:
-            for line in f:
-                if line.startswith('NEXT_PUBLIC_BASE_URL='):
-                    return line.split('=', 1)[1].strip()
-    except:
-        pass
-    return 'https://dailysitereport.preview.emergentagent.com'
-
-BASE_URL = get_base_url()
+BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://siterecap.com')
 API_BASE = f"{BASE_URL}/api"
-
-print(f"🧪 TESTING EMAIL CONFIRMATION FLOW")
-print(f"📍 Base URL: {BASE_URL}")
-print(f"📍 API Base: {API_BASE}")
-print("=" * 80)
 
 def test_send_confirmation_endpoint():
     """Test POST /api/send-confirmation - Verify confirmation emails use correct URLs"""
