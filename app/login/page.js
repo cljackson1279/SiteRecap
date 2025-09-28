@@ -105,20 +105,6 @@ export default function Login() {
 
         if (data.user) {
           if (!data.user.email_confirmed_at) {
-            // Try to send a custom confirmation email as backup
-            try {
-              await fetch('/api/send-confirmation', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                  email: email.trim(),
-                  confirmationUrl: `https://siterecap.com/auth/callback?code=${data.user.id}`
-                })
-              })
-            } catch (emailError) {
-              console.log('Custom email send failed:', emailError)
-            }
-            
             setMessage('Almost there! Check your email and click the confirmation link to complete signup. The email should arrive within a few minutes.')
           } else {
             setMessage('Account created successfully! Redirecting...')
