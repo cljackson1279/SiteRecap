@@ -518,4 +518,5 @@ def run_comprehensive_test():
         return False
 
 if __name__ == "__main__":
-    sys.exit(main())
+    success = run_comprehensive_test()
+    sys.exit(0 if success else 1)
