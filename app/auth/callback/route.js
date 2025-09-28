@@ -30,13 +30,9 @@ export async function GET(request) {
       }
 
       if (data?.session && data?.user) {
-        // Successfully confirmed and session created
-        console.log('Email confirmation successful, redirecting to dashboard')
-        
-        // Instead of setting cookies, redirect to a client-side handler that will manage the session
+        // Successfully confirmed - redirect to client-side handler for session management
         return NextResponse.redirect(`${baseUrl}/auth/success?access_token=${data.session.access_token}&refresh_token=${data.session.refresh_token}&expires_in=${data.session.expires_in}`)
       } else {
-        console.log('Email confirmation failed: no session or user data')
         return NextResponse.redirect(`${baseUrl}/login?message=Email confirmed but session creation failed. Please log in manually.&type=error`)
       }
     } catch (error) {
@@ -59,13 +55,9 @@ export async function GET(request) {
       }
 
       if (data?.session && data?.user) {
-        // Successfully confirmed and session created
-        console.log('Email confirmation successful, redirecting to dashboard')
-        
-        // Instead of setting cookies, redirect to a client-side handler that will manage the session
+        // Successfully confirmed - redirect to client-side handler for session management
         return NextResponse.redirect(`${baseUrl}/auth/success?access_token=${data.session.access_token}&refresh_token=${data.session.refresh_token}&expires_in=${data.session.expires_in}`)
       } else {
-        console.log('Email confirmation failed: no session or user data')
         return NextResponse.redirect(`${baseUrl}/login?message=Email confirmed but session creation failed. Please log in manually.&type=error`)
       }
     } catch (error) {
