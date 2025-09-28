@@ -1227,7 +1227,7 @@ export async function GET(request) {
   const path = url.pathname.replace('/api', '')
   
   switch (path) {
-        case '/debug-urls':
+    case '/debug-urls':
       return debugUrls()
     case '/gemini-health':
       return geminiHealth()
