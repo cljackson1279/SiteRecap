@@ -279,7 +279,7 @@ def test_markdown_generation_quality():
     print("\n📝 Testing Markdown Generation Quality...")
     
     test_data = {
-        "project_id": "markdown-test-project",
+        "project_id": "550e8400-e29b-41d4-a716-446655440003",
         "date": "2024-01-15"
     }
     
