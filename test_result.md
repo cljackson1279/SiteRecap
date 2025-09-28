@@ -438,10 +438,13 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Test Stage A Photo Analysis with enhanced construction expert prompt"
-    - "Test Stage B Report Generation with construction expertise"
-    - "Test Owner vs GC Report Markdown Generation"
-    - "Test enhanced AI pipeline confidence scoring system"
+    - "Test POST /api/send-confirmation endpoint"
+    - "Test POST /api/resend-confirmation endpoint"
+    - "Test GET /api/auth/callback endpoint"
+    - "Test email configuration (RESEND_API_KEY and EMAIL_FROM)"
+    - "Test Supabase authentication configuration"
+    - "Test authentication flow (signup with email confirmation)"
+    - "Test signin with password and magic links"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
