@@ -105,6 +105,90 @@
 user_problem_statement: "Test the newly implemented authentication and email confirmation system for SiteRecap including custom confirmation email sending, resend functionality, callback handling, and Supabase integration."
 
 backend:
+  - task: "Test POST /api/send-confirmation endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/app/api/send-confirmation/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Custom confirmation email sending endpoint needs testing with Resend API integration"
+
+  - task: "Test POST /api/resend-confirmation endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/app/api/resend-confirmation/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Resend confirmation functionality needs testing with Supabase admin API"
+
+  - task: "Test GET /api/auth/callback endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/app/auth/callback/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Email confirmation callback handling needs testing for code exchange and token verification"
+
+  - task: "Test email configuration (RESEND_API_KEY and EMAIL_FROM)"
+    implemented: true
+    working: "NA"
+    file: "/app/.env"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Verify RESEND_API_KEY is loaded and EMAIL_FROM is set to support@siterecap.com"
+
+  - task: "Test Supabase authentication configuration"
+    implemented: true
+    working: "NA"
+    file: "/app/lib/supabase.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Verify Supabase client configuration with environment variables"
+
+  - task: "Test authentication flow (signup with email confirmation)"
+    implemented: true
+    working: "NA"
+    file: "/app/app/login/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Test complete signup flow with email confirmation and redirect to dashboard"
+
+  - task: "Test signin with password and magic links"
+    implemented: true
+    working: "NA"
+    file: "/app/app/login/page.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Test signin with password fallback to magic link functionality"
+
   - task: "Add Stripe webhook secret to .env"
     implemented: true
     working: true
