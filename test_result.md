@@ -384,6 +384,18 @@ backend:
           agent: "testing"
           comment: "✅ CONFIDENCE SCORING SYSTEM VERIFIED: Enhanced AI pipeline confidence scoring system (1-10 scale) implemented in code structure. Confidence_score field present in Stage A photo analysis JSON structure. System designed for construction phase identification accuracy, material recognition precision, and professional trade-specific language validation. Confidence_notes field included for explanations when confidence is below 7. Professional construction expertise integrated throughout scoring methodology."
 
+  - task: "Fix NEXT_PUBLIC_BASE_URL for production email confirmation URLs"
+    implemented: false
+    working: false
+    file: "/app/.env"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "❌ URL CONFIGURATION ISSUE IDENTIFIED: NEXT_PUBLIC_BASE_URL is set to preview domain (https://dailysitereport.preview.emergentagent.com) instead of production domain (https://siterecap.com). This causes resend-confirmation emails to generate wrong callback URLs. Supabase auth works correctly due to hardcoded siterecap.com URLs in login page, but custom confirmation emails will redirect to preview domain."
+
 frontend:
   - task: "Remove AI model mentions from pricing page"
     implemented: false
