@@ -341,7 +341,11 @@ metadata:
   run_ui: false
 
 test_plan:
-  current_focus: []
+  current_focus:
+    - "Test Stage A Photo Analysis with enhanced construction expert prompt"
+    - "Test Stage B Report Generation with construction expertise"
+    - "Test Owner vs GC Report Markdown Generation"
+    - "Test enhanced AI pipeline confidence scoring system"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
