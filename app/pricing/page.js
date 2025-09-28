@@ -151,7 +151,7 @@ export default function Pricing() {
           </p>
           <div className="inline-flex items-center gap-2 bg-green-50 text-green-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
             <span className="text-green-600">✨</span>
-            7-day free trial included with all plans - no charges until day 8!
+            7-day free trial for new customers
           </div>
           <p className="text-sm text-muted-foreground">
             No setup fees • Cancel anytime
