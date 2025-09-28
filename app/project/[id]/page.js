@@ -132,18 +132,61 @@ export default function ProjectDetail() {
     setGenerating(true)
     
     try {
-      // Simulate enhanced report with new sections
-      setReport({
-        owner_markdown: `# Daily Update - ${project?.name}\n**${selectedDate}** • 🌤️ 76°F Partly cloudy\n\n## Today's Progress\nWork observed in Kitchen area with cabinet installation in progress.\n\n## Work Completed\n• Base cabinets installed on south wall (85%)\n• Electrical rough-in completed (92%)\n• Plumbing connections verified (88%)\n\n## Crew on Site\n• 4 workers present\n\n## Deliveries\n• Material delivery - completed\n\n## Safety\n• Site safety compliance: good\n\n## What's Next\n• Continue upper cabinet installation\n• Schedule countertop template\n• Coordinate tile delivery`,
-        gc_markdown: `# GC Daily Report - ${project?.name}\n**${selectedDate}** • 🌤️ 76°F Partly cloudy\n\n## Manpower\n• Total crew: 4 workers\n• Notes: Full crew present for cabinet installation\n\n## Equipment on Site\n• Circular saw - power_tool (Photos: 1, 2)\n• Drill driver - power_tool (Photos: 1)\n• Level - hand_tool (Photos: 2)\n\n## Materials\n• Base cabinets - in_use (Photos: 1, 2)\n• Cabinet hardware - delivered (Photos: 1)\n• Wood screws - in_use (Photos: 2)\n\n## Deliveries\n• Material delivery - completed (morning) (Photos: 1)\n\n## Kitchen - Cabinets\n### Tasks Completed\n• Base cabinets installed on south wall - 85% (Photos: 1, 2)\n• Cabinet hardware installation - 70%\n\n### Safety Notes\n• Tool storage area organized - LOW\n\n## Safety Summary\n• Overall compliance: good\n• Proper PPE worn - LOW (Photos: 1, 2)\n\n## Tomorrow's Plan\n• Continue upper cabinet installation\n• Schedule electrical inspection\n• Coordinate with plumber for final connections`,
-        debug: {
-          photos_analyzed: photos.length,
-          weather_included: true,
-          model_used: 'gemini-2.0-flash-exp'
-        }
+      // Call the real AI pipeline API
+      const response = await fetch('/api/generate-report', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          project_id: params.id,
+          date: selectedDate,
+          photos: photos.map(p => ({
+            id: p.id,
+            url: p.url,
+            created_at: p.created_at
+          })),
+          project_name: project?.name || 'Construction Project',
+          personnel: selectedPersonnel
+        })
       })
+
+      const data = await response.json()
+      
+      if (data.success) {
+        setReport({
+          owner_markdown: data.owner_markdown,
+          gc_markdown: data.gc_markdown,
+          debug: data.debug || {
+            photos_analyzed: photos.length,
+            weather_included: true,
+            model_used: 'gemini-2.0-flash-exp'
+          }
+        })
+        
+        // Update project activity for auto-close tracking
+        fetch('/api/update-project-activity', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ project_id: params.id })
+        }).catch(err => console.log('Activity update error:', err))
+        
+        alert('✅ AI Report generated successfully!')
+      } else {
+        alert(`❌ Failed to generate report: ${data.error}`)
+        // Fallback to demo report if API fails
+        setReport({
+          owner_markdown: `# Daily Update - ${project?.name}\n**${selectedDate}** • 🌤️ 76°F Partly cloudy\n\n## Today's Progress\nReport generated from ${photos.length} uploaded photos.\n\n## Work Completed\n• Photo documentation completed\n• Site progress recorded\n\n## What's Next\n• Review uploaded photos\n• Continue site work`,
+          gc_markdown: `# GC Daily Report - ${project?.name}\n**${selectedDate}** • 🌤️ 76°F Partly cloudy\n\n## Photo Documentation\n• ${photos.length} photos uploaded and analyzed\n• Site progress documented\n\n## Next Steps\n• Review analysis results\n• Plan tomorrow's activities`,
+          debug: {
+            photos_analyzed: photos.length,
+            weather_included: true,
+            model_used: 'fallback-mode',
+            error: data.error
+          }
+        })
+      }
     } catch (error) {
       console.error('Report generation error:', error)
+      alert('❌ Failed to generate report. Please try again.')
     } finally {
       setGenerating(false)
     }
