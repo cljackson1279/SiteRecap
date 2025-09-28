@@ -17,13 +17,27 @@ export const metadata = {
   category: 'construction software',
 }
 
+import { organizationSchema, softwareApplicationSchema, generateStructuredData } from '@/lib/structured-data'
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
         <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/siterecap-icon.png" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="canonical" href="https://siterecap.com" />
         <meta name="theme-color" content="#168995" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        
+        {/* Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={generateStructuredData(organizationSchema)}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={generateStructuredData(softwareApplicationSchema)}
+        />
       </head>
       <body className="antialiased bg-background text-foreground">
         <AuthProvider>
