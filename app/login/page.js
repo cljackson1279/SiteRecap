@@ -43,17 +43,36 @@ export default function Login() {
           email: email.trim(),
           password: password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback`
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+            data: {
+              email: email.trim()
+            }
           }
         })
 
         if (error) throw error
 
-        if (data.user && !data.user.email_confirmed_at) {
-          setMessage('Check your email and click the confirmation link to complete signup!')
-        } else {
-          setMessage('Account created successfully! Redirecting...')
-          setTimeout(() => router.push('/dashboard'), 2000)
+        if (data.user) {
+          if (!data.user.email_confirmed_at) {
+            // Try to send a custom confirmation email as backup
+            try {
+              await fetch('/api/send-confirmation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  email: email.trim(),
+                  confirmationUrl: `${window.location.origin}/auth/callback?code=${data.user.id}`
+                })
+              })
+            } catch (emailError) {
+              console.log('Custom email send failed:', emailError)
+            }
+            
+            setMessage('Almost there! Check your email and click the confirmation link to complete signup. The email should arrive within a few minutes.')
+          } else {
+            setMessage('Account created successfully! Redirecting...')
+            setTimeout(() => router.push('/dashboard'), 2000)
+          }
         }
       } else {
         // Try sign in with email and password first
