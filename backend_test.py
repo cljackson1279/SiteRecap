@@ -23,9 +23,9 @@ def test_generate_report_endpoint():
     """Test the /api/generate-report endpoint with enhanced AI pipeline"""
     print("🧪 Testing /api/generate-report endpoint...")
     
-    # Test data for construction site analysis
+    # Test data for construction site analysis - using UUID format
     test_data = {
-        "project_id": "test-project-123",
+        "project_id": "550e8400-e29b-41d4-a716-446655440000",
         "date": "2024-01-15"
     }
     
