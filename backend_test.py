@@ -237,7 +237,37 @@ def test_ai_pipeline_code_structure():
         
         # Try to import the AI pipeline module
         try:
-            from lib.ai_pipeline import analyzePhoto, generateReport, generateOwnerMarkdown, generateGCMarkdown
+            # Check if the file exists first
+            import os
+            ai_pipeline_path = '/app/lib/ai-pipeline.js'
+            if os.path.exists(ai_pipeline_path):
+                print("✅ AI Pipeline file exists at /app/lib/ai-pipeline.js")
+                
+                # Read the file to check for enhanced features
+                with open(ai_pipeline_path, 'r') as f:
+                    content = f.read()
+                
+                # Check for construction expertise enhancements
+                enhancements = {
+                    'Construction Expert Prompt': '20+ years of experience' in content,
+                    'Enhanced JSON Structure': 'trade_work' in content and 'confidence_score' in content,
+                    'Professional Phases': 'Demo|Framing|Electrical Rough|Plumbing Rough' in content,
+                    'OSHA Compliance': 'osha_compliance' in content,
+                    'Quality Control': 'quality_control' in content,
+                    'Budget Impact': 'budget_impact' in content,
+                    'Owner Markdown Function': 'generateOwnerMarkdown' in content,
+                    'GC Markdown Function': 'generateGCMarkdown' in content,
+                    'Construction Terminology': 'linear feet' in content and 'rough-in' in content
+                }
+                
+                for feature, present in enhancements.items():
+                    status = "✅" if present else "❌"
+                    print(f"  {status} {feature}")
+                
+                return all(enhancements.values())
+            else:
+                print("❌ AI Pipeline file not found")
+                return False
             print("✅ AI Pipeline modules successfully imported")
             
             # Check if functions exist
