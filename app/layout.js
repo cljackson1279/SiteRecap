@@ -1,6 +1,7 @@
 import './globals.css'
 import { AuthProvider } from '@/lib/auth-context'
 import { generateMetaTags } from '@/lib/seo'
+import { organizationSchema, softwareApplicationSchema, generateStructuredData } from '@/lib/structured-data'
 
 export const metadata = {
   ...generateMetaTags('home'),
