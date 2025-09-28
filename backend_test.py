@@ -350,17 +350,7 @@ def main():
 if __name__ == "__main__":
     success = main()
     sys.exit(0 if success else 1)
-                    print(f"⚠️  EMAIL_FROM is '{env_vars[var]}', expected 'support@siterecap.com'")
-            elif var == 'NEXT_PUBLIC_BASE_URL':
-                if env_vars[var] == 'https://siterecap.com':
-                    print(f"✅ NEXT_PUBLIC_BASE_URL correctly set to https://siterecap.com")
-                else:
-                    print(f"⚠️  NEXT_PUBLIC_BASE_URL is '{env_vars[var]}', expected 'https://siterecap.com'")
-        else:
-            print(f"❌ {var}: {description} - Missing or empty")
-            all_present = False
-    
-    return all_present
+# Old duplicate code removed - using new email confirmation flow tests above
 
 def test_send_confirmation_endpoint():
     """Test POST /api/send-confirmation endpoint"""
