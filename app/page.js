@@ -66,9 +66,9 @@ export default function HomePage() {
             <Card>
               <CardContent className="p-6 text-center">
                 <div className="text-3xl mb-4">📸</div>
-                <h3 className="text-xl font-semibold mb-2">Smart Photo Analysis</h3>
+                <h3 className="text-xl font-semibold mb-2">AI Construction Photo Analysis</h3>
                 <p className="text-muted-foreground">
-                  AI automatically detects equipment, materials, personnel, and progress from your job site photos.
+                  Advanced AI automatically detects equipment, materials, personnel, and construction progress from your daily job site photos.
                 </p>
               </CardContent>
             </Card>
