@@ -96,15 +96,6 @@ def test_environment_configuration():
     except requests.exceptions.RequestException as e:
         print(f"❌ Request failed: {e}")
         return False
-                print("❌ Some URL environment variables are not set correctly")
-                return False
-        else:
-            print(f"❌ Debug URLs endpoint failed with status {response.status_code}")
-            return False
-            
-    except Exception as e:
-        print(f"❌ Debug URLs test failed: {str(e)}")
-        return False
 
 def test_send_confirmation():
     """Test POST /api/send-confirmation with siterecap.com URLs"""
