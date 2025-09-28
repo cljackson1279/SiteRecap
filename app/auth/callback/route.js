@@ -29,7 +29,7 @@ export async function GET(request) {
     try {
       const { data, error } = await supabase.auth.verifyOtp({
         token_hash,
-        type: type as any
+        type: type
       })
 
       if (error) {
