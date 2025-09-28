@@ -272,7 +272,8 @@ def main():
         "generate_report_endpoint": False,
         "ai_pipeline_components": False,
         "construction_expertise": False,
-        "markdown_generation": False
+        "markdown_generation": False,
+        "code_structure": False
     }
     
     # Test 0: Working Demo Endpoints
@@ -290,6 +291,9 @@ def main():
     
     # Test 4: Markdown Generation Quality
     test_results["markdown_generation"] = test_markdown_generation_quality()
+    
+    # Test 5: AI Pipeline Code Structure
+    test_results["code_structure"] = test_ai_pipeline_code_structure()
     
     # Summary
     print("\n" + "=" * 60)
