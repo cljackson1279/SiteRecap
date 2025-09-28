@@ -76,9 +76,9 @@ export default function HomePage() {
             <Card>
               <CardContent className="p-6 text-center">
                 <div className="text-3xl mb-4">📄</div>
-                <h3 className="text-xl font-semibold mb-2">Professional Reports</h3>
+                <h3 className="text-xl font-semibold mb-2">Automated Daily Reports</h3>
                 <p className="text-muted-foreground">
-                  Generate separate Owner and GC reports with weather, progress tracking, and safety compliance.
+                  Generate separate Owner and GC construction daily reports with weather data, progress tracking, and safety compliance automatically.
                 </p>
               </CardContent>
             </Card>
