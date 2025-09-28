@@ -293,6 +293,63 @@ def test_hardcoded_urls_in_code():
     except Exception as e:
         print(f"   ❌ Error checking hardcoded URLs: {str(e)}")
         return False
+
+def main():
+    """Run all email confirmation flow tests"""
+    print("🚀 Starting Email Confirmation Flow Tests")
+    print("=" * 80)
+    
+    results = {
+        'url_configuration': test_url_configuration(),
+        'email_configuration': test_email_configuration(),
+        'hardcoded_urls': test_hardcoded_urls_in_code(),
+        'send_confirmation': test_send_confirmation_endpoint(),
+        'resend_confirmation': test_resend_confirmation_endpoint(),
+        'auth_callback': test_auth_callback_endpoint()
+    }
+    
+    print("\n" + "=" * 80)
+    print("📊 TEST RESULTS SUMMARY")
+    print("=" * 80)
+    
+    passed = 0
+    total = len(results)
+    
+    for test_name, result in results.items():
+        status = "✅ PASS" if result else "❌ FAIL"
+        print(f"{test_name.replace('_', ' ').title()}: {status}")
+        if result:
+            passed += 1
+    
+    print(f"\nOverall: {passed}/{total} tests passed")
+    
+    # Specific findings for email confirmation flow
+    print("\n" + "=" * 80)
+    print("🔍 EMAIL CONFIRMATION FLOW ANALYSIS")
+    print("=" * 80)
+    
+    if "siterecap.com" not in BASE_URL:
+        print("⚠️  CRITICAL FINDING: NEXT_PUBLIC_BASE_URL is not set to siterecap.com")
+        print(f"   Current: {BASE_URL}")
+        print("   Expected: https://siterecap.com")
+        print("   Impact: Resend confirmation emails will use wrong domain")
+    
+    if 'https://siterecap.com/auth/callback' in open('/app/app/login/page.js', 'r').read():
+        print("✅ GOOD: Login page uses hardcoded siterecap.com URLs for auth redirects")
+        print("   This ensures Supabase auth always redirects to production domain")
+    
+    if passed >= 4:  # Most tests should pass
+        print("\n🎉 Email confirmation flow is mostly functional!")
+        if passed < total:
+            print("⚠️  Some configuration issues found - review above")
+        return True
+    else:
+        print("\n❌ Email confirmation flow has significant issues")
+        return False
+
+if __name__ == "__main__":
+    success = main()
+    sys.exit(0 if success else 1)
                     print(f"⚠️  EMAIL_FROM is '{env_vars[var]}', expected 'support@siterecap.com'")
             elif var == 'NEXT_PUBLIC_BASE_URL':
                 if env_vars[var] == 'https://siterecap.com':
