@@ -465,6 +465,21 @@ backend:
           agent: "testing"
           comment: "✅ DEBUG-URLS ENDPOINT WORKING LOCALLY: Comprehensive testing shows endpoint fully functional in local environment. Returns correct environment variables: NEXT_PUBLIC_BASE_URL=https://siterecap.com, NEXT_PUBLIC_SITE_URL=https://siterecap.com, NEXTAUTH_URL=https://siterecap.com. Production 404 is deployment issue, not code issue. Local verification confirms all URL configurations correct."
 
+  - task: "Test email service functionality and debug signup confirmation email issue"
+    implemented: true
+    working: true
+    file: "/app/app/api/test-email/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: "NA"
+          agent: "testing"
+          comment: "Test email service configuration, test-email endpoints, and debug signup confirmation email issue as requested in review"
+        - working: true
+          agent: "testing"
+          comment: "✅ EMAIL SERVICE COMPREHENSIVE TESTING COMPLETED: All email service functionality verified and working correctly. LOCAL TESTING: GET /api/test-email (✅ - Resend API key present, EMAIL_FROM configured), POST /api/test-email (✅ - test emails sent successfully with MessageIDs), POST /api/send-confirmation (✅ - custom confirmation emails working), POST /api/resend-confirmation (✅ - resend functionality working). PRODUCTION TESTING: send-confirmation and resend-confirmation endpoints working correctly in production (MessageIDs: 9be60c64-fd21-423a-8b8f-6bdea8713c8a, 3a260191-498f-4e5d-b98d-1b8474099f4f). SUPABASE SIGNUP FLOW: All configuration verified - Supabase client setup correct, login page signup flow implemented, emailRedirectTo configured for siterecap.com/auth/callback. ENVIRONMENT VARIABLES: All email-related vars correctly configured (RESEND_API_KEY, EMAIL_FROM=support@siterecap.com, NEXT_PUBLIC_BASE_URL=https://siterecap.com). ERROR HANDLING: All endpoints properly validate required parameters (400 status for missing fields). ROOT CAUSE ANALYSIS: Email service is fully functional - if signup confirmation emails stopped working, issue is likely in Supabase dashboard configuration (Site URL, Redirect URLs) or domain verification in Resend, not in application code."
+
 frontend:
   - task: "Remove AI model mentions from pricing page"
     implemented: false
