@@ -723,5 +723,5 @@ def run_complete_signup_flow_tests():
     return passed == total
 
 if __name__ == "__main__":
-    success = run_comprehensive_email_tests()
+    success = run_complete_signup_flow_tests()
     sys.exit(0 if success else 1)
