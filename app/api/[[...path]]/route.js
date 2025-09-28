@@ -145,30 +145,41 @@ async function geocodeProject(request) {
 // POST /api/generate-report
 async function generateDailyReport(request) {
   try {
-    const { project_id, date } = await getRequestBody(request)
+    const { project_id, date, photos: clientPhotos, project_name } = await getRequestBody(request)
     
     if (!project_id || !date) {
       return NextResponse.json({ error: 'Project ID and date required' }, { status: 400 })
     }
     
-    // Get project details
-    const { data: project, error: projectError } = await supabaseAdmin
-      .from('projects')
-      .select('*')
-      .eq('id', project_id)
-      .single()
+    let photos = []
+    let project = { name: project_name || 'Construction Project' }
     
-    if (projectError) throw projectError
-    
-    // Get photos for the date
-    const { data: photos, error: photosError } = await supabaseAdmin
-      .from('photos')
-      .select('*')
-      .eq('project_id', project_id)
-      .eq('shot_date', date)
-      .order('created_at', { ascending: true })
-    
-    if (photosError) throw photosError
+    // If photos are provided in request (demo/test mode), use those
+    if (clientPhotos && clientPhotos.length > 0) {
+      photos = clientPhotos
+      console.log(`Using ${photos.length} client-provided photos for analysis`)
+    } else {
+      // Otherwise, get from database (production mode)
+      const { data: projectData, error: projectError } = await supabaseAdmin
+        .from('projects')
+        .select('*')
+        .eq('id', project_id)
+        .single()
+      
+      if (projectError) throw projectError
+      project = projectData
+      
+      // Get photos for the date
+      const { data: photosData, error: photosError } = await supabaseAdmin
+        .from('photos')
+        .select('*')
+        .eq('project_id', project_id)
+        .eq('shot_date', date)
+        .order('created_at', { ascending: true })
+      
+      if (photosError) throw photosError
+      photos = photosData || []
+    }
     
     if (!photos || photos.length === 0) {
       return NextResponse.json({ error: 'No photos found for this date' }, { status: 404 })
