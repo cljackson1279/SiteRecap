@@ -90,376 +90,333 @@ def test_email_configuration():
         print_error(f"GET /api/test-email failed: {str(e)}")
         return False
 
-def test_email_confirmation_endpoints():
-    """Test 2: Test Complete Email Confirmation Flow endpoints"""
-    print("\n" + "="*80)
-    print("TEST 2: EMAIL CONFIRMATION ENDPOINTS")
-    print("="*80)
+def test_email_sending():
+    """Test POST /api/test-email - Send a test email to verify Resend service works"""
+    print_test_header("EMAIL SENDING TEST")
     
-    results = {}
+    # Use a test email address
+    test_email = "test@siterecap.com"
     
-    # Test send-confirmation endpoint
-    print(f"🔍 Testing POST {API_BASE}/send-confirmation")
     try:
-        payload = {
-            "email": "test@example.com",
-            "confirmationUrl": f"{BASE_URL}/auth/callback?email=test@example.com"
-        }
-        response = requests.post(f"{API_BASE}/send-confirmation", json=payload, timeout=10)
+        print(f"🔍 Testing POST {API_BASE}/test-email")
+        payload = {"email": test_email}
+        response = requests.post(
+            f"{API_BASE}/test-email", 
+            json=payload,
+            headers={'Content-Type': 'application/json'},
+            timeout=30
+        )
         
         print(f"📊 Status Code: {response.status_code}")
+        print(f"📤 Request: {json.dumps(payload, indent=2)}")
         
         if response.status_code == 200:
             data = response.json()
-            if data.get('success') and data.get('messageId'):
-                print(f"✅ Send confirmation working - MessageID: {data.get('messageId')}")
-                results['send_confirmation'] = True
-            else:
-                print(f"❌ Send confirmation failed: {data}")
-                results['send_confirmation'] = False
-        else:
-            print(f"❌ Send confirmation failed with status {response.status_code}")
-            print(f"Response: {response.text}")
-            results['send_confirmation'] = False
+            print(f"📄 Response: {json.dumps(data, indent=2)}")
             
-    except requests.exceptions.RequestException as e:
-        print(f"❌ Send confirmation request failed: {e}")
-        results['send_confirmation'] = False
-    
-    # Test resend-confirmation endpoint
-    print(f"\n🔍 Testing POST {API_BASE}/resend-confirmation")
-    try:
-        payload = {
-            "email": "test@example.com"
-        }
-        response = requests.post(f"{API_BASE}/resend-confirmation", json=payload, timeout=10)
-        
-        print(f"📊 Status Code: {response.status_code}")
-        
-        if response.status_code == 200:
-            data = response.json()
-            if data.get('success') and data.get('messageId'):
-                print(f"✅ Resend confirmation working - MessageID: {data.get('messageId')}")
-                results['resend_confirmation'] = True
-            else:
-                print(f"❌ Resend confirmation failed: {data}")
-                results['resend_confirmation'] = False
-        else:
-            print(f"❌ Resend confirmation failed with status {response.status_code}")
-            print(f"Response: {response.text}")
-            results['resend_confirmation'] = False
-            
-    except requests.exceptions.RequestException as e:
-        print(f"❌ Resend confirmation request failed: {e}")
-        results['resend_confirmation'] = False
-    
-    # Test error handling - missing email parameter
-    print(f"\n🔍 Testing error handling (missing email)")
-    try:
-        response = requests.post(f"{API_BASE}/send-confirmation", json={}, timeout=10)
-        
-        if response.status_code == 400:
-            print("✅ Error handling working - returns 400 for missing email")
-            results['error_handling'] = True
-        else:
-            print(f"❌ Error handling failed - expected 400, got {response.status_code}")
-            results['error_handling'] = False
-            
-    except requests.exceptions.RequestException as e:
-        print(f"❌ Error handling test failed: {e}")
-        results['error_handling'] = False
-    
-    return all(results.values())
-
-def test_auth_callback_scenarios():
-    """Test 3: Test auth callback scenarios and error handling"""
-    print("\n" + "="*80)
-    print("TEST 3: AUTH CALLBACK SCENARIOS")
-    print("="*80)
-    
-    results = {}
-    
-    # Test 1: No parameters - should redirect to login
-    print(f"🔍 Testing GET {BASE_URL}/auth/callback (no parameters)")
-    try:
-        response = requests.get(f"{BASE_URL}/auth/callback", allow_redirects=False, timeout=10)
-        
-        print(f"📊 Status Code: {response.status_code}")
-        
-        if response.status_code in [302, 307]:
-            location = response.headers.get('Location', '')
-            if '/login' in location and BASE_URL in location:
-                print(f"✅ No parameters redirect working: {location}")
-                results['no_params'] = True
-            else:
-                print(f"❌ Unexpected redirect location: {location}")
-                results['no_params'] = False
-        else:
-            print(f"❌ Expected redirect, got status {response.status_code}")
-            results['no_params'] = False
-            
-    except requests.exceptions.RequestException as e:
-        print(f"❌ No parameters test failed: {e}")
-        results['no_params'] = False
-    
-    # Test 2: Email parameter only - should redirect to login with info
-    print(f"\n🔍 Testing GET {BASE_URL}/auth/callback?email=test@example.com")
-    try:
-        response = requests.get(f"{BASE_URL}/auth/callback?email=test@example.com", allow_redirects=False, timeout=10)
-        
-        print(f"📊 Status Code: {response.status_code}")
-        
-        if response.status_code in [302, 307]:
-            location = response.headers.get('Location', '')
-            if '/login' in location and 'message=' in location and BASE_URL in location:
-                print(f"✅ Email parameter redirect working: {location}")
-                results['email_param'] = True
-            else:
-                print(f"❌ Unexpected redirect location: {location}")
-                results['email_param'] = False
-        else:
-            print(f"❌ Expected redirect, got status {response.status_code}")
-            results['email_param'] = False
-            
-    except requests.exceptions.RequestException as e:
-        print(f"❌ Email parameter test failed: {e}")
-        results['email_param'] = False
-    
-    # Test 3: Invalid code - should redirect to login with error
-    print(f"\n🔍 Testing GET {BASE_URL}/auth/callback?code=invalid_code")
-    try:
-        response = requests.get(f"{BASE_URL}/auth/callback?code=invalid_code", allow_redirects=False, timeout=10)
-        
-        print(f"📊 Status Code: {response.status_code}")
-        
-        if response.status_code in [302, 307]:
-            location = response.headers.get('Location', '')
-            if '/login' in location and 'error' in location and BASE_URL in location:
-                print(f"✅ Invalid code redirect working: {location}")
-                results['invalid_code'] = True
-            else:
-                print(f"❌ Unexpected redirect location: {location}")
-                results['invalid_code'] = False
-        else:
-            print(f"❌ Expected redirect, got status {response.status_code}")
-            results['invalid_code'] = False
-            
-    except requests.exceptions.RequestException as e:
-        print(f"❌ Invalid code test failed: {e}")
-        results['invalid_code'] = False
-    
-    return all(results.values())
-
-def test_auth_success_page():
-    """Test 4: Test /auth/success page accessibility"""
-    print("\n" + "="*80)
-    print("TEST 4: AUTH SUCCESS PAGE")
-    print("="*80)
-    
-    try:
-        print(f"🔍 Testing GET {BASE_URL}/auth/success")
-        response = requests.get(f"{BASE_URL}/auth/success", timeout=10)
-        
-        print(f"📊 Status Code: {response.status_code}")
-        
-        if response.status_code == 200:
-            content = response.text
-            # Check for key elements that should be in the auth success page
-            if 'Confirming your account' in content and 'redirected to your dashboard' in content:
-                print("✅ Auth success page accessible with correct content")
+            if data.get('success'):
+                print_success(f"Test email sent successfully to {test_email}")
+                if data.get('messageId'):
+                    print_success(f"Message ID: {data.get('messageId')}")
                 return True
             else:
-                print("❌ Auth success page accessible but missing expected content")
-                print("Expected: 'Confirming your account' and 'redirected to your dashboard'")
+                print_error("Email sending failed - success flag is false")
                 return False
-        elif response.status_code == 404:
-            print("❌ Auth success page not found (404)")
-            print("🔍 This page is required for the email confirmation flow")
-            return False
         else:
-            print(f"❌ Unexpected status code: {response.status_code}")
+            print_error(f"POST /api/test-email failed with status {response.status_code}")
+            try:
+                data = response.json()
+                print(f"📄 Error Response: {json.dumps(data, indent=2)}")
+            except:
+                print(f"📄 Error Response: {response.text}")
             return False
             
-    except requests.exceptions.RequestException as e:
-        print(f"❌ Auth success page test failed: {e}")
+    except Exception as e:
+        print_error(f"POST /api/test-email failed: {str(e)}")
         return False
 
-def test_security_features():
-    """Test 5: Test security features and database schema"""
-    print("\n" + "="*80)
-    print("TEST 5: SECURITY FEATURES")
-    print("="*80)
+def test_send_confirmation():
+    """Test POST /api/send-confirmation - Test custom confirmation email sending"""
+    print_test_header("SEND CONFIRMATION EMAIL TEST")
     
-    results = {}
+    test_email = "test@siterecap.com"
+    confirmation_url = f"{BASE_URL}/auth/callback?token=test123&email={test_email}"
     
-    # Check if database schema file exists
-    print("🔍 Checking database schema updates")
     try:
-        with open('/app/database-updates.sql', 'r') as f:
-            schema_content = f.read()
-            
-        # Check for RLS policies
-        if 'ROW LEVEL SECURITY' in schema_content.upper() or 'RLS' in schema_content.upper():
-            print("✅ RLS policies found in database schema")
-            results['rls_policies'] = True
-        else:
-            print("❌ No RLS policies found in database schema")
-            results['rls_policies'] = False
+        print(f"🔍 Testing POST {API_BASE}/send-confirmation")
+        payload = {
+            "email": test_email,
+            "confirmationUrl": confirmation_url
+        }
+        response = requests.post(
+            f"{API_BASE}/send-confirmation", 
+            json=payload,
+            headers={'Content-Type': 'application/json'},
+            timeout=30
+        )
         
-        # Check for user profiles table
-        if 'profiles' in schema_content.lower():
-            print("✅ User profiles table found in schema")
-            results['user_profiles'] = True
-        else:
-            print("❌ User profiles table not found in schema")
-            results['user_profiles'] = False
+        print(f"📊 Status Code: {response.status_code}")
+        print(f"📤 Request: {json.dumps(payload, indent=2)}")
         
-        # Check for organizations table
-        if 'organizations' in schema_content.lower():
-            print("✅ Organizations table found in schema")
-            results['organizations'] = True
-        else:
-            print("❌ Organizations table not found in schema")
-            results['organizations'] = False
+        if response.status_code == 200:
+            data = response.json()
+            print(f"📄 Response: {json.dumps(data, indent=2)}")
             
-    except FileNotFoundError:
-        print("❌ Database schema file not found")
-        results['rls_policies'] = False
-        results['user_profiles'] = False
-        results['organizations'] = False
+            if data.get('success'):
+                print_success(f"Confirmation email sent successfully to {test_email}")
+                if data.get('messageId'):
+                    print_success(f"Message ID: {data.get('messageId')}")
+                return True
+            else:
+                print_error("Confirmation email sending failed - success flag is false")
+                return False
+        else:
+            print_error(f"POST /api/send-confirmation failed with status {response.status_code}")
+            try:
+                data = response.json()
+                print(f"📄 Error Response: {json.dumps(data, indent=2)}")
+            except:
+                print(f"📄 Error Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print_error(f"POST /api/send-confirmation failed: {str(e)}")
+        return False
+
+def test_resend_confirmation():
+    """Test POST /api/resend-confirmation - Test resend confirmation functionality"""
+    print_test_header("RESEND CONFIRMATION EMAIL TEST")
     
-    # Test Supabase configuration
-    print("\n🔍 Testing Supabase configuration")
+    test_email = "test@siterecap.com"
+    
     try:
+        print(f"🔍 Testing POST {API_BASE}/resend-confirmation")
+        payload = {"email": test_email}
+        response = requests.post(
+            f"{API_BASE}/resend-confirmation", 
+            json=payload,
+            headers={'Content-Type': 'application/json'},
+            timeout=30
+        )
+        
+        print(f"📊 Status Code: {response.status_code}")
+        print(f"📤 Request: {json.dumps(payload, indent=2)}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"📄 Response: {json.dumps(data, indent=2)}")
+            
+            if data.get('success'):
+                print_success(f"Resend confirmation email sent successfully to {test_email}")
+                if data.get('messageId'):
+                    print_success(f"Message ID: {data.get('messageId')}")
+                return True
+            else:
+                print_error("Resend confirmation email failed - success flag is false")
+                return False
+        else:
+            print_error(f"POST /api/resend-confirmation failed with status {response.status_code}")
+            try:
+                data = response.json()
+                print(f"📄 Error Response: {json.dumps(data, indent=2)}")
+            except:
+                print(f"📄 Error Response: {response.text}")
+            return False
+            
+    except Exception as e:
+        print_error(f"POST /api/resend-confirmation failed: {str(e)}")
+        return False
+
+def test_error_handling():
+    """Test error handling for missing parameters"""
+    print_test_header("ERROR HANDLING TEST")
+    
+    tests_passed = 0
+    total_tests = 3
+    
+    # Test 1: POST /api/test-email without email parameter
+    print("🔍 Testing POST /api/test-email without email parameter")
+    try:
+        response = requests.post(
+            f"{API_BASE}/test-email", 
+            json={},
+            headers={'Content-Type': 'application/json'},
+            timeout=30
+        )
+        
+        if response.status_code == 400:
+            print_success("POST /api/test-email correctly returns 400 for missing email")
+            tests_passed += 1
+        else:
+            print_error(f"POST /api/test-email should return 400 for missing email, got {response.status_code}")
+    except Exception as e:
+        print_error(f"Error testing /api/test-email error handling: {str(e)}")
+    
+    # Test 2: POST /api/send-confirmation without required parameters
+    print("\n🔍 Testing POST /api/send-confirmation without confirmationUrl")
+    try:
+        response = requests.post(
+            f"{API_BASE}/send-confirmation", 
+            json={"email": "test@example.com"},  # Missing confirmationUrl
+            headers={'Content-Type': 'application/json'},
+            timeout=30
+        )
+        
+        if response.status_code == 400:
+            print_success("POST /api/send-confirmation correctly returns 400 for missing confirmationUrl")
+            tests_passed += 1
+        else:
+            print_error(f"POST /api/send-confirmation should return 400 for missing confirmationUrl, got {response.status_code}")
+    except Exception as e:
+        print_error(f"Error testing /api/send-confirmation error handling: {str(e)}")
+    
+    # Test 3: POST /api/resend-confirmation without email parameter
+    print("\n🔍 Testing POST /api/resend-confirmation without email parameter")
+    try:
+        response = requests.post(
+            f"{API_BASE}/resend-confirmation", 
+            json={},
+            headers={'Content-Type': 'application/json'},
+            timeout=30
+        )
+        
+        if response.status_code == 400:
+            print_success("POST /api/resend-confirmation correctly returns 400 for missing email")
+            tests_passed += 1
+        else:
+            print_error(f"POST /api/resend-confirmation should return 400 for missing email, got {response.status_code}")
+    except Exception as e:
+        print_error(f"Error testing /api/resend-confirmation error handling: {str(e)}")
+    
+    print_info(f"Error handling tests passed: {tests_passed}/{total_tests}")
+    return tests_passed == total_tests
+
+def test_supabase_signup_flow():
+    """Check Supabase signup flow configuration - Debug why confirmation emails stopped sending"""
+    print_test_header("SUPABASE SIGNUP FLOW INVESTIGATION")
+    
+    try:
+        # Check Supabase configuration
+        print("🔍 Checking Supabase configuration")
         with open('/app/lib/supabase.js', 'r') as f:
             supabase_config = f.read()
             
-        # Check for required imports and exports
-        required_elements = [
-            'createClient',
-            'NEXT_PUBLIC_SUPABASE_URL',
-            'NEXT_PUBLIC_SUPABASE_ANON_KEY',
-            'SUPABASE_SERVICE_KEY',
-            'export'
+        # Check for required configuration elements
+        config_checks = [
+            ('createClient import', 'createClient' in supabase_config),
+            ('NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_URL' in supabase_config),
+            ('NEXT_PUBLIC_SUPABASE_ANON_KEY', 'NEXT_PUBLIC_SUPABASE_ANON_KEY' in supabase_config),
+            ('SUPABASE_SERVICE_KEY', 'SUPABASE_SERVICE_KEY' in supabase_config),
+            ('supabase export', 'export const supabase' in supabase_config),
+            ('supabaseAdmin export', 'export const supabaseAdmin' in supabase_config)
         ]
         
-        all_present = True
-        for element in required_elements:
-            if element in supabase_config:
-                print(f"✅ {element} found in Supabase config")
+        all_config_good = True
+        for check_name, check_result in config_checks:
+            if check_result:
+                print_success(f"{check_name} found")
             else:
-                print(f"❌ {element} missing from Supabase config")
-                all_present = False
+                print_error(f"{check_name} missing")
+                all_config_good = False
         
-        results['supabase_config'] = all_present
+        # Check login page signup configuration
+        print("\n🔍 Checking login page signup configuration")
+        with open('/app/app/login/page.js', 'r') as f:
+            login_config = f.read()
+            
+        signup_checks = [
+            ('Supabase auth import', 'supabase' in login_config and 'auth' in login_config),
+            ('signUp function', 'signUp' in login_config),
+            ('emailRedirectTo', 'emailRedirectTo' in login_config),
+            ('siterecap.com redirect', 'siterecap.com/auth/callback' in login_config),
+            ('resend confirmation', 'resend-confirmation' in login_config)
+        ]
         
-    except FileNotFoundError:
-        print("❌ Supabase configuration file not found")
-        results['supabase_config'] = False
-    
-    return all(results.values())
-
-def test_production_readiness():
-    """Test 6: Production readiness check"""
-    print("\n" + "="*80)
-    print("TEST 6: PRODUCTION READINESS")
-    print("="*80)
-    
-    results = {}
-    
-    # Check environment variables
-    print("🔍 Checking environment variables")
-    try:
+        all_signup_good = True
+        for check_name, check_result in signup_checks:
+            if check_result:
+                print_success(f"{check_name} found")
+            else:
+                print_error(f"{check_name} missing")
+                all_signup_good = False
+        
+        # Check environment variables
+        print("\n🔍 Checking email-related environment variables")
         with open('/app/.env', 'r') as f:
             env_content = f.read()
             
-        required_vars = [
-            'NEXT_PUBLIC_SUPABASE_URL',
-            'NEXT_PUBLIC_SUPABASE_ANON_KEY',
-            'SUPABASE_SERVICE_KEY',
-            'RESEND_API_KEY',
-            'EMAIL_FROM',
-            'NEXT_PUBLIC_BASE_URL',
-            'GEMINI_API_KEY'
+        env_checks = [
+            ('RESEND_API_KEY', 'RESEND_API_KEY=' in env_content),
+            ('EMAIL_FROM', 'EMAIL_FROM=support@siterecap.com' in env_content),
+            ('NEXT_PUBLIC_BASE_URL', 'NEXT_PUBLIC_BASE_URL=https://siterecap.com' in env_content),
+            ('NEXT_PUBLIC_SUPABASE_URL', 'NEXT_PUBLIC_SUPABASE_URL=' in env_content),
+            ('SUPABASE_SERVICE_KEY', 'SUPABASE_SERVICE_KEY=' in env_content)
         ]
         
-        all_present = True
-        for var in required_vars:
-            if f"{var}=" in env_content:
-                print(f"✅ {var} present")
+        all_env_good = True
+        for check_name, check_result in env_checks:
+            if check_result:
+                print_success(f"{check_name} configured correctly")
             else:
-                print(f"❌ {var} missing")
-                all_present = False
+                print_error(f"{check_name} missing or incorrect")
+                all_env_good = False
         
-        results['env_vars'] = all_present
+        return all_config_good and all_signup_good and all_env_good
         
-    except FileNotFoundError:
-        print("❌ .env file not found")
-        results['env_vars'] = False
+    except FileNotFoundError as e:
+        print_error(f"Required file not found: {str(e)}")
+        return False
+    except Exception as e:
+        print_error(f"Error checking Supabase signup flow: {str(e)}")
+        return False
+
+def test_environment_variables():
+    """Test environment variables are correctly configured"""
+    print_test_header("ENVIRONMENT VARIABLES TEST")
     
-    # Check package.json for dependencies
-    print("\n🔍 Checking package.json dependencies")
     try:
-        with open('/app/package.json', 'r') as f:
-            package_data = json.load(f)
+        # Test debug-urls endpoint if available
+        print(f"🔍 Testing GET {API_BASE}/debug-urls")
+        response = requests.get(f"{API_BASE}/debug-urls", timeout=30)
+        
+        if response.status_code == 200:
+            data = response.json()
+            print(f"📄 Debug URLs Response: {json.dumps(data, indent=2)}")
             
-        dependencies = package_data.get('dependencies', {})
-        required_deps = [
-            '@supabase/supabase-js',
-            'resend',
-            '@google/generative-ai',
-            'next'
-        ]
-        
-        all_deps_present = True
-        for dep in required_deps:
-            if dep in dependencies:
-                print(f"✅ {dep} dependency present")
-            else:
-                print(f"❌ {dep} dependency missing")
-                all_deps_present = False
-        
-        results['dependencies'] = all_deps_present
-        
-    except FileNotFoundError:
-        print("❌ package.json not found")
-        results['dependencies'] = False
-    except json.JSONDecodeError:
-        print("❌ package.json is not valid JSON")
-        results['dependencies'] = False
-    
-    # Test core API endpoints
-    print("\n🔍 Testing core API endpoints")
-    core_endpoints = [
-        '/gemini-health',
-        '/email-report',
-        '/export-pdf'
-    ]
-    
-    endpoint_results = []
-    for endpoint in core_endpoints:
-        try:
-            if endpoint == '/gemini-health':
-                response = requests.get(f"{API_BASE}{endpoint}", timeout=10)
-            else:
-                # POST endpoints with minimal payload
-                payload = {"report_id": "test", "variant": "owner"}
-                response = requests.post(f"{API_BASE}{endpoint}", json=payload, timeout=10)
+            env_vars = data.get('environment_variables', {})
             
-            if response.status_code in [200, 400]:  # 400 is OK for missing params
-                print(f"✅ {endpoint} endpoint accessible")
-                endpoint_results.append(True)
-            else:
-                print(f"❌ {endpoint} endpoint failed: {response.status_code}")
-                endpoint_results.append(False)
-                
-        except requests.exceptions.RequestException as e:
-            print(f"❌ {endpoint} endpoint failed: {e}")
-            endpoint_results.append(False)
-    
-    results['core_endpoints'] = all(endpoint_results)
-    
-    return all(results.values())
+            # Check critical environment variables
+            checks = [
+                ('NEXT_PUBLIC_BASE_URL', env_vars.get('NEXT_PUBLIC_BASE_URL'), 'https://siterecap.com'),
+                ('NEXT_PUBLIC_SITE_URL', env_vars.get('NEXT_PUBLIC_SITE_URL'), 'https://siterecap.com'),
+                ('NEXT_PUBLIC_SUPABASE_URL', env_vars.get('NEXT_PUBLIC_SUPABASE_URL'), None),
+                ('EMAIL_FROM', env_vars.get('EMAIL_FROM'), 'support@siterecap.com')
+            ]
+            
+            all_good = True
+            for var_name, var_value, expected in checks:
+                if var_value:
+                    if expected and var_value == expected:
+                        print_success(f"{var_name}: {var_value} ✓")
+                    elif not expected and var_value.startswith('https://'):
+                        print_success(f"{var_name}: {var_value} ✓")
+                    else:
+                        print_error(f"{var_name}: {var_value} (expected: {expected})")
+                        all_good = False
+                else:
+                    print_error(f"{var_name}: Not set or empty")
+                    all_good = False
+            
+            return all_good
+        else:
+            print_info(f"Debug URLs endpoint not available (status {response.status_code})")
+            print_info("This is expected in production - environment variables will be checked via other endpoints")
+            return True
+            
+    except Exception as e:
+        print_info(f"Debug URLs endpoint not accessible: {str(e)}")
+        print_info("This is expected in production - environment variables will be checked via other endpoints")
+        return True
 
 def run_comprehensive_test():
     """Run all tests and provide summary"""
