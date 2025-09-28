@@ -210,6 +210,54 @@ backend:
           agent: "testing"
           comment: "✅ PROJECT CREATION ENDPOINT IMPLEMENTED: /api/create-project endpoint working correctly with full subscription enforcement. Validates required fields (name, org_id), checks active project limits based on plan (starter: 2, pro: 10, enterprise: 25), returns 403 when limits exceeded. Demo mode returns mock project data with generated ID. Includes all project fields: city, state, postal_code, owner/GC contact info."
 
+  - task: "Test Stage A Photo Analysis with enhanced construction expert prompt"
+    implemented: true
+    working: "NA"
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Enhanced AI prompt with 20+ years construction expertise persona. New JSON structure includes trade_work, confidence_score, next_steps, professional construction terminology, specific measurements, and detailed trade activities."
+
+  - task: "Test Stage B Report Generation with construction expertise"
+    implemented: true
+    working: "NA"
+    file: "/app/lib/ai-pipeline.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Enhanced report aggregation with construction expert analysis. Includes professional sections like Quality Control, OSHA Compliance, Budget Impact, trade-specific details, and quantified progress tracking."
+
+  - task: "Test Owner vs GC Report Markdown Generation"
+    implemented: true
+    working: "NA"
+    file: "/app/lib/ai-pipeline.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Verify generateOwnerMarkdown creates simplified owner-friendly reports and generateGCMarkdown creates detailed professional reports with construction terminology, progress percentages, trade information, and safety notes."
+
+  - task: "Test enhanced AI pipeline confidence scoring system"
+    implemented: true
+    working: "NA"
+    file: "/app/lib/ai-pipeline.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Test new confidence scoring system (1-10 scale) for construction phase identification, material recognition, and professional trade-specific language accuracy."
+
 frontend:
   - task: "Remove AI model mentions from pricing page"
     implemented: false
