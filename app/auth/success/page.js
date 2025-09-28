@@ -23,7 +23,6 @@ export default function AuthSuccess() {
           })
 
           if (error) {
-            console.error('Error setting session:', error)
             router.push('/login?message=Session creation failed. Please log in manually.&type=error')
             return
           }
