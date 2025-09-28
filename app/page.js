@@ -11,12 +11,8 @@ export default function HomePage() {
   const router = useRouter()
 
   useEffect(() => {
-    if (!loading) {
-      if (user) {
-        router.push('/dashboard')
-      } else {
-        // Show landing page for non-authenticated users
-      }
+    if (!loading && user) {
+      router.push('/dashboard')
     }
   }, [user, loading, router])
 
