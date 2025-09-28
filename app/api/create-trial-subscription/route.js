@@ -64,10 +64,11 @@ export async function POST(request) {
       ],
       mode: 'subscription',
       subscription_data: {
-        trial_period_days: 7,
+        trial_period_days: isNewCustomer ? 7 : 0, // Only new customers get trial
         metadata: {
           plan: planId,
-          supabase_user_id: userId || ''
+          supabase_user_id: userId || '',
+          is_new_customer: isNewCustomer.toString()
         }
       },
       success_url: successUrl || `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard?trial=started`,
