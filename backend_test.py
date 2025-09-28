@@ -14,32 +14,10 @@ from datetime import datetime
 BASE_URL = "https://dailysitereport.preview.emergentagent.com"
 API_BASE = f"{BASE_URL}/api"
 
-def test_api_endpoint(endpoint, method='GET', data=None, expected_status=200):
-    """Test an API endpoint and return response"""
-    url = f"{API_BASE}{endpoint}"
-    
-    try:
-        if method == 'GET':
-            response = requests.get(url, timeout=10)
-        elif method == 'POST':
-            response = requests.post(url, json=data, timeout=10)
-        elif method == 'PUT':
-            response = requests.put(url, json=data, timeout=10)
-        elif method == 'DELETE':
-            response = requests.delete(url, timeout=10)
-        
-        print(f"✓ {method} {endpoint} -> {response.status_code}")
-        
-        if response.status_code != expected_status:
-            print(f"  ⚠️  Expected {expected_status}, got {response.status_code}")
-            if response.text:
-                print(f"  Response: {response.text[:200]}")
-        
-        return response
-    
-    except requests.exceptions.RequestException as e:
-        print(f"❌ {method} {endpoint} -> ERROR: {e}")
-        return None
+def create_test_image_base64():
+    """Create a simple test image in base64 format for testing"""
+    # This is a minimal 1x1 pixel JPEG image in base64
+    return "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A"
 
 def test_existing_endpoints():
     """Test existing API endpoints to ensure no regressions"""
