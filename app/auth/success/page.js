@@ -34,11 +34,9 @@ export default function AuthSuccess() {
             router.push('/login?message=Authentication failed. Please log in manually.&type=error')
           }
         } catch (error) {
-          console.error('Authentication error:', error)
           router.push('/login?message=Authentication failed. Please log in manually.&type=error')
         }
       } else {
-        console.error('Missing access_token or refresh_token')
         router.push('/login?message=Invalid authentication parameters. Please log in manually.&type=error')
       }
     }
