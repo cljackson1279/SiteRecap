@@ -468,56 +468,54 @@ def test_production_readiness():
     
     return all(results.values())
 
-def main():
-    """Run all email confirmation flow tests"""
-    print("🏗️ SiteRecap Email Confirmation Flow Testing")
-    print("=" * 60)
-    print(f"Testing against: {BASE_URL}")
-    print("=" * 60)
+def run_comprehensive_test():
+    """Run all tests and provide summary"""
+    print("🏗️ SiteRecap Backend Testing - Email Confirmation and Security Setup")
+    print("=" * 80)
+    print(f"🕒 Test started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+    print(f"🌐 Testing against: {BASE_URL}")
     
-    test_results = []
+    test_results = {}
     
     # Run all tests
-    tests = [
-        ("Debug URLs Verification", test_debug_urls),
-        ("Send Confirmation Endpoint", test_send_confirmation),
-        ("Resend Confirmation Endpoint", test_resend_confirmation),
-        ("Auth Callback Redirects", test_auth_callback_redirects),
-        ("Auth Success Page", test_auth_success_page),
-        ("Error Handling", test_error_handling),
-        ("Complete Flow Simulation", test_complete_flow_simulation)
-    ]
-    
-    for test_name, test_func in tests:
-        try:
-            result = test_func()
-            test_results.append((test_name, result))
-        except Exception as e:
-            print(f"❌ {test_name} failed with exception: {str(e)}")
-            test_results.append((test_name, False))
+    test_results['environment_config'] = test_environment_configuration()
+    test_results['email_endpoints'] = test_email_confirmation_endpoints()
+    test_results['auth_callbacks'] = test_auth_callback_scenarios()
+    test_results['auth_success_page'] = test_auth_success_page()
+    test_results['security_features'] = test_security_features()
+    test_results['production_readiness'] = test_production_readiness()
     
     # Summary
-    print("\n" + "=" * 60)
-    print("📊 TEST SUMMARY")
-    print("=" * 60)
+    print("\n" + "="*80)
+    print("COMPREHENSIVE TEST SUMMARY")
+    print("="*80)
     
-    passed = 0
-    total = len(test_results)
+    passed_tests = []
+    failed_tests = []
     
-    for test_name, result in test_results:
+    for test_name, result in test_results.items():
         status = "✅ PASS" if result else "❌ FAIL"
-        print(f"{status} - {test_name}")
+        test_display = test_name.replace('_', ' ').title()
+        print(f"{status} - {test_display}")
+        
         if result:
-            passed += 1
+            passed_tests.append(test_display)
+        else:
+            failed_tests.append(test_display)
     
-    print(f"\nResults: {passed}/{total} tests passed")
+    print(f"\n📊 RESULTS: {len(passed_tests)}/{len(test_results)} tests passed")
     
-    if passed == total:
-        print("🎉 All email confirmation flow tests PASSED!")
-        return 0
+    if failed_tests:
+        print(f"\n❌ FAILED TESTS:")
+        for test in failed_tests:
+            print(f"   • {test}")
+    
+    if len(passed_tests) == len(test_results):
+        print("\n🎉 ALL TESTS PASSED - System ready for production deployment!")
+        return True
     else:
-        print("⚠️  Some tests FAILED - see details above")
-        return 1
+        print(f"\n⚠️  {len(failed_tests)} test(s) failed - Review issues before deployment")
+        return False
 
 if __name__ == "__main__":
     sys.exit(main())
