@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 """
-SiteRecap Backend API Testing Suite
-Testing project closure functionality and related APIs
+Backend Testing Script for Enhanced AI Pipeline
+Tests the newly optimized AI pipeline for construction site analysis
 """
 
 import requests
 import json
+import base64
 import os
-from datetime import datetime, timedelta
+from datetime import datetime
 
-# Get base URL from environment
-BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://dailysitereport.preview.emergentagent.com')
+# Configuration
+BASE_URL = "https://dailysitereport.preview.emergentagent.com"
 API_BASE = f"{BASE_URL}/api"
 
 def test_api_endpoint(endpoint, method='GET', data=None, expected_status=200):
