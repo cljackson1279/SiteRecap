@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
-Comprehensive Backend Testing for SiteRecap Email Confirmation and Security Setup
-Testing Agent - Final comprehensive testing of complete email confirmation and security setup
+SiteRecap Email Service Testing Suite
+Tests email service functionality and debug signup confirmation email issue
+Focus: Test email service configuration, test-email endpoints, and debug signup flow
 """
 
 import requests
@@ -35,6 +36,20 @@ if not BASE_URL:
     sys.exit(1)
 
 API_BASE = f"{BASE_URL}/api"
+
+def print_test_header(test_name):
+    print(f"\n{'='*60}")
+    print(f"🧪 {test_name}")
+    print(f"{'='*60}")
+
+def print_success(message):
+    print(f"✅ {message}")
+
+def print_error(message):
+    print(f"❌ {message}")
+
+def print_info(message):
+    print(f"ℹ️  {message}")
 
 def test_environment_configuration():
     """Test 1: Verify GET /api/debug-urls shows https://siterecap.com for all URL variables"""
