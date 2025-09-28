@@ -378,11 +378,15 @@ def main():
     print("=" * 60)
     
     test_results = {
+        "demo_endpoints": False,
         "generate_report_endpoint": False,
         "ai_pipeline_components": False,
         "construction_expertise": False,
         "markdown_generation": False
     }
+    
+    # Test 0: Working Demo Endpoints
+    test_results["demo_endpoints"] = test_working_demo_endpoints()
     
     # Test 1: Generate Report Endpoint
     test_results["generate_report_endpoint"] = test_generate_report_endpoint()
