@@ -490,7 +490,7 @@ def test_hardcoded_urls_in_code():
 
 def main():
     """Run all email confirmation flow tests"""
-    print("🚀 Starting Email Confirmation Flow Tests")
+    print("🚀 Starting Email Confirmation Auto-Login Flow Tests")
     print("=" * 80)
     
     results = {
@@ -499,7 +499,10 @@ def main():
         'hardcoded_urls': test_hardcoded_urls_in_code(),
         'send_confirmation': test_send_confirmation_endpoint(),
         'resend_confirmation': test_resend_confirmation_endpoint(),
-        'auth_callback': test_auth_callback_endpoint()
+        'auth_callback': test_auth_callback_endpoint(),
+        'auth_callback_auto_login': test_auth_callback_auto_login_flow(),
+        'auth_success_page': test_auth_success_page(),
+        'console_logging': test_console_logging_implementation()
     }
     
     print("\n" + "=" * 80)
