@@ -45,8 +45,12 @@ export async function GET(request) {
         return NextResponse.redirect(`${baseUrl}/login?message=Email confirmation failed. Please try again.&type=error`)
       }
 
-      // Successfully confirmed - redirect to login with success message
-      return NextResponse.redirect(`${baseUrl}/login?message=Email confirmed successfully! Please log in with your credentials.&type=success`)
+      // Successfully confirmed - redirect to dashboard if session exists, otherwise login
+      if (data?.user) {
+        return NextResponse.redirect(`${baseUrl}/dashboard?confirmed=true`)
+      } else {
+        return NextResponse.redirect(`${baseUrl}/login?message=Email confirmed successfully! Please log in with your credentials.&type=success`)
+      }
     } catch (error) {
       console.error('Token verification error:', error)
       return NextResponse.redirect(`${baseUrl}/login?message=Confirmation failed. Please try again.&type=error`)
