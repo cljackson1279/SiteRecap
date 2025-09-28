@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Test the newly optimized AI pipeline for construction site analysis. The AI prompts have been significantly enhanced with construction expertise to provide more detailed and accurate reports."
+user_problem_statement: "Test the newly implemented authentication and email confirmation system for SiteRecap including custom confirmation email sending, resend functionality, callback handling, and Supabase integration."
 
 backend:
   - task: "Add Stripe webhook secret to .env"
