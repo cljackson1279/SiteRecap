@@ -13,7 +13,7 @@ export async function POST(request) {
     }
 
     // Use Supabase resend method for confirmation emails
-    const { error } = await supabaseAdmin.auth.resend({
+    const { error } = await supabase.auth.resend({
       type: 'signup',
       email: email,
       options: {
