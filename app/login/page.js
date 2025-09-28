@@ -137,6 +137,9 @@ export default function Login() {
             // If password sign in fails, fall back to magic link
             const { error: magicError } = await supabase.auth.signInWithOtp({
               email: email.trim(),
+              options: {
+                emailRedirectTo: `https://siterecap.com/auth/callback`
+              }
             })
 
             if (magicError) throw magicError
