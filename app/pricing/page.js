@@ -90,14 +90,38 @@ export default function Pricing() {
     }
   ]
 
-  const handlePlanSelect = (plan) => {
-    const stripeLink = plan.stripeLinkMonthly
-    
-    if (stripeLink && stripeLink !== '#') {
-      window.open(stripeLink, '_blank')
-    } else {
-      // Fallback - redirect to contact/demo
-      alert(`${plan.name} plan selected! Redirecting to checkout...`)
+  const handlePlanSelect = async (plan) => {
+    try {
+      // Create trial subscription via our API
+      const response = await fetch('/api/create-trial-subscription', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          planId: plan.name.toLowerCase(),
+          userEmail: 'user@example.com', // In production, get from auth context
+          successUrl: `${window.location.origin}/dashboard?trial=started&plan=${plan.name}`,
+          cancelUrl: `${window.location.origin}/pricing?cancelled=true`
+        })
+      })
+
+      const data = await response.json()
+      
+      if (data.success && data.checkoutUrl) {
+        // Redirect to Stripe checkout with trial
+        window.location.href = data.checkoutUrl
+      } else {
+        throw new Error(data.error || 'Failed to create trial subscription')
+      }
+    } catch (error) {
+      console.error('Trial subscription error:', error)
+      
+      // Fallback to original Stripe links
+      const stripeLink = plan.stripeLinkMonthly
+      if (stripeLink && stripeLink !== '#') {
+        window.open(stripeLink, '_blank')
+      } else {
+        alert('Unable to start trial. Please try again or contact support.')
+      }
     }
   }
 
