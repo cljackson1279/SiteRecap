@@ -163,6 +163,30 @@ export default function ProjectDetail() {
     setGenerating(true)
     
     try {
+      // For photos with local files, convert to base64 for AI analysis
+      const photoData = await Promise.all(photos.map(async (photo) => {
+        if (photo.file) {
+          // Convert local file to base64 for AI analysis
+          return new Promise((resolve) => {
+            const reader = new FileReader()
+            reader.onload = (e) => {
+              resolve({
+                id: photo.id,
+                url: photo.url,
+                created_at: photo.created_at,
+                base64: e.target.result.split(',')[1] // Remove data:image/jpeg;base64, prefix
+              })
+            }
+            reader.readAsDataURL(photo.file)
+          })
+        }
+        return {
+          id: photo.id,
+          url: photo.url,
+          created_at: photo.created_at
+        }
+      }))
+
       // Call the real AI pipeline API
       const response = await fetch('/api/generate-report', {
         method: 'POST',
@@ -170,11 +194,7 @@ export default function ProjectDetail() {
         body: JSON.stringify({
           project_id: params.id,
           date: selectedDate,
-          photos: photos.map(p => ({
-            id: p.id,
-            url: p.url,
-            created_at: p.created_at
-          })),
+          photos: photoData,
           project_name: project?.name || 'Construction Project',
           personnel: selectedPersonnel
         })
