@@ -649,6 +649,67 @@ export default function ProjectDetail() {
           )}
         </div>
       </div>
+
+      {/* Signature Modal */}
+      {showSignatures && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-xl font-semibold">Sign Daily Report</h2>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowSignatures(false)}
+                >
+                  Close
+                </Button>
+              </div>
+              
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-medium mb-2">Owner Signature</h3>
+                  <SignaturePad
+                    onSave={(signature) => setOwnerSignature(signature)}
+                    clearText="Clear Owner Signature"
+                  />
+                </div>
+                
+                <div>
+                  <h3 className="font-medium mb-2">Contractor Signature</h3>
+                  <SignaturePad
+                    onSave={(signature) => setContractorSignature(signature)}
+                    clearText="Clear Contractor Signature"
+                  />
+                </div>
+                
+                <div className="flex gap-2 pt-4">
+                  <Button
+                    onClick={() => {
+                      if (ownerSignature || contractorSignature) {
+                        alert('✅ Signatures saved to report')
+                        setShowSignatures(false)
+                      } else {
+                        alert('Please add at least one signature')
+                      }
+                    }}
+                    className="flex-1"
+                  >
+                    Save Signatures
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowSignatures(false)}
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
