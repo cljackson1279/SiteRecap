@@ -197,12 +197,22 @@ async function generateDailyReport(request) {
       const photo = photos[i]
       
       try {
-        // Download photo and convert to base64
-        const response = await fetch(photo.url)
-        const arrayBuffer = await response.arrayBuffer()
-        const base64 = Buffer.from(arrayBuffer).toString('base64')
+        let base64
         
-        // Analyze photo
+        // Handle both client-provided base64 and database photo URLs
+        if (photo.base64) {
+          // Client provided base64 (demo/test mode)
+          base64 = photo.base64
+        } else if (photo.url) {
+          // Database photo URL (production mode)
+          const response = await fetch(photo.url)
+          const arrayBuffer = await response.arrayBuffer()
+          base64 = Buffer.from(arrayBuffer).toString('base64')
+        } else {
+          throw new Error('No photo data available')
+        }
+        
+        // Analyze photo with the construction-optimized AI
         const analysis = await analyzePhoto(base64, i + 1)
         photoAnalyses.push(analysis)
         
