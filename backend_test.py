@@ -36,40 +36,66 @@ if not BASE_URL:
 
 API_BASE = f"{BASE_URL}/api"
 
-def test_debug_urls():
-    """Test GET /api/debug-urls to verify all URLs are set to https://siterecap.com"""
-    print("\n=== Testing Debug URLs Endpoint ===")
+def test_environment_configuration():
+    """Test 1: Verify GET /api/debug-urls shows https://siterecap.com for all URL variables"""
+    print("\n" + "="*80)
+    print("TEST 1: ENVIRONMENT CONFIGURATION")
+    print("="*80)
     
     try:
+        print(f"🔍 Testing GET {API_BASE}/debug-urls")
         response = requests.get(f"{API_BASE}/debug-urls", timeout=10)
-        print(f"Status: {response.status_code}")
+        
+        print(f"📊 Status Code: {response.status_code}")
         
         if response.status_code == 200:
             data = response.json()
             print("✅ Debug URLs endpoint working")
             
-            # Verify environment variables
+            # Check environment variables
             env_vars = data.get('environment_variables', {})
             expected_domain = 'https://siterecap.com'
             
-            url_checks = {
-                'NEXT_PUBLIC_BASE_URL': env_vars.get('NEXT_PUBLIC_BASE_URL'),
-                'NEXT_PUBLIC_SITE_URL': env_vars.get('NEXT_PUBLIC_SITE_URL'),
-                'NEXTAUTH_URL': env_vars.get('NEXTAUTH_URL')
-            }
-            
+            url_vars = ['NEXT_PUBLIC_BASE_URL', 'NEXT_PUBLIC_SITE_URL', 'NEXTAUTH_URL']
             all_correct = True
-            for var_name, value in url_checks.items():
+            
+            for var in url_vars:
+                value = env_vars.get(var)
                 if value == expected_domain:
-                    print(f"✅ {var_name}: {value}")
+                    print(f"✅ {var}: {value}")
                 else:
-                    print(f"❌ {var_name}: {value} (expected: {expected_domain})")
+                    print(f"❌ {var}: {value} (expected: {expected_domain})")
                     all_correct = False
             
-            if all_correct:
-                print("✅ All URL environment variables correctly set to https://siterecap.com")
-                return True
+            # Check other important variables
+            email_from = env_vars.get('EMAIL_FROM')
+            if email_from == 'support@siterecap.com':
+                print(f"✅ EMAIL_FROM: {email_from}")
             else:
+                print(f"❌ EMAIL_FROM: {email_from} (expected: support@siterecap.com)")
+                all_correct = False
+            
+            supabase_url = env_vars.get('NEXT_PUBLIC_SUPABASE_URL')
+            if supabase_url and supabase_url.startswith('https://'):
+                print(f"✅ NEXT_PUBLIC_SUPABASE_URL: {supabase_url}")
+            else:
+                print(f"❌ NEXT_PUBLIC_SUPABASE_URL: {supabase_url}")
+                all_correct = False
+            
+            return all_correct
+            
+        elif response.status_code == 404:
+            print("❌ Debug URLs endpoint not found (404)")
+            print("🔍 This endpoint should be available for production verification")
+            return False
+        else:
+            print(f"❌ Unexpected status code: {response.status_code}")
+            print(f"Response: {response.text}")
+            return False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Request failed: {e}")
+        return False
                 print("❌ Some URL environment variables are not set correctly")
                 return False
         else:
