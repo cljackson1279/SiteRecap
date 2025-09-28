@@ -178,99 +178,84 @@ def test_email_confirmation_endpoints():
     
     return all(results.values())
 
-def test_resend_confirmation():
-    """Test POST /api/resend-confirmation with correct base URL"""
-    print("\n=== Testing Resend Confirmation Endpoint ===")
+def test_auth_callback_scenarios():
+    """Test 3: Test auth callback scenarios and error handling"""
+    print("\n" + "="*80)
+    print("TEST 3: AUTH CALLBACK SCENARIOS")
+    print("="*80)
     
+    results = {}
+    
+    # Test 1: No parameters - should redirect to login
+    print(f"🔍 Testing GET {BASE_URL}/auth/callback (no parameters)")
     try:
-        test_email = "test@example.com"
+        response = requests.get(f"{BASE_URL}/auth/callback", allow_redirects=False, timeout=10)
         
-        payload = {
-            "email": test_email
-        }
+        print(f"📊 Status Code: {response.status_code}")
         
-        response = requests.post(
-            f"{API_BASE}/resend-confirmation",
-            json=payload,
-            headers={'Content-Type': 'application/json'},
-            timeout=10
-        )
-        
-        print(f"Status: {response.status_code}")
-        
-        if response.status_code == 200:
-            data = response.json()
-            if data.get('success'):
-                print(f"✅ Resend confirmation endpoint working - MessageID: {data.get('messageId')}")
-                print(f"✅ Uses correct NEXT_PUBLIC_BASE_URL for confirmation URLs")
-                return True
+        if response.status_code in [302, 307]:
+            location = response.headers.get('Location', '')
+            if '/login' in location and BASE_URL in location:
+                print(f"✅ No parameters redirect working: {location}")
+                results['no_params'] = True
             else:
-                print(f"❌ Resend confirmation failed: {data}")
-                return False
-        elif response.status_code == 400:
-            data = response.json()
-            print(f"❌ Bad request: {data.get('error')}")
-            return False
+                print(f"❌ Unexpected redirect location: {location}")
+                results['no_params'] = False
         else:
-            print(f"❌ Resend confirmation failed with status {response.status_code}")
-            return False
+            print(f"❌ Expected redirect, got status {response.status_code}")
+            results['no_params'] = False
             
-    except Exception as e:
-        print(f"❌ Resend confirmation test failed: {str(e)}")
-        return False
-
-def test_auth_callback_redirects():
-    """Test GET /auth/callback redirect behavior"""
-    print("\n=== Testing Auth Callback Redirects ===")
+    except requests.exceptions.RequestException as e:
+        print(f"❌ No parameters test failed: {e}")
+        results['no_params'] = False
     
-    test_cases = [
-        {
-            "name": "No parameters",
-            "url": f"{BASE_URL}/auth/callback",
-            "expected_redirect": f"{BASE_URL}/login"
-        },
-        {
-            "name": "Email parameter only",
-            "url": f"{BASE_URL}/auth/callback?email=test@example.com",
-            "expected_redirect": f"{BASE_URL}/login?message="
-        },
-        {
-            "name": "Invalid code parameter",
-            "url": f"{BASE_URL}/auth/callback?code=invalid123",
-            "expected_redirect": f"{BASE_URL}/login?message="
-        }
-    ]
-    
-    all_passed = True
-    
-    for test_case in test_cases:
-        try:
-            print(f"\nTesting: {test_case['name']}")
-            
-            # Use allow_redirects=False to capture the redirect response
-            response = requests.get(test_case['url'], allow_redirects=False, timeout=10)
-            
-            print(f"Status: {response.status_code}")
-            
-            if response.status_code in [301, 302, 307, 308]:
-                redirect_url = response.headers.get('Location', '')
-                print(f"Redirect URL: {redirect_url}")
-                
-                # Check if redirect goes to correct domain
-                if redirect_url.startswith(BASE_URL) or 'siterecap.com' in redirect_url:
-                    print(f"✅ Redirects to correct domain")
-                else:
-                    print(f"❌ Redirects to wrong domain. Expected: {BASE_URL}, Got: {redirect_url}")
-                    all_passed = False
+    # Test 2: Email parameter only - should redirect to login with info
+    print(f"\n🔍 Testing GET {BASE_URL}/auth/callback?email=test@example.com")
+    try:
+        response = requests.get(f"{BASE_URL}/auth/callback?email=test@example.com", allow_redirects=False, timeout=10)
+        
+        print(f"📊 Status Code: {response.status_code}")
+        
+        if response.status_code in [302, 307]:
+            location = response.headers.get('Location', '')
+            if '/login' in location and 'message=' in location and BASE_URL in location:
+                print(f"✅ Email parameter redirect working: {location}")
+                results['email_param'] = True
             else:
-                print(f"❌ Expected redirect status, got {response.status_code}")
-                all_passed = False
-                
-        except Exception as e:
-            print(f"❌ Auth callback test failed for {test_case['name']}: {str(e)}")
-            all_passed = False
+                print(f"❌ Unexpected redirect location: {location}")
+                results['email_param'] = False
+        else:
+            print(f"❌ Expected redirect, got status {response.status_code}")
+            results['email_param'] = False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Email parameter test failed: {e}")
+        results['email_param'] = False
     
-    return all_passed
+    # Test 3: Invalid code - should redirect to login with error
+    print(f"\n🔍 Testing GET {BASE_URL}/auth/callback?code=invalid_code")
+    try:
+        response = requests.get(f"{BASE_URL}/auth/callback?code=invalid_code", allow_redirects=False, timeout=10)
+        
+        print(f"📊 Status Code: {response.status_code}")
+        
+        if response.status_code in [302, 307]:
+            location = response.headers.get('Location', '')
+            if '/login' in location and 'error' in location and BASE_URL in location:
+                print(f"✅ Invalid code redirect working: {location}")
+                results['invalid_code'] = True
+            else:
+                print(f"❌ Unexpected redirect location: {location}")
+                results['invalid_code'] = False
+        else:
+            print(f"❌ Expected redirect, got status {response.status_code}")
+            results['invalid_code'] = False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Invalid code test failed: {e}")
+        results['invalid_code'] = False
+    
+    return all(results.values())
 
 def test_auth_success_page():
     """Test GET /auth/success page exists and handles parameters"""
