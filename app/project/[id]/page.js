@@ -107,17 +107,48 @@ export default function ProjectDetail() {
     setUploading(true)
     
     try {
-      // Simulate upload
       for (const file of files) {
-        const newPhoto = {
-          id: Date.now() + Math.random(),
-          url: URL.createObjectURL(file),
-          created_at: new Date().toISOString()
+        // Create FormData for file upload
+        const formData = new FormData()
+        formData.append('file', file)
+        formData.append('project_id', params.id)
+        formData.append('shot_date', selectedDate)
+
+        // Try to upload via API first
+        try {
+          const response = await fetch('/api/upload-photo', {
+            method: 'POST',
+            body: formData
+          })
+
+          const data = await response.json()
+          
+          if (data.success) {
+            // API upload successful
+            const newPhoto = {
+              id: data.photo.id,
+              url: data.photo.url,
+              created_at: data.photo.created_at
+            }
+            setPhotos(prev => [...prev, newPhoto])
+          } else {
+            throw new Error(data.error || 'Upload failed')
+          }
+        } catch (apiError) {
+          console.log('API upload failed, using local preview:', apiError)
+          // Fallback to local preview for demo/test mode
+          const newPhoto = {
+            id: Date.now() + Math.random(),
+            url: URL.createObjectURL(file),
+            created_at: new Date().toISOString(),
+            file: file // Store file for AI analysis
+          }
+          setPhotos(prev => [...prev, newPhoto])
         }
-        setPhotos(prev => [...prev, newPhoto])
       }
     } catch (error) {
       console.error('Upload error:', error)
+      alert('❌ Failed to upload photos. Please try again.')
     } finally {
       setUploading(false)
     }
