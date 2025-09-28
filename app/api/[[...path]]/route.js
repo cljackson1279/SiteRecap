@@ -1193,12 +1193,42 @@ async function autoCloseProjects(request) {
   }
 }
 
+
+// GET /api/debug-urls
+async function debugUrls() {
+  try {
+    const envVars = {
+      NEXT_PUBLIC_BASE_URL: process.env.NEXT_PUBLIC_BASE_URL,
+      NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+      NEXTAUTH_URL: process.env.NEXTAUTH_URL,
+      NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+      EMAIL_FROM: process.env.EMAIL_FROM,
+      NODE_ENV: process.env.NODE_ENV
+    }
+    
+    return NextResponse.json({
+      success: true,
+      environment_variables: envVars,
+      timestamp: new Date().toISOString(),
+      message: "URL configuration debug information"
+    })
+  } catch (error) {
+    return NextResponse.json({
+      success: false,
+      error: error.message,
+      timestamp: new Date().toISOString()
+    }, { status: 500 })
+  }
+}
+
 // Main route handler
 export async function GET(request) {
   const url = new URL(request.url)
   const path = url.pathname.replace('/api', '')
   
   switch (path) {
+        case '/debug-urls':
+      return debugUrls()
     case '/gemini-health':
       return geminiHealth()
     case '/project-count':
