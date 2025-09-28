@@ -51,65 +51,43 @@ def print_error(message):
 def print_info(message):
     print(f"ℹ️  {message}")
 
-def test_environment_configuration():
-    """Test 1: Verify GET /api/debug-urls shows https://siterecap.com for all URL variables"""
-    print("\n" + "="*80)
-    print("TEST 1: ENVIRONMENT CONFIGURATION")
-    print("="*80)
+def test_email_configuration():
+    """Test GET /api/test-email - Verify Resend configuration and environment variables"""
+    print_test_header("EMAIL CONFIGURATION TEST")
     
     try:
-        print(f"🔍 Testing GET {API_BASE}/debug-urls")
-        response = requests.get(f"{API_BASE}/debug-urls", timeout=10)
-        
+        print(f"🔍 Testing GET {API_BASE}/test-email")
+        response = requests.get(f"{API_BASE}/test-email", timeout=30)
         print(f"📊 Status Code: {response.status_code}")
         
         if response.status_code == 200:
             data = response.json()
-            print("✅ Debug URLs endpoint working")
+            print(f"📄 Response: {json.dumps(data, indent=2)}")
             
-            # Check environment variables
-            env_vars = data.get('environment_variables', {})
-            expected_domain = 'https://siterecap.com'
-            
-            url_vars = ['NEXT_PUBLIC_BASE_URL', 'NEXT_PUBLIC_SITE_URL', 'NEXTAUTH_URL']
-            all_correct = True
-            
-            for var in url_vars:
-                value = env_vars.get(var)
-                if value == expected_domain:
-                    print(f"✅ {var}: {value}")
-                else:
-                    print(f"❌ {var}: {value} (expected: {expected_domain})")
-                    all_correct = False
-            
-            # Check other important variables
-            email_from = env_vars.get('EMAIL_FROM')
-            if email_from == 'support@siterecap.com':
-                print(f"✅ EMAIL_FROM: {email_from}")
+            # Check configuration
+            if data.get('resend_api_key_present'):
+                print_success("RESEND_API_KEY is present")
             else:
-                print(f"❌ EMAIL_FROM: {email_from} (expected: support@siterecap.com)")
-                all_correct = False
-            
-            supabase_url = env_vars.get('NEXT_PUBLIC_SUPABASE_URL')
-            if supabase_url and supabase_url.startswith('https://'):
-                print(f"✅ NEXT_PUBLIC_SUPABASE_URL: {supabase_url}")
+                print_error("RESEND_API_KEY is missing")
+                
+            if data.get('email_from'):
+                print_success(f"EMAIL_FROM configured: {data.get('email_from')}")
             else:
-                print(f"❌ NEXT_PUBLIC_SUPABASE_URL: {supabase_url}")
-                all_correct = False
-            
-            return all_correct
-            
-        elif response.status_code == 404:
-            print("❌ Debug URLs endpoint not found (404)")
-            print("🔍 This endpoint should be available for production verification")
-            return False
+                print_error("EMAIL_FROM not configured")
+                
+            if data.get('base_url'):
+                print_success(f"BASE_URL configured: {data.get('base_url')}")
+            else:
+                print_error("BASE_URL not configured")
+                
+            return data.get('resend_api_key_present') and data.get('email_from') and data.get('base_url')
         else:
-            print(f"❌ Unexpected status code: {response.status_code}")
+            print_error(f"GET /api/test-email failed with status {response.status_code}")
             print(f"Response: {response.text}")
             return False
             
-    except requests.exceptions.RequestException as e:
-        print(f"❌ Request failed: {e}")
+    except Exception as e:
+        print_error(f"GET /api/test-email failed: {str(e)}")
         return False
 
 def test_email_confirmation_endpoints():
