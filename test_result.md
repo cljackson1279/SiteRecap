@@ -155,6 +155,9 @@ backend:
         - working: true
           agent: "testing"
           comment: "✅ AUTH CALLBACK ENDPOINT WORKING: Successfully handles authentication callbacks with proper redirects. Fixed TypeScript syntax error ('as any' removed). Redirects to home page when no parameters provided (307 status). Includes error handling for invalid codes with error redirect parameters."
+        - working: true
+          agent: "testing"
+          comment: "✅ AUTH CALLBACK RE-TESTED: All redirect scenarios working correctly (3/3 test cases passed). No parameters → /login, Email parameter → /login with info message, Invalid code → /login with error message. Uses correct base URL for redirects. Supabase auth error handling working (invalid codes properly handled with error redirects)."
 
   - task: "Test email configuration (RESEND_API_KEY and EMAIL_FROM)"
     implemented: true
