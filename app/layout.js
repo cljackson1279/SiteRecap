@@ -18,8 +18,6 @@ export const metadata = {
   category: 'construction software',
 }
 
-import { organizationSchema, softwareApplicationSchema, generateStructuredData } from '@/lib/structured-data'
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
