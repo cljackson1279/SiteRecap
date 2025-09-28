@@ -20,14 +20,18 @@ https://siterecap.com
 **Redirect URLs (add these):**
 ```
 https://siterecap.com/auth/callback
+https://siterecap.com/auth/success
 https://siterecap.com/login
 https://siterecap.com/dashboard
 ```
 
-**Remove any localhost or development URLs:**
+**⚠️ CRITICAL: Remove ALL old URLs:**
 - Remove: `http://localhost:3000/auth/callback`
 - Remove: `https://dailysitereport.preview.emergentagent.com/auth/callback`
-- Remove any other development URLs
+- Remove: `https://site-recap-exaw.vercel.app/auth/callback`
+- Remove: `https://site-recap-exaw.vercel.app/login`
+- Remove: ANY Vercel URLs (*.vercel.app)
+- Remove: ANY preview URLs (*.emergentagent.com)
 
 ### 2. Email Templates Configuration
 
