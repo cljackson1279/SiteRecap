@@ -16,6 +16,7 @@ export default function Dashboard() {
   const [showNewProject, setShowNewProject] = useState(false)
   const [newProjectName, setNewProjectName] = useState('')
   const [loadingProjects, setLoadingProjects] = useState(true)
+  const [showConfirmationSuccess, setShowConfirmationSuccess] = useState(false)
 
   // Redirect to login if not authenticated
   useEffect(() => {
