@@ -580,3 +580,31 @@ agent_communication:
         • Fixed TypeScript syntax error in auth callback route ('as any' removed)
         
         🎯 CONCLUSION: Authentication system is FULLY FUNCTIONAL and ready for production. All email confirmation flows working correctly with proper Supabase integration."
+    - agent: "testing"
+      message: "EMAIL CONFIRMATION FLOW COMPREHENSIVE RE-TESTING COMPLETED: Tested complete email confirmation flow after Supabase configuration updates. Results:
+        
+        ✅ ALL EMAIL CONFIRMATION ENDPOINTS WORKING:
+        1. POST /api/send-confirmation - ✅ Working (messageId: d2ce7af1-434f-4567-be7c-bf628df3a68d)
+        2. POST /api/resend-confirmation - ✅ Working (messageId: 6e7593ae-bef9-4caa-96fc-e34d53dfb1e3)
+        3. GET /auth/callback - ✅ Working (all redirect scenarios: 3/3 passed)
+        4. Email Configuration - ✅ RESEND_API_KEY and EMAIL_FROM=support@siterecap.com verified
+        5. Error Handling - ✅ Proper 400 responses for missing parameters
+        
+        ✅ SUPABASE AUTH CONFIGURATION VERIFIED:
+        • Login page uses hardcoded https://siterecap.com/auth/callback for emailRedirectTo
+        • This ensures Supabase native auth emails always redirect to production domain
+        • Magic link signin and signup flows will work correctly with siterecap.com
+        
+        ❌ CRITICAL URL CONFIGURATION ISSUE IDENTIFIED:
+        • NEXT_PUBLIC_BASE_URL = https://dailysitereport.preview.emergentagent.com (WRONG)
+        • Should be: https://siterecap.com
+        • Impact: Custom resend-confirmation emails generate preview domain URLs
+        • Supabase auth unaffected due to hardcoded production URLs
+        
+        🎯 MIXED CONFIGURATION STATUS:
+        • Supabase native emails → ✅ Redirect to siterecap.com (GOOD)
+        • Custom resend emails → ❌ Redirect to preview domain (NEEDS FIX)
+        • All endpoints functional → ✅ Working correctly
+        • Email service integration → ✅ Resend API working
+        
+        🔧 RECOMMENDATION: Update NEXT_PUBLIC_BASE_URL to https://siterecap.com for consistent production URLs across all email confirmation flows."
