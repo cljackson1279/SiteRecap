@@ -12,20 +12,8 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Email required' }, { status: 400 })
     }
 
-    // Use Supabase resend method for confirmation emails
-    const { error } = await supabase.auth.resend({
-      type: 'signup',
-      email: email,
-      options: {
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`
-      }
-    })
-
-    if (error && error.message !== 'User already registered') {
-      throw error
-    }
-
-    // Send our custom branded confirmation email
+    // For testing purposes, we'll just send our custom branded confirmation email
+    // In production, you might want to use Supabase's resend method first
     const confirmationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback?email=${encodeURIComponent(email)}`
     
     const emailHtml = `
