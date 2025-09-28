@@ -97,48 +97,86 @@ def test_environment_configuration():
         print(f"❌ Request failed: {e}")
         return False
 
-def test_send_confirmation():
-    """Test POST /api/send-confirmation with siterecap.com URLs"""
-    print("\n=== Testing Send Confirmation Endpoint ===")
+def test_email_confirmation_endpoints():
+    """Test 2: Test Complete Email Confirmation Flow endpoints"""
+    print("\n" + "="*80)
+    print("TEST 2: EMAIL CONFIRMATION ENDPOINTS")
+    print("="*80)
     
+    results = {}
+    
+    # Test send-confirmation endpoint
+    print(f"🔍 Testing POST {API_BASE}/send-confirmation")
     try:
-        test_email = "test@example.com"
-        confirmation_url = f"{BASE_URL}/auth/callback?code=test123&email={test_email}"
-        
         payload = {
-            "email": test_email,
-            "confirmationUrl": confirmation_url
+            "email": "test@example.com",
+            "confirmationUrl": f"{BASE_URL}/auth/callback?email=test@example.com"
         }
+        response = requests.post(f"{API_BASE}/send-confirmation", json=payload, timeout=10)
         
-        response = requests.post(
-            f"{API_BASE}/send-confirmation",
-            json=payload,
-            headers={'Content-Type': 'application/json'},
-            timeout=10
-        )
-        
-        print(f"Status: {response.status_code}")
+        print(f"📊 Status Code: {response.status_code}")
         
         if response.status_code == 200:
             data = response.json()
-            if data.get('success'):
-                print(f"✅ Send confirmation endpoint working - MessageID: {data.get('messageId')}")
-                print(f"✅ Accepts siterecap.com URLs correctly")
-                return True
+            if data.get('success') and data.get('messageId'):
+                print(f"✅ Send confirmation working - MessageID: {data.get('messageId')}")
+                results['send_confirmation'] = True
             else:
                 print(f"❌ Send confirmation failed: {data}")
-                return False
-        elif response.status_code == 400:
-            data = response.json()
-            print(f"❌ Bad request: {data.get('error')}")
-            return False
+                results['send_confirmation'] = False
         else:
             print(f"❌ Send confirmation failed with status {response.status_code}")
-            return False
+            print(f"Response: {response.text}")
+            results['send_confirmation'] = False
             
-    except Exception as e:
-        print(f"❌ Send confirmation test failed: {str(e)}")
-        return False
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Send confirmation request failed: {e}")
+        results['send_confirmation'] = False
+    
+    # Test resend-confirmation endpoint
+    print(f"\n🔍 Testing POST {API_BASE}/resend-confirmation")
+    try:
+        payload = {
+            "email": "test@example.com"
+        }
+        response = requests.post(f"{API_BASE}/resend-confirmation", json=payload, timeout=10)
+        
+        print(f"📊 Status Code: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            if data.get('success') and data.get('messageId'):
+                print(f"✅ Resend confirmation working - MessageID: {data.get('messageId')}")
+                results['resend_confirmation'] = True
+            else:
+                print(f"❌ Resend confirmation failed: {data}")
+                results['resend_confirmation'] = False
+        else:
+            print(f"❌ Resend confirmation failed with status {response.status_code}")
+            print(f"Response: {response.text}")
+            results['resend_confirmation'] = False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Resend confirmation request failed: {e}")
+        results['resend_confirmation'] = False
+    
+    # Test error handling - missing email parameter
+    print(f"\n🔍 Testing error handling (missing email)")
+    try:
+        response = requests.post(f"{API_BASE}/send-confirmation", json={}, timeout=10)
+        
+        if response.status_code == 400:
+            print("✅ Error handling working - returns 400 for missing email")
+            results['error_handling'] = True
+        else:
+            print(f"❌ Error handling failed - expected 400, got {response.status_code}")
+            results['error_handling'] = False
+            
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Error handling test failed: {e}")
+        results['error_handling'] = False
+    
+    return all(results.values())
 
 def test_resend_confirmation():
     """Test POST /api/resend-confirmation with correct base URL"""
