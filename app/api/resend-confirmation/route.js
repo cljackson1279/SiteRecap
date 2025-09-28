@@ -12,9 +12,13 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Email required' }, { status: 400 })
     }
 
-    // Generate a new confirmation token
-    const { data, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
-      redirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`
+    // Use Supabase resend method for confirmation emails
+    const { error } = await supabaseAdmin.auth.resend({
+      type: 'signup',
+      email: email,
+      options: {
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback`
+      }
     })
 
     if (error && error.message !== 'User already registered') {
