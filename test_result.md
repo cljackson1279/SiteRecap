@@ -137,6 +137,9 @@ backend:
         - working: true
           agent: "testing"
           comment: "✅ RESEND CONFIRMATION ENDPOINT WORKING: Successfully sends resend confirmation emails via Resend API. Returns success response with messageId. Proper error handling for missing email parameter (returns 400). Custom branded email template with SiteRecap styling and confirmation URL."
+        - working: true
+          agent: "testing"
+          comment: "✅ RESEND CONFIRMATION RE-TESTED: Endpoint fully functional with messageId 6e7593ae-bef9-4caa-96fc-e34d53dfb1e3. ⚠️ URL CONFIGURATION ISSUE: Uses NEXT_PUBLIC_BASE_URL (preview domain) instead of siterecap.com for confirmation URLs. Generates: preview.emergentagent.com/auth/callback?email=user instead of siterecap.com/auth/callback. Error handling verified (400 for missing email)."
 
   - task: "Test GET /api/auth/callback endpoint"
     implemented: true
