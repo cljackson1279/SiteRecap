@@ -226,6 +226,42 @@ def test_markdown_generation_quality():
         print(f"❌ Markdown generation test error: {e}")
         return False
 
+def test_ai_pipeline_code_structure():
+    """Test the AI pipeline code structure and enhancements"""
+    print("\n🔍 Testing AI Pipeline Code Structure...")
+    
+    try:
+        # Test if we can access the AI pipeline file
+        import sys
+        sys.path.append('/app')
+        
+        # Try to import the AI pipeline module
+        try:
+            from lib.ai_pipeline import analyzePhoto, generateReport, generateOwnerMarkdown, generateGCMarkdown
+            print("✅ AI Pipeline modules successfully imported")
+            
+            # Check if functions exist
+            functions_exist = {
+                'analyzePhoto': callable(analyzePhoto),
+                'generateReport': callable(generateReport), 
+                'generateOwnerMarkdown': callable(generateOwnerMarkdown),
+                'generateGCMarkdown': callable(generateGCMarkdown)
+            }
+            
+            for func_name, exists in functions_exist.items():
+                status = "✅" if exists else "❌"
+                print(f"  {status} {func_name} function available")
+            
+            return all(functions_exist.values())
+            
+        except ImportError as e:
+            print(f"❌ Failed to import AI pipeline: {e}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ AI Pipeline code structure test error: {e}")
+        return False
+
 def main():
     """Run all AI pipeline tests"""
     print("🚀 Starting Enhanced AI Pipeline Testing")
