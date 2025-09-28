@@ -19,9 +19,37 @@ def create_test_image_base64():
     # This is a minimal 1x1 pixel JPEG image in base64
     return "/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/2wBDAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQH/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwA/8A"
 
+def test_working_demo_endpoints():
+    """Test endpoints that work in demo mode first"""
+    print("🧪 Testing Working Demo Endpoints...")
+    
+    # Test email-report endpoint (known to work in demo mode)
+    print("  📧 Testing /api/email-report endpoint...")
+    try:
+        response = requests.post(f"{API_BASE}/email-report", json={
+            "report_id": "1",
+            "variant": "owner"
+        }, timeout=10)
+        
+        if response.status_code == 200:
+            print("  ✅ Email report endpoint working")
+            data = response.json()
+            if 'success' in data and data['success']:
+                print("    📊 Demo mode functioning correctly")
+            return True
+        else:
+            print(f"  ❌ Email report failed: {response.status_code}")
+            return False
+    except Exception as e:
+        print(f"  ❌ Email report error: {e}")
+        return False
+
 def test_generate_report_endpoint():
     """Test the /api/generate-report endpoint with enhanced AI pipeline"""
     print("🧪 Testing /api/generate-report endpoint...")
+    
+    # First test if the endpoint exists and responds
+    print("  🔍 Testing endpoint availability...")
     
     # Test data for construction site analysis - using UUID format
     test_data = {
