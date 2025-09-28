@@ -93,6 +93,9 @@ export default function Login() {
           return
         }
 
+        console.log('Starting signup process for:', email.trim())
+        console.log('Signup redirect URL:', 'https://siterecap.com/auth/callback')
+        
         const { data, error } = await supabase.auth.signUp({
           email: email.trim(),
           password: password,
@@ -101,15 +104,31 @@ export default function Login() {
           }
         })
 
-        if (error) throw error
+        console.log('Supabase signup response:', { data, error })
+
+        if (error) {
+          console.error('Signup error:', error)
+          throw error
+        }
 
         if (data.user) {
+          console.log('User created:', {
+            id: data.user.id,
+            email: data.user.email,
+            email_confirmed_at: data.user.email_confirmed_at,
+            confirmation_sent_at: data.user.confirmation_sent_at
+          })
+          
           if (!data.user.email_confirmed_at) {
             setMessage('Almost there! Check your email and click the confirmation link to complete signup. The email should arrive within a few minutes.')
+            console.log('Confirmation email should have been sent by Supabase')
           } else {
             setMessage('Account created successfully! Redirecting...')
             setTimeout(() => router.push('/dashboard'), 2000)
           }
+        } else {
+          console.error('No user data returned from signup')
+          setError('Signup failed - no user data returned')
         }
       } else {
         // Try sign in with email and password first
