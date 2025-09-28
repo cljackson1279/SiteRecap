@@ -93,9 +93,6 @@ export default function Login() {
           return
         }
 
-        console.log('Starting signup process for:', email.trim())
-        console.log('Signup redirect URL:', 'https://siterecap.com/auth/callback')
-        
         const { data, error } = await supabase.auth.signUp({
           email: email.trim(),
           password: password,
@@ -104,50 +101,15 @@ export default function Login() {
           }
         })
 
-        console.log('Supabase signup response:', { data, error })
-
-        if (error) {
-          console.error('Signup error:', error)
-          throw error
-        }
+        if (error) throw error
 
         if (data.user) {
-          console.log('User created:', {
-            id: data.user.id,
-            email: data.user.email,
-            email_confirmed_at: data.user.email_confirmed_at,
-            confirmation_sent_at: data.user.confirmation_sent_at
-          })
-          
           if (!data.user.email_confirmed_at) {
-            // Send custom confirmation email as backup since Supabase SMTP may not be configured
-            try {
-              console.log('Sending custom confirmation email via Resend...')
-              const emailResponse = await fetch('/api/resend-confirmation', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email: email.trim() })
-              })
-              
-              const emailData = await emailResponse.json()
-              if (emailData.success) {
-                console.log('Custom confirmation email sent successfully:', emailData.messageId)
-              } else {
-                console.error('Custom email send failed:', emailData.error)
-              }
-            } catch (emailError) {
-              console.error('Custom email send error:', emailError)
-            }
-            
-            setMessage('Almost there! Check your email and click the confirmation link to complete signup. The email should arrive within a few minutes.')
-            console.log('Confirmation email sent via custom Resend integration')
+            setMessage('Almost there! Check your email and click the confirmation link to complete signup.')
           } else {
             setMessage('Account created successfully! Redirecting...')
             setTimeout(() => router.push('/dashboard'), 2000)
           }
-        } else {
-          console.error('No user data returned from signup')
-          setError('Signup failed - no user data returned')
         }
       } else {
         // Try sign in with email and password first
