@@ -12,9 +12,9 @@ export async function POST(request) {
       return NextResponse.json({ error: 'Email required' }, { status: 400 })
     }
 
-    // For testing purposes, we'll just send our custom branded confirmation email
-    // In production, you might want to use Supabase's resend method first
-    const confirmationUrl = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/callback?email=${encodeURIComponent(email)}`
+    // Send custom branded confirmation email with proper URL
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://siterecap.com'
+    const confirmationUrl = `${baseUrl}/auth/callback?email=${encodeURIComponent(email)}`
     
     const emailHtml = `
 <!DOCTYPE html>
