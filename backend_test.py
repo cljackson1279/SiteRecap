@@ -418,55 +418,69 @@ def test_environment_variables():
         print_info("This is expected in production - environment variables will be checked via other endpoints")
         return True
 
-def run_comprehensive_test():
-    """Run all tests and provide summary"""
-    print("🏗️ SiteRecap Backend Testing - Email Confirmation and Security Setup")
-    print("=" * 80)
-    print(f"🕒 Test started at: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"🌐 Testing against: {BASE_URL}")
+def run_comprehensive_email_tests():
+    """Run all email service tests"""
+    print(f"\n🏗️ SiteRecap Email Service Testing Suite")
+    print(f"Testing against: {BASE_URL}")
+    print(f"Timestamp: {datetime.now().isoformat()}")
+    print(f"Focus: Email service functionality and signup confirmation email debugging")
     
-    test_results = {}
+    test_results = []
     
-    # Run all tests
-    test_results['environment_config'] = test_environment_configuration()
-    test_results['email_endpoints'] = test_email_confirmation_endpoints()
-    test_results['auth_callbacks'] = test_auth_callback_scenarios()
-    test_results['auth_success_page'] = test_auth_success_page()
-    test_results['security_features'] = test_security_features()
-    test_results['production_readiness'] = test_production_readiness()
+    # Run all email-focused tests
+    test_results.append(("Email Configuration (GET /api/test-email)", test_email_configuration()))
+    test_results.append(("Environment Variables", test_environment_variables()))
+    test_results.append(("Email Sending (POST /api/test-email)", test_email_sending()))
+    test_results.append(("Send Confirmation Email", test_send_confirmation()))
+    test_results.append(("Resend Confirmation Email", test_resend_confirmation()))
+    test_results.append(("Error Handling", test_error_handling()))
+    test_results.append(("Supabase Signup Flow Investigation", test_supabase_signup_flow()))
     
     # Summary
-    print("\n" + "="*80)
-    print("COMPREHENSIVE TEST SUMMARY")
-    print("="*80)
+    print_test_header("TEST SUMMARY")
     
-    passed_tests = []
-    failed_tests = []
+    passed = 0
+    total = len(test_results)
     
-    for test_name, result in test_results.items():
-        status = "✅ PASS" if result else "❌ FAIL"
-        test_display = test_name.replace('_', ' ').title()
-        print(f"{status} - {test_display}")
-        
+    for test_name, result in test_results:
         if result:
-            passed_tests.append(test_display)
+            print_success(f"{test_name}: PASSED")
+            passed += 1
         else:
-            failed_tests.append(test_display)
+            print_error(f"{test_name}: FAILED")
     
-    print(f"\n📊 RESULTS: {len(passed_tests)}/{len(test_results)} tests passed")
+    print(f"\n📊 Overall Results: {passed}/{total} tests passed")
     
-    if failed_tests:
-        print(f"\n❌ FAILED TESTS:")
-        for test in failed_tests:
-            print(f"   • {test}")
+    # Detailed analysis for debugging signup confirmation email issue
+    print_test_header("SIGNUP CONFIRMATION EMAIL ISSUE ANALYSIS")
     
-    if len(passed_tests) == len(test_results):
-        print("\n🎉 ALL TESTS PASSED - System ready for production deployment!")
-        return True
+    if passed == total:
+        print_success("🎉 ALL EMAIL SERVICE TESTS PASSED!")
+        print_info("✅ Resend API configuration is working correctly")
+        print_info("✅ Test email endpoints are functional")
+        print_info("✅ Custom confirmation email endpoints are working")
+        print_info("✅ Supabase configuration appears correct")
+        print_info("📧 If signup confirmation emails are still not working, the issue may be:")
+        print_info("   1. Supabase dashboard email settings (Site URL, Redirect URLs)")
+        print_info("   2. Supabase email template configuration")
+        print_info("   3. Domain verification in Resend dashboard")
+        print_info("   4. Production deployment environment variables")
     else:
-        print(f"\n⚠️  {len(failed_tests)} test(s) failed - Review issues before deployment")
-        return False
+        print_error(f"⚠️  {total - passed} test(s) failed")
+        print_info("🔍 Issues found that may be causing signup confirmation email problems:")
+        
+        failed_tests = [test_name for test_name, result in test_results if not result]
+        for failed_test in failed_tests:
+            print_error(f"   • {failed_test}")
+        
+        print_info("\n📋 Recommended actions:")
+        print_info("   1. Fix the failed tests above")
+        print_info("   2. Verify Resend API key is valid and domain is verified")
+        print_info("   3. Check Supabase dashboard email configuration")
+        print_info("   4. Ensure production environment variables match local")
+    
+    return passed == total
 
 if __name__ == "__main__":
-    success = run_comprehensive_test()
+    success = run_comprehensive_email_tests()
     sys.exit(0 if success else 1)
