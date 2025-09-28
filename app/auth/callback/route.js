@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
 
 export async function GET(request) {
   const requestUrl = new URL(request.url)
@@ -11,8 +11,15 @@ export async function GET(request) {
   // Use the correct base URL from environment or fallback
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || requestUrl.origin
 
+  // Create a new Supabase client for server-side auth handling
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  )
+
   if (code) {
     try {
+      // Exchange the code for a session
       const { data, error } = await supabase.auth.exchangeCodeForSession(code)
       
       if (error) {
@@ -20,11 +27,28 @@ export async function GET(request) {
         return NextResponse.redirect(`${baseUrl}/login?message=Unable to confirm email. Please try again.&type=error`)
       }
 
-      // Successfully confirmed - redirect to dashboard if session exists, otherwise login
-      if (data?.user) {
-        return NextResponse.redirect(`${baseUrl}/dashboard?confirmed=true`)
+      if (data?.session && data?.user) {
+        // Create response with redirect to dashboard
+        const response = NextResponse.redirect(`${baseUrl}/dashboard?confirmed=true`)
+        
+        // Set the session cookies for the user
+        response.cookies.set('sb-access-token', data.session.access_token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'lax',
+          maxAge: data.session.expires_in
+        })
+        
+        response.cookies.set('sb-refresh-token', data.session.refresh_token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'lax',
+          maxAge: 30 * 24 * 60 * 60 // 30 days
+        })
+
+        return response
       } else {
-        return NextResponse.redirect(`${baseUrl}/login?message=Email confirmed successfully! Please log in with your credentials.&type=success`)
+        return NextResponse.redirect(`${baseUrl}/login?message=Email confirmed but session creation failed. Please log in manually.&type=error`)
       }
     } catch (error) {
       console.error('Callback processing error:', error)
