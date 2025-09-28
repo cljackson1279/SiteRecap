@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-SiteRecap Email Service Testing Suite
-Tests email service functionality and debug signup confirmation email issue
-Focus: Test email service configuration, test-email endpoints, and debug signup flow
+SiteRecap Complete Signup Flow Testing Suite
+Tests the complete signup flow with custom email backup solution as requested in review
+Focus: Supabase signup process, custom email fallback, complete email confirmation flow, logging and debugging
 """
 
 import requests
