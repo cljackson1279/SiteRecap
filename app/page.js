@@ -95,17 +95,67 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* Benefits Section with Keywords */}
+        <div className="container mx-auto px-4 py-16 bg-gray-50">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4">Why Choose SiteRecap for Construction Daily Reports?</h2>
+            <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+              Our AI-powered construction daily reporting software is designed specifically for contractors, 
+              builders, and construction project managers who need professional documentation.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold">⚡ Save Time on Documentation</h3>
+              <p className="text-muted-foreground">
+                Stop spending hours writing daily construction reports. Our AI analyzes your photos and generates 
+                professional reports in minutes, not hours.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold">📋 Professional Construction Reports</h3>
+              <p className="text-muted-foreground">
+                Generate separate reports for owners and general contractors with weather data, 
+                safety compliance, and progress tracking automatically included.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold">🔐 Secure Project Management</h3>
+              <p className="text-muted-foreground">
+                Keep your construction project data secure with enterprise-grade security. 
+                All reports and photos are stored safely and accessible only to your team.
+              </p>
+            </div>
+            <div className="space-y-4">
+              <h3 className="text-xl font-semibold">📱 Mobile-Friendly Interface</h3>
+              <p className="text-muted-foreground">
+                Upload photos and generate reports directly from your smartphone on the job site. 
+                Works perfectly on mobile devices for busy contractors.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* CTA Section */}
         <div className="container mx-auto px-4 py-16">
           <Card className="max-w-2xl mx-auto text-center bg-white">
             <CardContent className="p-8">
-              <h2 className="text-2xl font-bold mb-4">Ready to upgrade your daily reports?</h2>
+              <h2 className="text-2xl font-bold mb-4">Ready to upgrade your construction daily reports?</h2>
               <p className="text-muted-foreground mb-6">
-                Join contractors already using SiteRecap to save hours on documentation.
+                Join contractors already using SiteRecap to save hours on daily report documentation.
+                <br />
+                <a href="/demo" className="text-primary hover:underline">Try our free demo</a> or 
+                <a href="/pricing" className="text-primary hover:underline ml-1">view pricing plans</a>.
               </p>
-              <Button size="lg" onClick={handleGetStarted}>
-                Get Started
-              </Button>
+              <div className="flex gap-4 justify-center">
+                <Button size="lg" onClick={handleGetStarted}>
+                  Start Free Trial
+                </Button>
+                <Button size="lg" variant="outline" onClick={() => router.push('/demo')}>
+                  Try Demo
+                </Button>
+              </div>
             </CardContent>
           </Card>
         </div>
