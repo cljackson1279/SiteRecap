@@ -19,6 +19,37 @@ export default function Login() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
+  const handleResendConfirmation = async () => {
+    if (!email) {
+      setError('Please enter your email address first')
+      return
+    }
+
+    setLoading(true)
+    setError('')
+    
+    try {
+      const response = await fetch('/api/resend-confirmation', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() })
+      })
+
+      const data = await response.json()
+      
+      if (data.success) {
+        setMessage('✅ Confirmation email sent! Check your inbox and spam folder.')
+      } else {
+        setError(data.error || 'Failed to send confirmation email')
+      }
+    } catch (error) {
+      console.error('Resend error:', error)
+      setError('Failed to send confirmation email. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   const handleAuth = async (e) => {
     e.preventDefault()
     if (!email.trim()) {
