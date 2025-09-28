@@ -1,18 +1,33 @@
 #!/usr/bin/env python3
 """
-SiteRecap Authentication System Backend Testing
-Tests the newly implemented authentication and email confirmation system
+Backend Test Suite for SiteRecap Email Confirmation Flow
+Tests email confirmation URLs and authentication flow after Supabase configuration updates
 """
 
 import requests
 import json
 import os
-import time
+import sys
 from urllib.parse import urlparse, parse_qs
 
-# Get base URL from environment - use local development server for testing
-BASE_URL = "http://localhost:3000"
+# Get base URL from environment
+def get_base_url():
+    try:
+        with open('/app/.env', 'r') as f:
+            for line in f:
+                if line.startswith('NEXT_PUBLIC_BASE_URL='):
+                    return line.split('=', 1)[1].strip()
+    except:
+        pass
+    return 'https://dailysitereport.preview.emergentagent.com'
+
+BASE_URL = get_base_url()
 API_BASE = f"{BASE_URL}/api"
+
+print(f"🧪 TESTING EMAIL CONFIRMATION FLOW")
+print(f"📍 Base URL: {BASE_URL}")
+print(f"📍 API Base: {API_BASE}")
+print("=" * 80)
 
 def test_environment_variables():
     """Test that all required environment variables are properly configured"""
