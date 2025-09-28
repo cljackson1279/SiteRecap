@@ -261,21 +261,24 @@ async function generateDailyReport(request) {
           raw_json: rawJson,
           status: 'generated'
         }], {
-        onConflict: 'project_id,date'
-      })
-      .select()
-    
-    if (reportError) throw reportError
+          onConflict: 'project_id,date'
+        })
+        .select()
+      
+      if (reportError) throw reportError
+      report = reportData[0]
+    }
     
     return NextResponse.json({
       success: true,
-      report: report[0],
+      report: report,
       owner_markdown: ownerMd,
       gc_markdown: gcMd,
       debug: {
         photos_analyzed: photos.length,
         weather_included: !!weather,
-        model_used: 'gemini'
+        model_used: 'gemini-2.0-flash-exp',
+        mode: clientPhotos ? 'demo' : 'production'
       }
     })
     
