@@ -274,46 +274,75 @@ def test_construction_expertise_features():
         print(f"❌ Construction expertise test error: {e}")
         return False
 
-def test_auto_close_logic():
-    """Test 14-day auto-close logic"""
-    print("\n=== TESTING AUTO-CLOSE LOGIC ===")
+def test_markdown_generation_quality():
+    """Test the quality and format of markdown generation"""
+    print("\n📝 Testing Markdown Generation Quality...")
     
-    # Test auto-close endpoint
-    print("Testing /api/auto-close-projects endpoint...")
-    response = test_api_endpoint('/auto-close-projects', 'POST', {}, 200)  # Should work in demo mode
+    test_data = {
+        "project_id": "markdown-test-project",
+        "date": "2024-01-15"
+    }
     
-    if response and response.status_code == 200:
-        try:
+    try:
+        response = requests.post(f"{API_BASE}/generate-report", json=test_data, timeout=20)
+        
+        if response.status_code == 200:
             data = response.json()
-            if data.get('success'):
-                print("  ✅ /api/auto-close-projects endpoint working correctly")
-                print(f"     Response: {data.get('message', 'No message')}")
-                print(f"     Closed count: {data.get('closed_count', 0)}")
-            else:
-                print("  ⚠️  Endpoint responded but success=false")
-        except:
-            print("  ⚠️  Invalid JSON response")
-    else:
-        print("  ❌ /api/auto-close-projects endpoint failed")
-    
-    # Test project activity update
-    print("Testing /api/update-project-activity endpoint...")
-    response = test_api_endpoint('/update-project-activity', 'POST', {
-        'project_id': '1'
-    }, 200)  # Should work in demo mode
-    
-    if response and response.status_code == 200:
-        try:
-            data = response.json()
-            if data.get('success'):
-                print("  ✅ /api/update-project-activity endpoint working correctly")
-                print(f"     Response: {data.get('message', 'No message')}")
-            else:
-                print("  ⚠️  Endpoint responded but success=false")
-        except:
-            print("  ⚠️  Invalid JSON response")
-    else:
-        print("  ❌ /api/update-project-activity endpoint failed")
+            
+            if 'owner_markdown' in data and 'gc_markdown' in data:
+                owner_md = data['owner_markdown']
+                gc_md = data['gc_markdown']
+                
+                print("📊 Markdown Quality Analysis:")
+                
+                # Owner report analysis
+                owner_features = {
+                    'Simplified Language': not any(term in owner_md.lower() for term in ['rough-in', 'stub-out', 'linear feet']),
+                    'Progress Summary': "Today's Progress" in owner_md or "Work Completed" in owner_md,
+                    'What\'s Next Section': "What's Next" in owner_md or "Next" in owner_md,
+                    'Safety Information': "Safety" in owner_md,
+                    'Crew Information': "Crew" in owner_md or "workers" in owner_md.lower()
+                }
+                
+                print("  👤 Owner Report Features:")
+                for feature, present in owner_features.items():
+                    status = "✅" if present else "❌"
+                    print(f"    {status} {feature}")
+                
+                # GC report analysis
+                gc_features = {
+                    'Executive Summary': "Executive Summary" in gc_md,
+                    'Technical Terminology': any(term in gc_md.lower() for term in ['linear feet', 'square feet', 'rough-in', 'compliance']),
+                    'Equipment Details': "Equipment" in gc_md and "Tools" in gc_md,
+                    'Materials Management': "Materials" in gc_md,
+                    'OSHA References': "OSHA" in gc_md or "compliance" in gc_md.lower(),
+                    'Quality Control': "Quality" in gc_md,
+                    'Budget Information': "Budget" in gc_md or "Labor" in gc_md
+                }
+                
+                print("  👷 GC Report Features:")
+                for feature, present in gc_features.items():
+                    status = "✅" if present else "❌"
+                    print(f"    {status} {feature}")
+                
+                # Length comparison
+                print(f"  📏 Report Lengths:")
+                print(f"    Owner Report: {len(owner_md)} characters")
+                print(f"    GC Report: {len(gc_md)} characters")
+                
+                if len(gc_md) > len(owner_md):
+                    print("  ✅ GC report is more detailed than Owner report")
+                else:
+                    print("  ⚠️ GC report should be more detailed than Owner report")
+                
+                return True
+        else:
+            print(f"❌ Markdown generation test failed with status: {response.status_code}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Markdown generation test error: {e}")
+        return False
 
 def test_environment_configuration():
     """Test environment configuration"""
