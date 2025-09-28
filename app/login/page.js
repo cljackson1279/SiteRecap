@@ -236,6 +236,17 @@ export default function Login() {
                   <p>💡 No password? We'll send a secure link to your email</p>
                 </div>
               )}
+
+              {/* Resend Confirmation */}
+              <div className="pt-2">
+                <button
+                  onClick={handleResendConfirmation}
+                  className="text-xs text-muted-foreground hover:text-primary"
+                  disabled={loading}
+                >
+                  Need a new confirmation email? Click here
+                </button>
+              </div>
             </div>
           </CardContent>
         </Card>
