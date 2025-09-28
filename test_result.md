@@ -528,13 +528,9 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Test POST /api/send-confirmation endpoint"
-    - "Test POST /api/resend-confirmation endpoint"
-    - "Test GET /api/auth/callback endpoint"
-    - "Test email configuration (RESEND_API_KEY and EMAIL_FROM)"
-    - "Test Supabase authentication configuration"
-    - "Test authentication flow (signup with email confirmation)"
-    - "Test signin with password and magic links"
+    - "Test new /auth/success client-side handler"
+    - "Test console logging for email confirmation debugging"
+    - "Test updated email confirmation auto-login flow end-to-end"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
