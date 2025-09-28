@@ -209,7 +209,7 @@ def test_construction_expertise_features():
     
     # Test with construction-specific project data
     construction_test_data = {
-        "project_id": "construction-site-demo",
+        "project_id": "550e8400-e29b-41d4-a716-446655440002",
         "date": "2024-01-15"
     }
     
