@@ -229,6 +229,29 @@ export default function Dashboard() {
           </div>
         )}
 
+        {/* Trial Started Message */}
+        {trialMessage && (
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex items-center gap-2">
+              <div className="text-blue-600">🎉</div>
+              <div>
+                <h3 className="font-semibold text-blue-800">Free Trial Active!</h3>
+                <p className="text-sm text-blue-700">
+                  {trialMessage}
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setTrialMessage('')}
+                className="ml-auto text-blue-600 hover:text-blue-800"
+              >
+                ×
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* Dashboard Content */}
         <div className="flex items-center justify-between mb-8">
           <div>
