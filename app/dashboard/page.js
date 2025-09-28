@@ -18,6 +18,18 @@ export default function Dashboard() {
   const [loadingProjects, setLoadingProjects] = useState(true)
   const [showConfirmationSuccess, setShowConfirmationSuccess] = useState(false)
 
+  // Check for confirmation success
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    if (urlParams.get('confirmed') === 'true') {
+      setShowConfirmationSuccess(true)
+      // Clear the URL parameter
+      window.history.replaceState({}, document.title, '/dashboard')
+      // Auto-hide after 5 seconds
+      setTimeout(() => setShowConfirmationSuccess(false), 5000)
+    }
+  }, [])
+
   // Redirect to login if not authenticated
   useEffect(() => {
     if (!loading && !user) {
