@@ -177,7 +177,7 @@ def test_ai_pipeline_components():
     
     # Test with minimal data to check API connectivity
     minimal_test_data = {
-        "project_id": "minimal-test",
+        "project_id": "550e8400-e29b-41d4-a716-446655440001",
         "date": "2024-01-15"
     }
     
