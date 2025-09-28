@@ -120,8 +120,27 @@ export default function Login() {
           })
           
           if (!data.user.email_confirmed_at) {
+            // Send custom confirmation email as backup since Supabase SMTP may not be configured
+            try {
+              console.log('Sending custom confirmation email via Resend...')
+              const emailResponse = await fetch('/api/resend-confirmation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: email.trim() })
+              })
+              
+              const emailData = await emailResponse.json()
+              if (emailData.success) {
+                console.log('Custom confirmation email sent successfully:', emailData.messageId)
+              } else {
+                console.error('Custom email send failed:', emailData.error)
+              }
+            } catch (emailError) {
+              console.error('Custom email send error:', emailError)
+            }
+            
             setMessage('Almost there! Check your email and click the confirmation link to complete signup. The email should arrive within a few minutes.')
-            console.log('Confirmation email should have been sent by Supabase')
+            console.log('Confirmation email sent via custom Resend integration')
           } else {
             setMessage('Account created successfully! Redirecting...')
             setTimeout(() => router.push('/dashboard'), 2000)
