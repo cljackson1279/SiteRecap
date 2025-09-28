@@ -195,6 +195,29 @@ export default function Dashboard() {
       </div>
 
       <div className="container mx-auto p-6">
+        {/* Success Message */}
+        {showConfirmationSuccess && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div className="flex items-center gap-2">
+              <div className="text-green-600">✅</div>
+              <div>
+                <h3 className="font-semibold text-green-800">Welcome to SiteRecap!</h3>
+                <p className="text-sm text-green-700">
+                  Your account has been confirmed successfully. You can now create projects and generate professional construction reports.
+                </p>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowConfirmationSuccess(false)}
+                className="ml-auto text-green-600 hover:text-green-800"
+              >
+                ×
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* Dashboard Content */}
         <div className="flex items-center justify-between mb-8">
           <div>
