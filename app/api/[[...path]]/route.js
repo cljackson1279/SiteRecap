@@ -238,26 +238,29 @@ async function generateDailyReport(request) {
     const ownerMd = generateOwnerMarkdown(reportData, weather, project.name, date)
     const gcMd = generateGCMarkdown(reportData, weather, project.name, date)
     
-    // Save report to database
+    // Save report to database (skip in demo mode with client photos)
     const rawJson = {
       stage_a: photoAnalyses,
       stage_b: reportData,
       weather,
       photos: photos.map(p => ({ id: p.id, url: p.url })),
       generated_at: new Date().toISOString(),
-      model_used: 'gemini'
+      model_used: 'gemini-2.0-flash-exp'
     }
     
-    const { data: report, error: reportError } = await supabaseAdmin
-      .from('reports')
-      .upsert([{
-        project_id,
-        date,
-        owner_md: ownerMd,
-        gc_md: gcMd,
-        raw_json: rawJson,
-        status: 'generated'
-      }], {
+    let report = null
+    if (!clientPhotos) {
+      // Only save to database in production mode
+      const { data: reportData, error: reportError } = await supabaseAdmin
+        .from('reports')
+        .upsert([{
+          project_id,
+          date,
+          owner_md: ownerMd,
+          gc_md: gcMd,
+          raw_json: rawJson,
+          status: 'generated'
+        }], {
         onConflict: 'project_id,date'
       })
       .select()
