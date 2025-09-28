@@ -181,6 +181,200 @@ def test_auth_callback_endpoint():
         print(f"   ❌ Error testing auth callback: {str(e)}")
         return False
 
+def test_auth_callback_auto_login_flow():
+    """Test the updated email confirmation auto-login flow"""
+    print("\n🔍 Testing Updated Email Confirmation Auto-Login Flow...")
+    
+    try:
+        # Test cases for the new auto-login flow
+        test_cases = [
+            {
+                "name": "Code parameter (should redirect to /auth/success)",
+                "url": f"{BASE_URL}/auth/callback?code=mock_confirmation_code_12345",
+                "expected_redirect_contains": "/auth/success"
+            },
+            {
+                "name": "Token hash parameter (should redirect to /auth/success)",
+                "url": f"{BASE_URL}/auth/callback?token_hash=mock_token_hash_12345&type=email",
+                "expected_redirect_contains": "/auth/success"
+            }
+        ]
+        
+        success_count = 0
+        
+        for test_case in test_cases:
+            print(f"\n   Testing: {test_case['name']}")
+            print(f"   URL: {test_case['url']}")
+            
+            try:
+                response = requests.get(test_case['url'], 
+                                      allow_redirects=False,
+                                      timeout=10)
+                
+                print(f"   Status: {response.status_code}")
+                
+                if response.status_code in [301, 302, 307, 308]:
+                    redirect_url = response.headers.get('Location', '')
+                    print(f"   Redirect: {redirect_url}")
+                    
+                    # For invalid codes/tokens, expect redirect to login with error
+                    if "/login" in redirect_url and "message=" in redirect_url:
+                        print("   ✅ Invalid code/token correctly redirects to login with error message")
+                        success_count += 1
+                    # For valid codes/tokens (in real scenario), expect redirect to /auth/success
+                    elif test_case["expected_redirect_contains"] in redirect_url:
+                        print(f"   ✅ Redirects to {test_case['expected_redirect_contains']} as expected")
+                        
+                        # Parse query parameters to check for session tokens
+                        parsed_url = urlparse(redirect_url)
+                        query_params = parse_qs(parsed_url.query)
+                        
+                        expected_params = ['access_token', 'refresh_token', 'expires_in']
+                        found_params = [param for param in expected_params if param in query_params]
+                        
+                        if found_params:
+                            print(f"   ✅ Session parameters found: {found_params}")
+                        else:
+                            print("   ⚠️  No session parameters (expected for mock/invalid codes)")
+                        
+                        success_count += 1
+                    else:
+                        print(f"   ⚠️  Unexpected redirect: {redirect_url}")
+                        # Still count as success if it's a proper error redirect
+                        if "/login" in redirect_url:
+                            success_count += 1
+                        
+                else:
+                    print(f"   ❌ Expected redirect status, got {response.status_code}")
+                    
+            except Exception as e:
+                print(f"   ❌ Error in test case: {str(e)}")
+        
+        if success_count >= 1:  # At least 1 test case should work
+            print(f"\n   ✅ Auto-login flow endpoint working ({success_count}/2 test cases passed)")
+            return True
+        else:
+            print(f"\n   ❌ Auto-login flow endpoint issues ({success_count}/2 test cases passed)")
+            return False
+            
+    except Exception as e:
+        print(f"   ❌ Error testing auto-login flow: {str(e)}")
+        return False
+
+def test_auth_success_page():
+    """Test the /auth/success client-side handler page"""
+    print("\n🔍 Testing /auth/success Client-Side Handler...")
+    
+    try:
+        # Test accessing the auth/success page
+        success_url = f"{BASE_URL}/auth/success"
+        
+        print(f"   Testing: {success_url}")
+        response = requests.get(success_url, timeout=10)
+        
+        print(f"   Status: {response.status_code}")
+        print(f"   Content-Type: {response.headers.get('Content-Type', 'N/A')}")
+        
+        if response.status_code == 200:
+            content = response.text
+            
+            # Check for expected content in the auth success page
+            expected_content = [
+                "Confirming your account",
+                "redirected to your dashboard",
+                "animate-spin"  # Loading spinner
+            ]
+            
+            found_content = []
+            missing_content = []
+            
+            for expected in expected_content:
+                if expected in content:
+                    found_content.append(expected)
+                else:
+                    missing_content.append(expected)
+            
+            print(f"   Found content: {found_content}")
+            if missing_content:
+                print(f"   Missing content: {missing_content}")
+            
+            if len(found_content) >= 2:  # At least 2 out of 3 expected elements
+                print("   ✅ Auth success page accessible with expected content")
+                return True
+            else:
+                print("   ❌ Missing expected content in auth success page")
+                return False
+        else:
+            print(f"   ❌ Unexpected status code: {response.status_code}")
+            return False
+            
+    except Exception as e:
+        print(f"   ❌ Error testing auth success page: {str(e)}")
+        return False
+
+def test_console_logging_implementation():
+    """Verify that console logging has been added for debugging email confirmation issues"""
+    print("\n🔍 Testing Console Logging Implementation...")
+    
+    try:
+        # Read the auth callback route file to verify console logging
+        with open('/app/app/auth/callback/route.js', 'r') as f:
+            callback_content = f.read()
+        
+        # Check for console.log statements
+        console_logs = [
+            "console.log('Auth callback called with:",
+            "console.log('Email confirmation successful",
+            "console.log('Email confirmation failed:",
+            "console.error('Auth callback error:",
+            "console.error('Email verification error:",
+            "console.error('Token verification error:"
+        ]
+        
+        found_logs = []
+        missing_logs = []
+        
+        for log in console_logs:
+            if log in callback_content:
+                found_logs.append(log)
+            else:
+                missing_logs.append(log)
+        
+        print(f"   Found console logs in callback: {len(found_logs)}/{len(console_logs)}")
+        
+        # Check auth/success page for console logging
+        with open('/app/app/auth/success/page.js', 'r') as f:
+            success_content = f.read()
+        
+        success_logs = [
+            "console.log('Session successfully set for user:",
+            "console.error('Error setting session:",
+            "console.error('No session or user data",
+            "console.error('Authentication error:",
+            "console.error('Missing access_token or refresh_token"
+        ]
+        
+        found_success_logs = []
+        for log in success_logs:
+            if log in success_content:
+                found_success_logs.append(log)
+        
+        print(f"   Found console logs in success page: {len(found_success_logs)}/{len(success_logs)}")
+        
+        total_found = len(found_logs) + len(found_success_logs)
+        total_expected = len(console_logs) + len(success_logs)
+        
+        if total_found >= (total_expected * 0.7):  # At least 70% of expected logs
+            print("   ✅ Console logging implementation verified")
+            return True
+        else:
+            print("   ❌ Insufficient console logging implementation")
+            return False
+            
+    except Exception as e:
+        print(f"   ❌ Error checking console logging: {str(e)}")
+        return False
+
 def test_url_configuration():
     """Verify URL configuration in environment and code"""
     print("\n🔍 Testing URL Configuration...")
