@@ -26,6 +26,7 @@ export async function POST(request) {
 
     // Create or retrieve customer
     let customer
+    let isNewCustomer = false
     const existingCustomers = await stripe.customers.list({
       email: userEmail,
       limit: 1
@@ -33,6 +34,13 @@ export async function POST(request) {
 
     if (existingCustomers.data.length > 0) {
       customer = existingCustomers.data[0]
+      // Check if customer has had previous subscriptions
+      const subscriptions = await stripe.subscriptions.list({
+        customer: customer.id,
+        limit: 1
+      })
+      
+      isNewCustomer = subscriptions.data.length === 0
     } else {
       customer = await stripe.customers.create({
         email: userEmail,
@@ -41,6 +49,7 @@ export async function POST(request) {
           plan: planId
         }
       })
+      isNewCustomer = true
     }
 
     // Create checkout session with 7-day trial
