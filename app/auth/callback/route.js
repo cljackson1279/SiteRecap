@@ -6,6 +6,10 @@ export async function GET(request) {
   const code = requestUrl.searchParams.get('code')
   const token_hash = requestUrl.searchParams.get('token_hash')
   const type = requestUrl.searchParams.get('type')
+  const email = requestUrl.searchParams.get('email')
+  
+  // Use the correct base URL from environment or fallback
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || requestUrl.origin
 
   if (code) {
     try {
@@ -13,14 +17,14 @@ export async function GET(request) {
       
       if (error) {
         console.error('Auth callback error:', error)
-        return NextResponse.redirect(`${requestUrl.origin}/login?error=Unable to confirm email`)
+        return NextResponse.redirect(`${baseUrl}/login?message=Unable to confirm email. Please try again.&type=error`)
       }
 
-      // Successfully confirmed - redirect to dashboard
-      return NextResponse.redirect(`${requestUrl.origin}/dashboard?confirmed=true`)
+      // Successfully confirmed - redirect to login with success message
+      return NextResponse.redirect(`${baseUrl}/login?message=Email confirmed successfully! Please log in with your credentials.&type=success`)
     } catch (error) {
       console.error('Callback processing error:', error)
-      return NextResponse.redirect(`${requestUrl.origin}/login?error=Authentication failed`)
+      return NextResponse.redirect(`${baseUrl}/login?message=Email confirmation failed. Please try again.&type=error`)
     }
   }
 
@@ -34,17 +38,22 @@ export async function GET(request) {
 
       if (error) {
         console.error('Email verification error:', error)
-        return NextResponse.redirect(`${requestUrl.origin}/login?error=Email confirmation failed`)
+        return NextResponse.redirect(`${baseUrl}/login?message=Email confirmation failed. Please try again.&type=error`)
       }
 
-      // Successfully confirmed - redirect to dashboard
-      return NextResponse.redirect(`${requestUrl.origin}/dashboard?confirmed=true`)
+      // Successfully confirmed - redirect to login with success message
+      return NextResponse.redirect(`${baseUrl}/login?message=Email confirmed successfully! Please log in with your credentials.&type=success`)
     } catch (error) {
       console.error('Token verification error:', error)
-      return NextResponse.redirect(`${requestUrl.origin}/login?error=Confirmation failed`)
+      return NextResponse.redirect(`${baseUrl}/login?message=Confirmation failed. Please try again.&type=error`)
     }
   }
 
-  // If no code or token, redirect to home
-  return NextResponse.redirect(`${requestUrl.origin}/`)
+  // Simple email confirmation fallback (for custom emails)
+  if (email) {
+    return NextResponse.redirect(`${baseUrl}/login?message=Please check your email for confirmation and then log in with your credentials.&type=info`)
+  }
+
+  // If no parameters, redirect to login
+  return NextResponse.redirect(`${baseUrl}/login`)
 }
