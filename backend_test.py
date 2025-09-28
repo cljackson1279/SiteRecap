@@ -10,8 +10,8 @@ import os
 import time
 from urllib.parse import urlparse, parse_qs
 
-# Get base URL from environment
-BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://siterecap.com')
+# Get base URL from environment - use local development server for testing
+BASE_URL = "http://localhost:3000"
 API_BASE = f"{BASE_URL}/api"
 
 def test_environment_variables():
