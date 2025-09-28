@@ -17,6 +17,7 @@ export default function Dashboard() {
   const [newProjectName, setNewProjectName] = useState('')
   const [loadingProjects, setLoadingProjects] = useState(true)
   const [showConfirmationSuccess, setShowConfirmationSuccess] = useState(false)
+  const [trialMessage, setTrialMessage] = useState('')
 
   // Check for confirmation success and trial status
   useEffect(() => {
