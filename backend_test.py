@@ -344,7 +344,60 @@ def test_complete_flow_simulation():
     except Exception as e:
         print(f"❌ Complete flow simulation failed: {str(e)}")
         return False
-        if response.status_code == 200:
+
+def main():
+    """Run all email confirmation flow tests"""
+    print("🏗️ SiteRecap Email Confirmation Flow Testing")
+    print("=" * 60)
+    print(f"Testing against: {BASE_URL}")
+    print("=" * 60)
+    
+    test_results = []
+    
+    # Run all tests
+    tests = [
+        ("Debug URLs Verification", test_debug_urls),
+        ("Send Confirmation Endpoint", test_send_confirmation),
+        ("Resend Confirmation Endpoint", test_resend_confirmation),
+        ("Auth Callback Redirects", test_auth_callback_redirects),
+        ("Auth Success Page", test_auth_success_page),
+        ("Error Handling", test_error_handling),
+        ("Complete Flow Simulation", test_complete_flow_simulation)
+    ]
+    
+    for test_name, test_func in tests:
+        try:
+            result = test_func()
+            test_results.append((test_name, result))
+        except Exception as e:
+            print(f"❌ {test_name} failed with exception: {str(e)}")
+            test_results.append((test_name, False))
+    
+    # Summary
+    print("\n" + "=" * 60)
+    print("📊 TEST SUMMARY")
+    print("=" * 60)
+    
+    passed = 0
+    total = len(test_results)
+    
+    for test_name, result in test_results:
+        status = "✅ PASS" if result else "❌ FAIL"
+        print(f"{status} - {test_name}")
+        if result:
+            passed += 1
+    
+    print(f"\nResults: {passed}/{total} tests passed")
+    
+    if passed == total:
+        print("🎉 All email confirmation flow tests PASSED!")
+        return 0
+    else:
+        print("⚠️  Some tests FAILED - see details above")
+        return 1
+
+if __name__ == "__main__":
+    sys.exit(main())
             data = response.json()
             if data.get('success') and data.get('messageId'):
                 print("   ✅ Send confirmation endpoint working - returns success with messageId")
