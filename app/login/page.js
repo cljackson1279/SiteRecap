@@ -19,6 +19,29 @@ export default function Login() {
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
+  // Check for URL parameters on page load
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search)
+    const urlMessage = urlParams.get('message')
+    const messageType = urlParams.get('type')
+    
+    if (urlMessage) {
+      if (messageType === 'success') {
+        setMessage(urlMessage)
+        setError('')
+      } else if (messageType === 'error') {
+        setError(urlMessage)
+        setMessage('')
+      } else {
+        setMessage(urlMessage)
+        setError('')
+      }
+      
+      // Clear URL parameters without refreshing
+      window.history.replaceState({}, document.title, '/login')
+    }
+  }, [])
+
   const handleResendConfirmation = async () => {
     if (!email) {
       setError('Please enter your email address first')
