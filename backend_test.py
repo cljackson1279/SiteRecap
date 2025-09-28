@@ -398,16 +398,6 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
-            data = response.json()
-            if data.get('success') and data.get('messageId'):
-                print("   ✅ Send confirmation endpoint working - returns success with messageId")
-                print(f"   📧 Message ID: {data.get('messageId')}")
-                
-                # Verify the URL was used correctly (we can't check email content, but endpoint accepts it)
-                if "siterecap.com" in test_confirmation_url:
-                    print("   ✅ Confirmation URL contains siterecap.com domain")
-                else:
-                    print("   ❌ Confirmation URL does not contain siterecap.com domain")
                 
                 return True
             else:
