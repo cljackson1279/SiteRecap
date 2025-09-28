@@ -175,6 +175,12 @@ export default function Pricing() {
                     {' '}active projects
                   </p>
                 </div>
+                
+                <div className="mt-3 p-2 bg-green-50 border border-green-200 rounded-lg">
+                  <p className="text-xs text-green-700 font-medium">
+                    🎉 7-day free trial • No charge until day 8
+                  </p>
+                </div>
               </CardHeader>
 
               <CardContent className="space-y-6">
