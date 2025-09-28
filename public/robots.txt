@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+Allow: /pricing
+Allow: /demo
+Allow: /login
+Allow: /faq
+Allow: /terms
+Allow: /privacy
+
+Disallow: /dashboard*
+Disallow: /project*
+Disallow: /api*
+Disallow: /auth*
+
+Sitemap: https://siterecap.com/sitemap.xml
+
+# Construction daily reports and AI automation
+# Relevant for construction management software crawlers
