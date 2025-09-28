@@ -33,9 +33,11 @@ export default function Dashboard() {
     // Check for trial started
     if (urlParams.get('trial') === 'started') {
       const plan = urlParams.get('plan')
-      setMessage(`🎉 Your 7-day free trial has started! You're now on the ${plan} plan with full access to all features.`)
+      setTrialMessage(`🎉 Your 7-day free trial has started! You're now on the ${plan} plan with full access to all features.`)
       // Clear the URL parameters
       window.history.replaceState({}, document.title, '/dashboard')
+      // Auto-hide after 10 seconds
+      setTimeout(() => setTrialMessage(''), 10000)
     }
   }, [])
 
