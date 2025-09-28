@@ -29,11 +29,9 @@ export default function AuthSuccess() {
           }
 
           if (data.session && data.user) {
-            console.log('Session successfully set for user:', data.user.email)
             // Redirect to dashboard with confirmation
             router.push('/dashboard?confirmed=true')
           } else {
-            console.error('No session or user data after setting session')
             router.push('/login?message=Authentication failed. Please log in manually.&type=error')
           }
         } catch (error) {
