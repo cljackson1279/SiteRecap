@@ -351,8 +351,6 @@ if __name__ == "__main__":
     success = main()
     sys.exit(0 if success else 1)
 # Old duplicate code removed - using new email confirmation flow tests above
-
-def test_send_confirmation_endpoint():
     """Test POST /api/send-confirmation endpoint"""
     print("\n=== TESTING /api/send-confirmation ENDPOINT ===")
     
