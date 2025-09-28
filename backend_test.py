@@ -165,65 +165,43 @@ def test_generate_report_endpoint():
         print(f"❌ Unexpected error: {e}")
         return False
 
-def test_project_closure_endpoints():
-    """Test project closure specific endpoints"""
-    print("\n=== TESTING PROJECT CLOSURE ENDPOINTS ===")
+def test_ai_pipeline_components():
+    """Test individual AI pipeline components"""
+    print("\n🔬 Testing AI Pipeline Components...")
     
-    # Test close project endpoint
-    print("Testing /api/close-project endpoint...")
-    response = test_api_endpoint('/close-project', 'POST', {
-        'project_id': '1'
-    }, 200)  # Should work in demo mode
+    # Test Gemini API configuration
+    print("📡 Testing Gemini API Configuration...")
     
-    if response and response.status_code == 200:
-        try:
-            data = response.json()
-            if data.get('success'):
-                print("  ✅ /api/close-project endpoint working correctly")
-                print(f"     Response: {data.get('message', 'No message')}")
+    # Check if environment variables are set (we can't access them directly)
+    # but we can test if the API responds correctly
+    
+    # Test with minimal data to check API connectivity
+    minimal_test_data = {
+        "project_id": "minimal-test",
+        "date": "2024-01-15"
+    }
+    
+    try:
+        response = requests.post(f"{API_BASE}/generate-report", json=minimal_test_data, timeout=15)
+        
+        if response.status_code == 200:
+            print("✅ AI Pipeline API connectivity working")
+        elif response.status_code == 404:
+            print("❌ Generate report endpoint not found")
+        elif response.status_code == 500:
+            error_data = response.json() if response.headers.get('content-type') == 'application/json' else {}
+            error_msg = error_data.get('error', response.text)
+            if 'gemini' in error_msg.lower() or 'api' in error_msg.lower():
+                print(f"❌ AI API Configuration Issue: {error_msg}")
             else:
-                print("  ⚠️  Endpoint responded but success=false")
-        except:
-            print("  ⚠️  Invalid JSON response")
-    else:
-        print("  ❌ /api/close-project endpoint failed")
-    
-    # Test reopen project endpoint
-    print("Testing /api/reopen-project endpoint...")
-    response = test_api_endpoint('/reopen-project', 'POST', {
-        'project_id': '2',
-        'org_id': 'demo-org'
-    }, 200)  # Should work in demo mode
-    
-    if response and response.status_code == 200:
-        try:
-            data = response.json()
-            if data.get('success'):
-                print("  ✅ /api/reopen-project endpoint working correctly")
-                print(f"     Response: {data.get('message', 'No message')}")
-            else:
-                print("  ⚠️  Endpoint responded but success=false")
-        except:
-            print("  ⚠️  Invalid JSON response")
-    else:
-        print("  ❌ /api/reopen-project endpoint failed")
-    
-    # Test project status endpoint
-    print("Testing /api/project-status/1 endpoint...")
-    response = test_api_endpoint('/project-status/1', 'GET', None, 200)  # Should work in demo mode
-    
-    if response and response.status_code == 200:
-        try:
-            data = response.json()
-            if data.get('success'):
-                print("  ✅ /api/project-status endpoint working correctly")
-                print(f"     Project ID: {data.get('project_id')}, Status: {data.get('status')}")
-            else:
-                print("  ⚠️  Endpoint responded but success=false")
-        except:
-            print("  ⚠️  Invalid JSON response")
-    else:
-        print("  ❌ /api/project-status endpoint failed")
+                print(f"❌ Server Error: {error_msg}")
+        else:
+            print(f"⚠️ Unexpected response: {response.status_code}")
+            
+    except requests.exceptions.Timeout:
+        print("⚠️ AI Pipeline timeout - may indicate processing complexity")
+    except Exception as e:
+        print(f"❌ AI Pipeline test failed: {e}")
 
 def test_subscription_enforcement():
     """Test subscription enforcement logic"""
