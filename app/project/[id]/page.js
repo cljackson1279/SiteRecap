@@ -670,16 +670,16 @@ export default function ProjectDetail() {
                 <div>
                   <h3 className="font-medium mb-2">Owner Signature</h3>
                   <SignaturePad
-                    onSave={(signature) => setOwnerSignature(signature)}
-                    clearText="Clear Owner Signature"
+                    title="Owner Signature"
+                    onSignature={(signature) => setOwnerSignature(signature)}
                   />
                 </div>
                 
                 <div>
                   <h3 className="font-medium mb-2">Contractor Signature</h3>
                   <SignaturePad
-                    onSave={(signature) => setContractorSignature(signature)}
-                    clearText="Clear Contractor Signature"
+                    title="Contractor Signature"
+                    onSignature={(signature) => setContractorSignature(signature)}
                   />
                 </div>
                 
