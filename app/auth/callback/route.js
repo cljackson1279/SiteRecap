@@ -56,7 +56,7 @@ export async function GET(request) {
     }
   }
 
-  // Handle email confirmation with token_hash
+  // Handle email confirmation with token_hash (newer Supabase format)
   if (token_hash && type) {
     try {
       const { data, error } = await supabase.auth.verifyOtp({
@@ -69,11 +69,28 @@ export async function GET(request) {
         return NextResponse.redirect(`${baseUrl}/login?message=Email confirmation failed. Please try again.&type=error`)
       }
 
-      // Successfully confirmed - redirect to dashboard if session exists, otherwise login
-      if (data?.user) {
-        return NextResponse.redirect(`${baseUrl}/dashboard?confirmed=true`)
+      if (data?.session && data?.user) {
+        // Create response with redirect to dashboard
+        const response = NextResponse.redirect(`${baseUrl}/dashboard?confirmed=true`)
+        
+        // Set the session cookies for the user
+        response.cookies.set('sb-access-token', data.session.access_token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'lax',
+          maxAge: data.session.expires_in
+        })
+        
+        response.cookies.set('sb-refresh-token', data.session.refresh_token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'lax',
+          maxAge: 30 * 24 * 60 * 60 // 30 days
+        })
+
+        return response
       } else {
-        return NextResponse.redirect(`${baseUrl}/login?message=Email confirmed successfully! Please log in with your credentials.&type=success`)
+        return NextResponse.redirect(`${baseUrl}/login?message=Email confirmed but session creation failed. Please log in manually.&type=error`)
       }
     } catch (error) {
       console.error('Token verification error:', error)
