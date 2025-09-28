@@ -97,10 +97,7 @@ export default function Login() {
           email: email.trim(),
           password: password,
           options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback`,
-            data: {
-              email: email.trim()
-            }
+            emailRedirectTo: `https://siterecap.com/auth/callback`
           }
         })
 
