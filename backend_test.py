@@ -522,7 +522,7 @@ def main():
     
     # Specific findings for email confirmation flow
     print("\n" + "=" * 80)
-    print("🔍 EMAIL CONFIRMATION FLOW ANALYSIS")
+    print("🔍 EMAIL CONFIRMATION AUTO-LOGIN FLOW ANALYSIS")
     print("=" * 80)
     
     if "siterecap.com" not in BASE_URL:
@@ -530,18 +530,33 @@ def main():
         print(f"   Current: {BASE_URL}")
         print("   Expected: https://siterecap.com")
         print("   Impact: Resend confirmation emails will use wrong domain")
+    else:
+        print("✅ GOOD: NEXT_PUBLIC_BASE_URL correctly set to siterecap.com")
     
     if 'https://siterecap.com/auth/callback' in open('/app/app/login/page.js', 'r').read():
         print("✅ GOOD: Login page uses hardcoded siterecap.com URLs for auth redirects")
         print("   This ensures Supabase auth always redirects to production domain")
     
-    if passed >= 4:  # Most tests should pass
-        print("\n🎉 Email confirmation flow is mostly functional!")
+    # Check if auto-login flow components are working
+    auto_login_components = ['auth_callback_auto_login', 'auth_success_page', 'console_logging']
+    auto_login_working = sum(1 for component in auto_login_components if results.get(component, False))
+    
+    print(f"\n📊 AUTO-LOGIN FLOW COMPONENTS: {auto_login_working}/{len(auto_login_components)} working")
+    
+    if auto_login_working >= 2:
+        print("✅ GOOD: Auto-login flow components are mostly functional")
+        print("   Users should be automatically logged in after email confirmation")
+    else:
+        print("❌ ISSUE: Auto-login flow components need attention")
+        print("   Users may experience 'Unable to confirm email' errors")
+    
+    if passed >= 6:  # Most tests should pass including new ones
+        print("\n🎉 Email confirmation auto-login flow is functional!")
         if passed < total:
             print("⚠️  Some configuration issues found - review above")
         return True
     else:
-        print("\n❌ Email confirmation flow has significant issues")
+        print("\n❌ Email confirmation auto-login flow has significant issues")
         return False
 
 if __name__ == "__main__":
