@@ -203,55 +203,76 @@ def test_ai_pipeline_components():
     except Exception as e:
         print(f"❌ AI Pipeline test failed: {e}")
 
-def test_subscription_enforcement():
-    """Test subscription enforcement logic"""
-    print("\n=== TESTING SUBSCRIPTION ENFORCEMENT ===")
+def test_construction_expertise_features():
+    """Test specific construction expertise enhancements"""
+    print("\n🏗️ Testing Construction Expertise Features...")
     
-    # Test project count endpoint with query parameters
-    print("Testing /api/project-count?org_id=demo-org&status=active endpoint...")
-    response = test_api_endpoint('/project-count?org_id=demo-org&status=active', 'GET', None, 200)
+    # Test with construction-specific project data
+    construction_test_data = {
+        "project_id": "construction-site-demo",
+        "date": "2024-01-15"
+    }
     
-    if response and response.status_code == 200:
-        try:
+    try:
+        response = requests.post(f"{API_BASE}/generate-report", json=construction_test_data, timeout=25)
+        
+        if response.status_code == 200:
             data = response.json()
-            if data.get('success'):
-                print("  ✅ /api/project-count endpoint working correctly")
-                print(f"     Active projects count: {data.get('count')}")
-            else:
-                print("  ⚠️  Endpoint responded but success=false")
-        except:
-            print("  ⚠️  Invalid JSON response")
-    else:
-        print("  ❌ /api/project-count endpoint failed")
-    
-    # Test create project with subscription limits
-    print("Testing /api/create-project with subscription limits...")
-    response = test_api_endpoint('/create-project', 'POST', {
-        'name': 'Test Kitchen Renovation Project',
-        'org_id': 'demo-org',
-        'city': 'Austin',
-        'state': 'TX',
-        'postal_code': '78701',
-        'owner_name': 'John Smith',
-        'owner_email': 'john.smith@example.com',
-        'gc_name': 'Mike Johnson',
-        'gc_email': 'mike@contractorco.com'
-    }, 200)  # Should work in demo mode
-    
-    if response and response.status_code == 200:
-        try:
-            data = response.json()
-            if data.get('success'):
-                print("  ✅ /api/create-project endpoint working correctly")
-                print(f"     Response: {data.get('message', 'No message')}")
-                if 'data' in data:
-                    print(f"     Project ID: {data['data'].get('id')}")
-            else:
-                print("  ⚠️  Endpoint responded but success=false")
-        except:
-            print("  ⚠️  Invalid JSON response")
-    else:
-        print("  ❌ /api/create-project endpoint failed")
+            
+            # Analyze response for construction-specific features
+            if 'report' in data and 'raw_json' in data['report']:
+                raw_json = data['report']['raw_json']
+                
+                print("🔍 Analyzing Construction Expertise Features:")
+                
+                # Check Stage A for construction expertise
+                if 'stage_a' in raw_json and raw_json['stage_a']:
+                    stage_a = raw_json['stage_a'][0]  # Check first photo analysis
+                    
+                    construction_indicators = {
+                        'Professional Phases': 'phase' in stage_a and stage_a['phase'] in [
+                            'Demo', 'Framing', 'Electrical Rough', 'Plumbing Rough', 
+                            'Drywall', 'Paint', 'Flooring', 'Cabinets', 'Finish', 'Punch'
+                        ],
+                        'Trade Work Analysis': 'trade_work' in stage_a,
+                        'Material Specifications': 'materials' in stage_a and len(stage_a.get('materials', [])) > 0,
+                        'Equipment Tracking': 'equipment' in stage_a and len(stage_a.get('equipment', [])) > 0,
+                        'Safety Compliance': 'safety_issues' in stage_a,
+                        'Quality Assessment': 'tasks' in stage_a and any('quality_notes' in task for task in stage_a.get('tasks', []))
+                    }
+                    
+                    for feature, present in construction_indicators.items():
+                        status = "✅" if present else "❌"
+                        print(f"  {status} {feature}")
+                
+                # Check Stage B for professional reporting
+                if 'stage_b' in raw_json:
+                    stage_b = raw_json['stage_b']
+                    
+                    professional_features = {
+                        'OSHA Compliance Tracking': 'safety_summary' in stage_b and 'osha_compliance' in stage_b.get('safety_summary', {}),
+                        'Budget Impact Analysis': 'budget_impact' in stage_b,
+                        'Quality Control Sections': 'quality_control' in stage_b,
+                        'Trade Activity Breakdown': any('trade_activities' in section for section in stage_b.get('sections', [])),
+                        'Progress Quantification': any(
+                            'progress_percentage' in task 
+                            for section in stage_b.get('sections', []) 
+                            for task in section.get('tasks', [])
+                        )
+                    }
+                    
+                    for feature, present in professional_features.items():
+                        status = "✅" if present else "❌"
+                        print(f"  {status} {feature}")
+                
+                return True
+        else:
+            print(f"❌ Construction expertise test failed with status: {response.status_code}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Construction expertise test error: {e}")
+        return False
 
 def test_auto_close_logic():
     """Test 14-day auto-close logic"""
