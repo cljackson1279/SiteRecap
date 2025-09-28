@@ -1,24 +1,20 @@
 import './globals.css'
 import { AuthProvider } from '@/lib/auth-context'
+import { generateMetaTags } from '@/lib/seo'
 
 export const metadata = {
-  title: 'SiteRecap',
-  description: 'Transform job site photos into professional daily reports using AI',
+  ...generateMetaTags('home'),
+  metadataBase: new URL('https://siterecap.com'),
   icons: {
     icon: '/favicon.ico',
-    apple: '/siterecap-icon.png',
+    apple: '/apple-touch-icon.png',
+    shortcut: '/favicon.ico',
   },
-  openGraph: {
-    title: 'SiteRecap - AI-Powered Construction Reports',
-    description: 'Transform job site photos into professional daily reports using AI',
-    images: ['/siterecap-icon.png'],
+  manifest: '/manifest.json',
+  verification: {
+    google: 'your-google-verification-code', // Add your Google Search Console verification
   },
-  twitter: {
-    card: 'summary',
-    title: 'SiteRecap',
-    description: 'Transform job site photos into professional daily reports using AI',
-    images: ['/siterecap-icon.png'],
-  },
+  category: 'construction software',
 }
 
 export default function RootLayout({ children }) {
