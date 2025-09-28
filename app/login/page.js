@@ -92,7 +92,7 @@ export default function Login() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                   email: email.trim(),
-                  confirmationUrl: `${window.location.origin}/auth/callback?code=${data.user.id}`
+                  confirmationUrl: `https://siterecap.com/auth/callback?code=${data.user.id}`
                 })
               })
             } catch (emailError) {
