@@ -1,17 +1,39 @@
 #!/usr/bin/env python3
 """
-Backend Test Suite for SiteRecap Email Confirmation Flow
-Tests the complete signup and email confirmation flow after Vercel and Supabase configuration updates
+Comprehensive Backend Testing for SiteRecap Email Confirmation and Security Setup
+Testing Agent - Final comprehensive testing of complete email confirmation and security setup
 """
 
 import requests
 import json
-import sys
 import os
-from urllib.parse import urlparse, parse_qs
+import sys
+from datetime import datetime
 
 # Get base URL from environment
-BASE_URL = os.getenv('NEXT_PUBLIC_BASE_URL', 'https://siterecap.com')
+def get_base_url():
+    """Get the base URL for testing from environment variables"""
+    # Read from .env file
+    env_vars = {}
+    try:
+        with open('/app/.env', 'r') as f:
+            for line in f:
+                if '=' in line and not line.strip().startswith('#'):
+                    key, value = line.strip().split('=', 1)
+                    env_vars[key] = value
+    except FileNotFoundError:
+        print("❌ .env file not found")
+        return None
+    
+    base_url = env_vars.get('NEXT_PUBLIC_BASE_URL', 'https://siterecap.com')
+    print(f"🌐 Using base URL: {base_url}")
+    return base_url
+
+BASE_URL = get_base_url()
+if not BASE_URL:
+    print("❌ Could not determine base URL")
+    sys.exit(1)
+
 API_BASE = f"{BASE_URL}/api"
 
 def test_debug_urls():
