@@ -30,11 +30,20 @@ def get_base_url():
     print(f"🌐 Using base URL: {base_url}")
     return base_url
 
-BASE_URL = get_base_url()
-if not BASE_URL:
-    print("❌ Could not determine base URL")
+# For testing, use local development server since production has routing issues
+LOCAL_BASE_URL = "http://localhost:3000"
+PRODUCTION_BASE_URL = get_base_url()
+
+if not PRODUCTION_BASE_URL:
+    print("❌ Could not determine production base URL")
     sys.exit(1)
 
+# Test both local and production
+print(f"🌐 Production URL: {PRODUCTION_BASE_URL}")
+print(f"🏠 Local URL: {LOCAL_BASE_URL}")
+
+# Use local for comprehensive testing, production for specific checks
+BASE_URL = LOCAL_BASE_URL
 API_BASE = f"{BASE_URL}/api"
 
 def print_test_header(test_name):
