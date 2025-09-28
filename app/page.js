@@ -40,11 +40,11 @@ export default function HomePage() {
           <div className="text-center max-w-4xl mx-auto">
             <div className="text-6xl mb-6">🏗️</div>
             <h1 className="text-5xl font-bold text-brand-text mb-6">
-              SiteRecap
+              AI-Powered Construction Daily Reports
             </h1>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-              Transform job site photos into professional daily reports using AI. 
-              Built specifically for contractors who want to save time on documentation while keeping projects transparent.
+              Transform construction site photos into professional daily reports with AI. 
+              Generate automated construction reports for owners and contractors in minutes, not hours.
             </p>
             <div className="flex gap-4 justify-center">
               <Button size="lg" onClick={handleGetStarted}>
