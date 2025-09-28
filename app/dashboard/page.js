@@ -18,7 +18,7 @@ export default function Dashboard() {
   const [loadingProjects, setLoadingProjects] = useState(true)
   const [showConfirmationSuccess, setShowConfirmationSuccess] = useState(false)
 
-  // Check for confirmation success
+  // Check for confirmation success and trial status
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search)
     if (urlParams.get('confirmed') === 'true') {
@@ -27,6 +27,14 @@ export default function Dashboard() {
       window.history.replaceState({}, document.title, '/dashboard')
       // Auto-hide after 5 seconds
       setTimeout(() => setShowConfirmationSuccess(false), 5000)
+    }
+    
+    // Check for trial started
+    if (urlParams.get('trial') === 'started') {
+      const plan = urlParams.get('plan')
+      setMessage(`🎉 Your 7-day free trial has started! You're now on the ${plan} plan with full access to all features.`)
+      // Clear the URL parameters
+      window.history.replaceState({}, document.title, '/dashboard')
     }
   }, [])
 
