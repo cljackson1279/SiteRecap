@@ -553,6 +553,18 @@ test_plan:
   test_all: false
   test_priority: "high_first"
 
+  - task: "Test complete email confirmation flow after Vercel and Supabase configuration updates"
+    implemented: true
+    working: false
+    file: "/app/app/auth/callback/route.js"
+    stuck_count: 1
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "❌ CRITICAL PRODUCTION DEPLOYMENT ISSUES IDENTIFIED: Comprehensive email confirmation flow testing completed. WORKING LOCALLY: All components work correctly in local development (send-confirmation, resend-confirmation, auth-callback, auth-success). PRODUCTION ISSUES: 1) Auth callback redirects to wrong domain (site-recap-exaw.vercel.app instead of siterecap.com) 2) Auth success page returns 404 3) Debug-urls endpoint returns 404. Environment variables correctly set locally but production deployment not reflecting changes. Email endpoints working correctly (send/resend confirmation). Error handling working properly. ROOT CAUSE: Production deployment using outdated environment variables or deployment not updated."
+
 agent_communication:
     - agent: "main"
       message: "COMPLETED PHASE 1: Successfully implemented project closure functionality including:
