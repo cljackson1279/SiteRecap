@@ -225,7 +225,7 @@ export default function Pricing() {
                 </Button>
 
                 <p className="text-xs text-muted-foreground text-center">
-                  No payment required for 7 days • Cancel anytime
+                  New customers get 7-day trial • Cancel anytime
                 </p>
               </CardContent>
             </Card>
