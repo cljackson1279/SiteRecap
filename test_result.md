@@ -447,6 +447,18 @@ backend:
           agent: "testing"
           comment: "✅ URL CONFIGURATION FIXED: All environment variables now correctly set to https://siterecap.com. NEXT_PUBLIC_BASE_URL, NEXT_PUBLIC_SITE_URL, and NEXTAUTH_URL all point to production domain. Resend-confirmation endpoint uses correct base URL. Send-confirmation endpoint accepts siterecap.com URLs. No hardcoded Vercel URLs found in code. Auth callback redirects properly to siterecap.com domain (with www subdomain redirect which is normal)."
 
+  - task: "Test GET /api/debug-urls endpoint for URL verification"
+    implemented: false
+    working: false
+    file: "/app/app/api/[[...path]]/route.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "testing"
+          comment: "❌ DEBUG-URLS ENDPOINT MISSING: GET /api/debug-urls endpoint not found (404). This endpoint would help verify all environment variables are correctly set. Attempted to add debug endpoint to API routes but it's not being recognized by the routing system."
+
 frontend:
   - task: "Remove AI model mentions from pricing page"
     implemented: false
