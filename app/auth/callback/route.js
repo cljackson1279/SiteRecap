@@ -11,14 +11,7 @@ export async function GET(request) {
   // Use the correct base URL from environment or fallback
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_SITE_URL || 'https://siterecap.com'
 
-  console.log('Auth callback called with:', { 
-    code: !!code, 
-    token_hash: !!token_hash, 
-    type, 
-    email, 
-    baseUrl, 
-    requestOrigin: requestUrl.origin 
-  })
+  // Process email confirmation with minimal logging
 
   // Create a new Supabase client for server-side auth handling
   const supabase = createClient(
