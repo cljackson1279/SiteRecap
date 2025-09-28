@@ -668,3 +668,44 @@ agent_communication:
         • Core functionality verified and working
         
         🎯 CONCLUSION: The 'Unable to confirm email' error has been RESOLVED. Users will now be automatically logged in after email confirmation. All auto-login flow components are functional. Ready for production deployment of the /auth/success route."
+    - agent: "testing"
+      message: "URL CONFIGURATION AND VERCEL REDIRECT ISSUE TESTING COMPLETED: Comprehensive debugging of URL configuration and Vercel redirect issue performed. Results:
+        
+        ✅ ENVIRONMENT VARIABLES CORRECTLY CONFIGURED:
+        • NEXT_PUBLIC_BASE_URL: https://siterecap.com ✅
+        • NEXT_PUBLIC_SITE_URL: https://siterecap.com ✅  
+        • NEXTAUTH_URL: https://siterecap.com ✅
+        • EMAIL_FROM: support@siterecap.com ✅
+        • All Supabase environment variables present and configured
+        
+        ✅ EMAIL CONFIRMATION ENDPOINTS WORKING:
+        • POST /api/send-confirmation - ✅ Working (accepts siterecap.com URLs)
+        • POST /api/resend-confirmation - ✅ Working (uses correct NEXT_PUBLIC_BASE_URL)
+        • Both endpoints generate emails with https://siterecap.com URLs
+        • No hardcoded Vercel URLs found in codebase
+        
+        ✅ AUTH CALLBACK REDIRECT LOGIC VERIFIED:
+        • Uses process.env.NEXT_PUBLIC_BASE_URL for redirects ✅
+        • Has https://siterecap.com as fallback ✅
+        • Redirects to correct domain (siterecap.com/www.siterecap.com) ✅
+        • Login page uses hardcoded https://siterecap.com/auth/callback for Supabase auth ✅
+        
+        ❌ MISSING DEBUG ENDPOINT:
+        • GET /api/debug-urls endpoint not implemented (returns 404)
+        • Would be useful for runtime URL verification
+        
+        🎯 ROOT CAUSE ANALYSIS - VERCEL REDIRECT ISSUE:
+        • Application code is correctly configured with siterecap.com URLs
+        • No Vercel URLs found in environment variables or code
+        • If emails still redirect to Vercel URLs, the issue is likely in:
+          1. Supabase dashboard configuration (Site URL, Redirect URLs)
+          2. Supabase email template settings
+          3. DNS/domain configuration causing www redirect
+        
+        📋 RECOMMENDATIONS FOR MAIN AGENT:
+        1. Verify Supabase dashboard Site URL is set to https://siterecap.com
+        2. Ensure Supabase Redirect URLs include https://siterecap.com/auth/callback
+        3. Check Supabase email template configuration for hardcoded URLs
+        4. The www.siterecap.com redirect is normal domain behavior
+        
+        🎯 CONCLUSION: Application URL configuration is CORRECT. If Vercel redirects persist, issue is in external service configuration (Supabase dashboard), not application code."
