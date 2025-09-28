@@ -4,13 +4,18 @@
 
 The email confirmation redirects are still not working because the **Supabase project settings** need to be updated in the Supabase dashboard. The application code is correct, but Supabase itself needs to know about the production domain.
 
+## ⚠️ URGENT: The Issue is in Supabase Dashboard Settings
+
+**If emails are still redirecting to Vercel URLs instead of siterecap.com, the Supabase project dashboard still has old URLs configured.**
+
 ## Required Steps in Supabase Dashboard:
 
 ### 1. Update Auth Redirect URLs
 
 Go to your Supabase project dashboard:
-1. Navigate to **Authentication** → **URL Configuration**
-2. Update the following URLs:
+1. Navigate to **Authentication** → **URL Configuration**  
+2. **FIRST**: Delete ALL existing redirect URLs (clear the list completely)
+3. **THEN**: Add ONLY these URLs:
 
 **Site URL:**
 ```
