@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Remove AI model details from site and implement project closure functionality with manual close/reopen and 14-day auto-close logic. Update subscription enforcement to only count active projects."
+user_problem_statement: "Test the newly optimized AI pipeline for construction site analysis. The AI prompts have been significantly enhanced with construction expertise to provide more detailed and accurate reports."
 
 backend:
   - task: "Add Stripe webhook secret to .env"
