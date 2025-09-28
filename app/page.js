@@ -35,26 +35,47 @@ export default function HomePage() {
   if (!user) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-brand-bg to-slate-50">
+        {/* Navigation Header */}
+        <header className="container mx-auto px-4 py-6">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <div className="flex items-center gap-2">
+              <div className="text-2xl">🏗️</div>
+              <span className="text-2xl font-bold text-brand-text">SiteRecap</span>
+            </div>
+            
+            {/* Navigation Menu */}
+            <nav className="hidden md:flex items-center gap-8">
+              <a href="/demo" className="text-muted-foreground hover:text-brand-text transition-colors">
+                How it Works
+              </a>
+              <a href="/pricing" className="text-muted-foreground hover:text-brand-text transition-colors">
+                Pricing
+              </a>
+            </nav>
+            
+            {/* Mobile menu button - you can add this later */}
+            <div className="md:hidden">
+              <Button size="sm" onClick={handleGetStarted}>
+                Get Started
+              </Button>
+            </div>
+          </div>
+        </header>
+
         {/* Hero Section */}
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-4 py-8">
           <div className="text-center max-w-4xl mx-auto">
-            <div className="text-6xl mb-6">🏗️</div>
-            <h1 className="text-5xl font-bold text-brand-text mb-6">
+            <h1 className="text-4xl md:text-5xl font-bold text-brand-text mb-6">
               AI-Powered Construction Daily Reports
             </h1>
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               Transform construction site photos into professional daily reports with AI. 
               Generate automated construction reports for owners and contractors in minutes, not hours.
             </p>
-            <div className="flex gap-4 justify-center">
+            <div className="flex justify-center">
               <Button size="lg" onClick={handleGetStarted}>
                 Get Started
-              </Button>
-              <Button size="lg" variant="outline" onClick={() => router.push('/demo')}>
-                Try Demo
-              </Button>
-              <Button size="lg" variant="outline" onClick={() => router.push('/pricing')}>
-                View Pricing
               </Button>
             </div>
           </div>
