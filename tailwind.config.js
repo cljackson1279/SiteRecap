@@ -69,8 +69,8 @@ module.exports = {
     				foreground: 'hsl(var(--muted-foreground))'
     			},
     			accent: {
-    				DEFAULT: 'hsl(var(--accent))',
-    				foreground: 'hsl(var(--accent-foreground))'
+    				DEFAULT: '#f97316', // Orange
+    				foreground: '#ffffff'
     			},
     			popover: {
     				DEFAULT: 'hsl(var(--popover))',
